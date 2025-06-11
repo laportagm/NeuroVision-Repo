@@ -1,0 +1,77 @@
+{
+    // VSCode Launch Configurations for NeuroVision
+    // Note: Godot debugger extension has limited features
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // Default: Run from main scene
+            "name": "Run NeuroVision",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "port": 6007,
+            "address": "127.0.0.1"
+        },
+        {
+            // Run Enhanced Scene directly (Glass Morphism UI)
+            "name": "Run Glass Morphism UI",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "port": 6007,
+            "address": "127.0.0.1",
+            "scene": "res://src/scenes/EnhancedExplorationScene.tscn"
+        },
+        {
+            // Test Glass Morphism Effects
+            "name": "Test Glass Effects",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "port": 6007,
+            "address": "127.0.0.1",
+            "scene": "res://test_glass_morphism.tscn"
+        },
+        {
+            // Debug whatever scene is currently open in Godot
+            "name": "Debug Current Scene",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "port": 6007,
+            "scene": "current",
+            "address": "127.0.0.1"
+        },
+        {
+            // Alternative port if 6007 is in use
+            "name": "Run (Alt Port 6008)",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "port": 6008,
+            "address": "127.0.0.1"
+        }
+    ]
+}
+
+// LIMITATIONS OF GODOT DEBUGGER:
+// - Cannot specify custom scene paths (only "main", "current", or "pinned")
+// - Cannot pass command line arguments
+// - Cannot set environment variables
+// - Limited debugging features compared to other languages
+//
+// WORKAROUNDS:
+// 1. To skip to a specific scene:
+//    - Open the scene in Godot Editor
+//    - Use "Debug Current Scene" configuration
+//    - Or temporarily change project.godot main_scene
+//
+// 2. For performance testing:
+//    - Add debug code to your _ready() functions
+//    - Use Godot's built-in profiler
+//    - Run from terminal: godot --path . --print-fps
+//
+// 3. For different configurations:
+//    - Create multiple project.godot files
+//    - Use conditional code based on OS.has_feature()
+//    - Create in-game debug menu

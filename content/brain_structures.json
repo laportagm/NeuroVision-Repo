@@ -1,0 +1,151 @@
+{
+  "structures": {
+    "thalamus": {
+      "id": "thalamus",
+      "displayName": "Thalamus",
+      "alternateNames": ["Thalami"],
+      "modelNames": ["Thalami (good)", "Thalami"],
+      "category": "Diencephalon",
+      "description": "The thalamus is a large mass of gray matter located in the dorsal part of the diencephalon. It serves as a relay station for nearly all sensory information heading to the cerebral cortex.",
+      "function": "Acts as the brain's relay station, processing and transmitting sensory and motor signals to the cerebral cortex. Also plays a crucial role in regulating consciousness, sleep, and alertness.",
+      "clinicalRelevance": "Damage to the thalamus can result in sensory loss, movement disorders, and thalamic pain syndrome. Thalamic strokes can cause varied symptoms depending on the affected nuclei.",
+      "connections": [
+        "Cerebral Cortex (reciprocal connections)",
+        "Basal Ganglia",
+        "Cerebellum",
+        "Brainstem sensory pathways"
+      ],
+      "learningObjectives": [
+        "Identify the location of the thalamus within the diencephalon",
+        "Describe the relay function of thalamic nuclei",
+        "Explain the role in sensory processing",
+        "Understand clinical implications of thalamic lesions"
+      ],
+      "keyFacts": [
+        "Contains over 30 distinct nuclei",
+        "Processes all sensory information except smell",
+        "Each hemisphere contains one thalamus",
+        "Connected by the interthalamic adhesion"
+      ]
+    },
+    "hippocampus": {
+      "id": "hippocampus",
+      "displayName": "Hippocampus",
+      "alternateNames": ["Hippocampal Formation"],
+      "modelNames": ["Hipp and Others (good)", "Hipp and Others", "Hippocampus"],
+      "category": "Limbic System",
+      "description": "The hippocampus is a seahorse-shaped structure located in the medial temporal lobe. It is crucial for memory formation and spatial navigation.",
+      "function": "Essential for forming new episodic memories, converting short-term memories to long-term storage, and spatial memory/navigation. Also involved in emotional responses.",
+      "clinicalRelevance": "Early target in Alzheimer's disease, leading to memory impairment. Damage causes anterograde amnesia (inability to form new memories). Involved in temporal lobe epilepsy.",
+      "connections": [
+        "Entorhinal Cortex (primary input)",
+        "Fornix (major output pathway)",
+        "Mammillary Bodies",
+        "Prefrontal Cortex",
+        "Amygdala"
+      ],
+      "learningObjectives": [
+        "Locate the hippocampus within the temporal lobe",
+        "Understand its role in memory consolidation",
+        "Describe the trisynaptic circuit",
+        "Recognize its involvement in Alzheimer's disease"
+      ],
+      "keyFacts": [
+        "Named after its seahorse-like shape",
+        "Contains place cells for spatial navigation",
+        "Neurogenesis continues throughout life",
+        "Volume reduced in depression and PTSD"
+      ]
+    },
+    "striatum": {
+      "id": "striatum",
+      "displayName": "Striatum",
+      "alternateNames": ["Corpus Striatum", "Neostriatum"],
+      "modelNames": ["Striatum (good)", "Striatum"],
+      "category": "Basal Ganglia",
+      "description": "The striatum is the largest component of the basal ganglia, consisting of the caudate nucleus and putamen. It plays a critical role in motor control and reward processing.",
+      "function": "Involved in motor planning, action selection, procedural learning, habit formation, and reward/motivation processing. Key component of motor and reward circuits.",
+      "clinicalRelevance": "Dysfunction leads to movement disorders: Parkinson's disease (dopamine depletion), Huntington's disease (neuronal loss), and addiction disorders (reward pathway disruption).",
+      "connections": [
+        "Substantia Nigra (dopaminergic input)",
+        "Globus Pallidus (direct/indirect pathways)",
+        "Cerebral Cortex (corticostriatal loops)",
+        "Thalamus (via pallidothalamic projections)"
+      ],
+      "learningObjectives": [
+        "Identify caudate nucleus and putamen components",
+        "Understand role in basal ganglia circuits",
+        "Describe direct and indirect motor pathways",
+        "Explain involvement in movement disorders"
+      ],
+      "keyFacts": [
+        "Receives major dopaminergic input",
+        "Divided by internal capsule fibers",
+        "Contains medium spiny neurons",
+        "Critical for habit learning"
+      ]
+    },
+    "ventricles": {
+      "id": "ventricles",
+      "displayName": "Ventricular System",
+      "alternateNames": ["Cerebral Ventricles"],
+      "modelNames": ["Ventricles (good)", "Ventricles"],
+      "category": "Ventricular System",
+      "description": "The ventricular system consists of four interconnected cavities within the brain filled with cerebrospinal fluid (CSF). It includes two lateral ventricles, the third ventricle, and the fourth ventricle.",
+      "function": "Produces and circulates cerebrospinal fluid (CSF), provides cushioning for the brain, removes metabolic waste, and maintains intracranial pressure.",
+      "clinicalRelevance": "Hydrocephalus results from CSF accumulation. Ventricular enlargement seen in various conditions including schizophrenia, Alzheimer's disease, and normal pressure hydrocephalus.",
+      "connections": [
+        "Choroid Plexus (CSF production)",
+        "Interventricular Foramina (connects lateral to third)",
+        "Cerebral Aqueduct (connects third to fourth)",
+        "Central Canal of Spinal Cord"
+      ],
+      "learningObjectives": [
+        "Trace CSF flow through ventricular system",
+        "Identify all four ventricles and connections",
+        "Understand CSF production and absorption",
+        "Recognize ventricular changes in disease"
+      ],
+      "keyFacts": [
+        "Produces ~500ml CSF daily",
+        "Total CSF volume ~150ml",
+        "CSF renewed 3-4 times daily",
+        "Lined by ependymal cells"
+      ]
+    },
+    "corpus_callosum": {
+      "id": "corpus_callosum",
+      "displayName": "Corpus Callosum",
+      "alternateNames": ["Callosal Commissure"],
+      "modelNames": ["Corpus Callosum (good)", "Corpus Callosum"],
+      "category": "White Matter",
+      "description": "The corpus callosum is the largest white matter structure in the brain, consisting of over 200 million axons that connect the left and right cerebral hemispheres.",
+      "function": "Enables interhemispheric communication, integrating motor, sensory, and cognitive information between brain hemispheres. Essential for unified perception and coordinated behavior.",
+      "clinicalRelevance": "Agenesis causes developmental delays. Surgical section (corpus callosotomy) treats severe epilepsy. Damage can cause alien hand syndrome and disconnection syndromes.",
+      "connections": [
+        "Left Cerebral Cortex",
+        "Right Cerebral Cortex",
+        "Cingulate Gyrus (above)",
+        "Fornix and Septum Pellucidum (below)"
+      ],
+      "learningObjectives": [
+        "Identify anatomical divisions (genu, body, splenium)",
+        "Understand interhemispheric transfer",
+        "Describe effects of callosal section",
+        "Recognize developmental abnormalities"
+      ],
+      "keyFacts": [
+        "Largest commissure in the brain",
+        "Myelination continues into twenties",
+        "Thicker in musicians and bilinguals",
+        "Contains ~200 million axons"
+      ]
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2024-01-10",
+    "educationalLevel": "Medical Student / Graduate",
+    "contentType": "Neuroanatomy"
+  }
+}

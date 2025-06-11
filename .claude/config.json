@@ -1,0 +1,38 @@
+{
+  "project_name": "NeuroVis",
+  "project_type": "godot_educational_app",
+  "engine_version": "4.3",
+  "language": "gdscript",
+  "context_files": [
+    "docs/PROJECT_OUTLINE.md",
+    "docs/CLAUDE.md",
+    "PROJECT_PROGRESS.md",
+    "NEUROVIS_PROMPT_ENGINEERING.json"
+  ],
+  "prompt_engineering": {
+    "main_guide": "NEUROVIS_PROMPT_ENGINEERING.json",
+    "quick_reference": "docs/QUICK_PROMPT_REFERENCE.md",
+    "phase_prompts": "prompts/phase1_implementation.md"
+  },
+  "development_approach": "phase_based",
+  "current_phase": "phase_1_core_foundation",
+  "excluded_features": ["firebase", "cloud_sync", "google_oauth"],
+  "validation_on_commit": true,
+  "performance_target": {
+    "min_fps": 30,
+    "target_hardware": "Intel UHD 620",
+    "max_load_time": 2.0,
+    "max_memory_usage_gb": 2.0
+  },
+  "accessibility_requirements": {
+    "wcag_level": "AAA",
+    "keyboard_navigation": true,
+    "screen_reader": true,
+    "high_contrast": true
+  },
+  "educational_requirements": {
+    "target_age": "high_school_plus",
+    "accuracy_level": "textbook",
+    "offline_capable": true
+  }
+}

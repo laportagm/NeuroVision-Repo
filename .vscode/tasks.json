@@ -1,0 +1,103 @@
+{
+    // Simplified VSCode Tasks for NeuroVision
+    // Works around debugger limitations
+    "version": "2.0.0",
+    "tasks": [
+        // === PRIMARY TASKS ===
+        {
+            "label": "🎮 Run NeuroVision",
+            "type": "shell",
+            "command": "godot",
+            "args": ["--path", "${workspaceFolder}"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "new",
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "🧠 Run Brain Explorer",
+            "type": "shell",
+            "command": "godot",
+            "args": [
+                "--path", "${workspaceFolder}",
+                "res://src/scenes/EnhancedExplorationScene.tscn"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "📊 Performance Test",
+            "type": "shell",
+            "command": "godot",
+            "args": [
+                "--path", "${workspaceFolder}",
+                "--print-fps",
+                "--verbose"
+            ],
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "🧪 Run Tests",
+            "type": "shell",
+            "command": "godot",
+            "args": [
+                "--path", "${workspaceFolder}",
+                "--script", "res://scripts/run_tests.gd",
+                "--headless"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "🔧 Open in Editor",
+            "type": "shell",
+            "command": "godot",
+            "args": ["--editor", "--path", "${workspaceFolder}"],
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "🧹 Clean Cache",
+            "type": "shell",
+            "command": "rm",
+            "args": ["-rf", "${workspaceFolder}/.godot"],
+            "windows": {
+                "command": "cmd",
+                "args": ["/c", "rmdir", "/s", "/q", "${workspaceFolder}\\.godot"]
+            },
+            "group": "none"
+        },
+        {
+            "label": "🚀 Launch Helper",
+            "type": "shell",
+            "command": "${workspaceFolder}/launch_helper.sh",
+            "windows": {
+                "command": "echo",
+                "args": ["Please run launch_helper.sh from Git Bash or WSL"]
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": true
+            }
+        }
+    ]
+}

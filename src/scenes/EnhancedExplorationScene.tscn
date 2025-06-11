@@ -1,0 +1,423 @@
+[gd_scene load_steps=17 format=3 uid="uid://b7nqm4jvtxcd2"]
+
+[ext_resource type="Script" uid="uid://btlrmvmaeh7x2" path="res://src/scenes/EnhancedExplorationScene.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://c7xqm4jv8n5kp" path="res://src/ui/components/StructureInfoPanel.tscn" id="2_panel"]
+[ext_resource type="Shader" path="res://src/ui/effects/shaders/glass_panel_v1.gdshader" id="3_glass"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("3_glass")
+shader_parameter/blur_amount = 5.0
+shader_parameter/tint_color = Color(0, 0, 0, 0.2)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0, 0, 0, 1)
+sky_curve = 0.05
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("ProceduralSkyMaterial_1")
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0, 0, 0, 1)
+ambient_light_source = 1
+ambient_light_color = Color(0.1, 0.1, 0.15, 1)
+ambient_light_energy = 0.3
+reflected_light_source = 2
+tonemap_mode = 2
+ssao_enabled = true
+ssao_intensity = 0.8
+glow_enabled = true
+glow_intensity = 0.8
+glow_strength = 1.2
+glow_bloom = 0.4
+fog_enabled = false
+volumetric_fog_enabled = false
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(0.8, 0.8, 0.85, 1)
+metallic = 0.2
+roughness = 0.1
+rim_enabled = true
+rim = 1.0
+rim_tint = 0.5
+emission_enabled = true
+emission = Color(0.23, 0.51, 0.96, 1)
+emission_energy = 0.3
+
+[sub_resource type="SphereMesh" id="SphereMesh_1"]
+radial_segments = 32
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2"]
+transparency = 1
+cull_mode = 2
+no_depth_test = true
+albedo_color = Color(0.1, 0.2, 0.3, 0.3)
+
+[sub_resource type="QuadMesh" id="QuadMesh_1"]
+size = Vector2(20, 20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3"]
+albedo_color = Color(0.05, 0.05, 0.08, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 20
+content_margin_top = 15
+content_margin_right = 20
+content_margin_bottom = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
+bg_color = Color(1, 1, 1, 0.05)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+content_margin_left = 20
+content_margin_top = 20
+content_margin_right = 20
+content_margin_bottom = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3"]
+bg_color = Color(0.1, 0.1, 0.12, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.05)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+content_margin_left = 20
+content_margin_top = 15
+content_margin_right = 20
+content_margin_bottom = 15
+
+[node name="ExplorationScene" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource("Environment_1")
+
+[node name="Lighting" type="Node3D" parent="Environment"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment/Lighting"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 0.8
+shadow_enabled = true
+directional_shadow_mode = 1
+
+[node name="FillLight" type="DirectionalLight3D" parent="Environment/Lighting"]
+transform = Transform3D(-0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, 0.5, -0.5, 0, 3, 0)
+light_color = Color(0.8, 0.85, 0.9, 1)
+light_energy = 0.3
+
+[node name="RimLight" type="DirectionalLight3D" parent="Environment/Lighting"]
+transform = Transform3D(-1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0)
+light_color = Color(0.7, 0.8, 0.9, 1)
+light_energy = 0.2
+
+[node name="CameraSystem" type="Node3D" parent="."]
+
+[node name="CameraPivot" type="Node3D" parent="CameraSystem"]
+
+[node name="Camera3D" type="Camera3D" parent="CameraSystem/CameraPivot"]
+transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 3, 3, 3)
+fov = 60.0
+near = 0.1
+far = 1000.0
+
+[node name="CameraEffects" type="Node" parent="CameraSystem/CameraPivot/Camera3D"]
+
+[node name="BrainModelContainer" type="Node3D" parent="."]
+
+[node name="ModelHolder" type="Node3D" parent="BrainModelContainer"]
+
+[node name="PlaceholderBrain" type="MeshInstance3D" parent="BrainModelContainer/ModelHolder"]
+mesh = SubResource("BoxMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="SelectionSphere" type="MeshInstance3D" parent="BrainModelContainer"]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_2")
+
+[node name="VisualizationHelpers" type="Node3D" parent="."]
+
+[node name="GridFloor" type="MeshInstance3D" parent="VisualizationHelpers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
+visible = false
+mesh = SubResource("QuadMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_3")
+
+[node name="AxisIndicator" type="Node3D" parent="VisualizationHelpers"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -8, -4, 0)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MainUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="TopBar" type="PanelContainer" parent="UI/MainUI"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 0
+anchor_right = 1.0
+mouse_filter = 2
+material = SubResource("ShaderMaterial_1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+
+[node name="TopBarContent" type="HBoxContainer" parent="UI/MainUI/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Logo" type="Label" parent="UI/MainUI/TopBar/TopBarContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.8, 0.9, 1)
+theme_override_font_sizes/font_size = 32
+text = "NeuroVision"
+
+[node name="Spacer" type="Control" parent="UI/MainUI/TopBar/TopBarContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ViewControls" type="HBoxContainer" parent="UI/MainUI/TopBar/TopBarContent"]
+layout_mode = 2
+
+[node name="ViewLabel" type="Label" parent="UI/MainUI/TopBar/TopBarContent/ViewControls"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "View:"
+
+[node name="ViewPresets" type="OptionButton" parent="UI/MainUI/TopBar/TopBarContent/ViewControls"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+selected = 0
+item_count = 9
+popup/item_0/text = "Anterior"
+popup/item_0/id = 0
+popup/item_1/text = "Posterior"
+popup/item_1/id = 1
+popup/item_2/text = "Right Lateral"
+popup/item_2/id = 2
+popup/item_3/text = "Left Lateral"
+popup/item_3/id = 3
+popup/item_4/text = "Superior"
+popup/item_4/id = 4
+popup/item_5/text = "Inferior"
+popup/item_5/id = 5
+popup/item_6/text = "Clinical 1"
+popup/item_6/id = 6
+popup/item_7/text = "Clinical 2"
+popup/item_7/id = 7
+popup/item_8/text = "Free Orbit"
+popup/item_8/id = 8
+
+[node name="ToolButtons" type="HBoxContainer" parent="UI/MainUI/TopBar/TopBarContent"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="LabelToggle" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+toggle_mode = true
+theme_override_font_sizes/font_size = 16
+text = "Labels"
+
+[node name="QuizButton" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Quiz"
+
+[node name="HelpButton" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
+custom_minimum_size = Vector2(50, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "?"
+
+[node name="LeftPanel" type="PanelContainer" parent="UI/MainUI"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 0
+anchor_bottom = 1.0
+offset_top = 90.0
+offset_bottom = -20.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2")
+
+[node name="StructureList" type="VBoxContainer" parent="UI/MainUI/LeftPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Title" type="Label" parent="UI/MainUI/LeftPanel/StructureList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Brain Structures"
+
+[node name="HSeparator" type="HSeparator" parent="UI/MainUI/LeftPanel/StructureList"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/MainUI/LeftPanel/StructureList"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StructureItems" type="VBoxContainer" parent="UI/MainUI/LeftPanel/StructureList/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="BottomPanel" type="PanelContainer" parent="UI/MainUI"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -60.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3")
+
+[node name="StatusBar" type="HBoxContainer" parent="UI/MainUI/BottomPanel"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="UI/MainUI/BottomPanel/StatusBar"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Ready"
+
+[node name="Spacer" type="Control" parent="UI/MainUI/BottomPanel/StatusBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PerformanceInfo" type="Label" parent="UI/MainUI/BottomPanel/StatusBar"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "FPS: 60 | Quality: HIGH"
+
+[node name="InfoPanel" parent="UI" instance=ExtResource("2_panel")]
+visible = false
+
+[node name="Overlays" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="LoadingOverlay" type="ColorRect" parent="UI/Overlays"]
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.8)
+
+[node name="LoadingContent" type="VBoxContainer" parent="UI/Overlays/LoadingOverlay"]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+
+[node name="LoadingLabel" type="Label" parent="UI/Overlays/LoadingOverlay/LoadingContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Loading Brain Model..."
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/Overlays/LoadingOverlay/LoadingContent"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+
+[node name="HelpOverlay" type="PanelContainer" parent="UI/Overlays"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+
+[node name="HelpContent" type="VBoxContainer" parent="UI/Overlays/HelpOverlay"]
+layout_mode = 2
+
+[node name="HelpTitle" type="Label" parent="UI/Overlays/HelpOverlay/HelpContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Controls"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="UI/Overlays/HelpOverlay/HelpContent"]
+layout_mode = 2
+
+[node name="HelpText" type="RichTextLabel" parent="UI/Overlays/HelpOverlay/HelpContent"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Mouse Controls:[/b]
+• Left Click + Drag - Rotate view
+• Right Click - Select structure
+• Mouse Wheel - Zoom in/out
+
+[b]Keyboard:[/b]
+• 1-8 - Camera presets
+• Tab - Cycle views
+• L - Toggle labels
+• Q - Open quiz
+• R - Reset camera
+• ESC - Return to menu"
+
+[node name="CloseButton" type="Button" parent="UI/Overlays/HelpOverlay/HelpContent"]
+layout_mode = 2
+text = "Close"
+
+[node name="AnnotationLayer" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Annotations" type="Node2D" parent="UI/AnnotationLayer"]
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="InteractionSystem" type="Node" parent="Systems"]
+
+[node name="AnimationSystem" type="Node" parent="Systems"]
+
+[node name="AudioSystem" type="Node" parent="Systems"]
+
+[node name="AnalyticsSystem" type="Node" parent="Systems"]

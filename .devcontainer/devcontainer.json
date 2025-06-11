@@ -1,0 +1,167 @@
+{
+  "name": "NeuroVis Development",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "geequlim.godot-tools",
+        "ms-python.python",
+        "razoric.gdscript-toolkit-formatter",
+        "alfish.godot-files",
+        "anthropic.claude-code",
+        "github.copilot",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "github.vscode-pull-request-github",
+        "christian-kohler.path-intellisense",
+        "aaron-bond.better-comments",
+        "wayou.vscode-todo-highlight",
+        "gruntfuggly.todo-tree",
+        "alefragnani.bookmarks",
+        "hbenl.vscode-test-explorer",
+        "ms-vscode.test-adapter-converter",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "shd101wyy.markdown-preview-enhanced",
+        "ms-vscode-remote.remote-containers"
+      ],
+      "settings": {
+        "godot_tools.editor_path": "/usr/local/bin/godot",
+        "godot_tools.gdscript_lsp_server_port": 6008,
+        "godot_tools.scene_file_config": {
+          "autoOpen": true,
+          "autoClose": false
+        },
+        "files.associations": {
+          "*.gd": "gdscript",
+          "*.tscn": "godot-scene",
+          "*.tres": "godot-resource",
+          "*.godot": "ini",
+          "*.import": "ini"
+        },
+        "editor.fontSize": 14,
+        "editor.fontFamily": "'Fira Code', 'Cascadia Code', monospace",
+        "editor.fontLigatures": true,
+        "editor.rulers": [
+          80,
+          120
+        ],
+        "editor.wordWrap": "bounded",
+        "editor.wordWrapColumn": 120,
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.minimap.enabled": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.indentation": true,
+        "[gdscript]": {
+          "editor.defaultFormatter": "razoric.gdscript-toolkit-formatter",
+          "editor.tabSize": 4,
+          "editor.insertSpaces": false,
+          "editor.detectIndentation": false
+        },
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "gitlens.hovers.currentLine.over": "line",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.fontSize": 13,
+        "better-comments.tags": [
+          {
+            "tag": "!",
+            "color": "#FF2D00",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+          },
+          {
+            "tag": "?",
+            "color": "#3498DB",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+          },
+          {
+            "tag": "//",
+            "color": "#474747",
+            "strikethrough": true,
+            "backgroundColor": "transparent"
+          },
+          {
+            "tag": "TODO",
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+          },
+          {
+            "tag": "HACK",
+            "color": "#EC407A",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+          }
+        ],
+        "todohighlight.keywords": [
+          "TODO:",
+          "FIXME:",
+          "HACK:",
+          "BUG:",
+          "NOTE:",
+          "OPTIMIZE:",
+          "REVIEW:",
+          "CLEANUP:"
+        ],
+        "cSpell.words": [
+          "Godot",
+          "gdscript",
+          "tscn",
+          "tres",
+          "gltf",
+          "glb",
+          "neuroanatomy",
+          "hippocampus",
+          "amygdala",
+          "cortex",
+          "cerebellum",
+          "brainstem",
+          "synapse",
+          "neurotransmitter",
+          "axon",
+          "dendrite",
+          "glia",
+          "astrocyte",
+          "oligodendrocyte",
+          "signin",
+          "signout",
+          "oauth",
+          "firebase",
+          "gemini",
+          "lerp",
+          "slerp",
+          "viewport",
+          "raycast",
+          "collider",
+          "autoload",
+          "singleton"
+        ],
+        "files.exclude": {
+          "**/.git": true,
+          "**/.DS_Store": true,
+          "**/*.tmp": true,
+          "**/.import": false,
+          "**/releases": true
+        },
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/.git": true,
+          "**/.import": true,
+          "**/releases": true,
+          "**/*.glb": true,
+          "**/*.blend": true
+        }
+      }
+    }
+  },
+  "postCreateCommand": "echo 'Ready for Godot development!'",
+  "remoteUser": "vscode"
+}

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "claude_code"
+    ],
+    "deny": []
+  }
+}

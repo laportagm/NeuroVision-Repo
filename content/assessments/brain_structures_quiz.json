@@ -1,0 +1,230 @@
+{
+  "assessments": [
+    {
+      "id": "thalamus_basics",
+      "structure_id": "thalamus",
+      "title": "Thalamus Fundamentals",
+      "difficulty": "beginner",
+      "questions": [
+        {
+          "id": "thal_q1",
+          "type": "multiple_choice",
+          "question": "What is the primary function of the thalamus?",
+          "options": [
+            "Motor control",
+            "Sensory relay station",
+            "Memory formation",
+            "Hormone production"
+          ],
+          "correct_answer": 1,
+          "explanation": "The thalamus serves as the brain's primary sensory relay station, processing and distributing sensory information to the cerebral cortex.",
+          "learning_objective": "Identify the primary function of the thalamus"
+        },
+        {
+          "id": "thal_q2",
+          "type": "multiple_choice",
+          "question": "Which sensory modality does NOT pass through the thalamus?",
+          "options": [
+            "Vision",
+            "Hearing",
+            "Touch",
+            "Smell"
+          ],
+          "correct_answer": 3,
+          "explanation": "Olfaction (smell) is unique among sensory systems as it bypasses the thalamus and projects directly to the cortex.",
+          "learning_objective": "Understand sensory pathways through the thalamus"
+        },
+        {
+          "id": "thal_q3",
+          "type": "true_false",
+          "question": "The thalamus is involved in regulating consciousness and alertness.",
+          "correct_answer": true,
+          "explanation": "The thalamus, particularly through its intralaminar nuclei, plays a crucial role in maintaining consciousness and arousal states.",
+          "learning_objective": "Recognize the role of thalamus in consciousness"
+        }
+      ]
+    },
+    {
+      "id": "hippocampus_basics",
+      "structure_id": "hippocampus",
+      "title": "Hippocampus and Memory",
+      "difficulty": "beginner",
+      "questions": [
+        {
+          "id": "hipp_q1",
+          "type": "multiple_choice",
+          "question": "The hippocampus is most critical for which type of memory?",
+          "options": [
+            "Working memory",
+            "Procedural memory",
+            "Episodic memory formation",
+            "Semantic memory storage"
+          ],
+          "correct_answer": 2,
+          "explanation": "The hippocampus is essential for forming new episodic memories - memories of specific events and experiences.",
+          "learning_objective": "Identify memory functions of the hippocampus"
+        },
+        {
+          "id": "hipp_q2",
+          "type": "multiple_choice",
+          "question": "Which disease commonly affects the hippocampus early in its progression?",
+          "options": [
+            "Parkinson's disease",
+            "Multiple sclerosis",
+            "Alzheimer's disease",
+            "Huntington's disease"
+          ],
+          "correct_answer": 2,
+          "explanation": "Alzheimer's disease typically affects the hippocampus early, leading to the characteristic memory problems seen in patients.",
+          "learning_objective": "Understand clinical relevance of hippocampal damage"
+        },
+        {
+          "id": "hipp_q3",
+          "type": "true_false",
+          "question": "The hippocampus is part of the limbic system.",
+          "correct_answer": true,
+          "explanation": "The hippocampus is a key component of the limbic system, working with other structures like the amygdala in emotional and memory processing.",
+          "learning_objective": "Recognize hippocampus as part of limbic system"
+        }
+      ]
+    },
+    {
+      "id": "striatum_basics",
+      "structure_id": "striatum",
+      "title": "Striatum and Movement",
+      "difficulty": "intermediate",
+      "questions": [
+        {
+          "id": "stri_q1",
+          "type": "multiple_choice",
+          "question": "The striatum consists of which two main structures?",
+          "options": [
+            "Thalamus and hypothalamus",
+            "Caudate nucleus and putamen",
+            "Globus pallidus and substantia nigra",
+            "Amygdala and hippocampus"
+          ],
+          "correct_answer": 1,
+          "explanation": "The striatum is composed of the caudate nucleus and putamen, which together form the input nuclei of the basal ganglia.",
+          "learning_objective": "Identify components of the striatum"
+        },
+        {
+          "id": "stri_q2",
+          "type": "multiple_choice",
+          "question": "Damage to the striatum is associated with which condition?",
+          "options": [
+            "Epilepsy",
+            "Migraine",
+            "Huntington's disease",
+            "Alzheimer's disease"
+          ],
+          "correct_answer": 2,
+          "explanation": "Huntington's disease involves progressive degeneration of the striatum, leading to characteristic movement disorders and cognitive decline.",
+          "learning_objective": "Understand clinical conditions affecting striatum"
+        },
+        {
+          "id": "stri_q3",
+          "type": "true_false",
+          "question": "The striatum receives major dopaminergic input from the substantia nigra.",
+          "correct_answer": true,
+          "explanation": "The nigrostriatal pathway, carrying dopamine from the substantia nigra to the striatum, is crucial for motor control and is affected in Parkinson's disease.",
+          "learning_objective": "Recognize striatal connections and neurotransmitters"
+        }
+      ]
+    },
+    {
+      "id": "ventricles_basics",
+      "structure_id": "ventricles",
+      "title": "Ventricular System",
+      "difficulty": "beginner",
+      "questions": [
+        {
+          "id": "vent_q1",
+          "type": "multiple_choice",
+          "question": "What fluid fills the brain ventricles?",
+          "options": [
+            "Blood",
+            "Lymph",
+            "Cerebrospinal fluid (CSF)",
+            "Interstitial fluid"
+          ],
+          "correct_answer": 2,
+          "explanation": "The ventricles contain cerebrospinal fluid (CSF), which cushions the brain and removes metabolic waste.",
+          "learning_objective": "Identify ventricular contents"
+        },
+        {
+          "id": "vent_q2",
+          "type": "multiple_choice",
+          "question": "How many ventricles are in the brain?",
+          "options": [
+            "Two",
+            "Three",
+            "Four",
+            "Five"
+          ],
+          "correct_answer": 2,
+          "explanation": "There are four ventricles: two lateral ventricles, the third ventricle, and the fourth ventricle.",
+          "learning_objective": "Know the number of brain ventricles"
+        },
+        {
+          "id": "vent_q3",
+          "type": "true_false",
+          "question": "Hydrocephalus results from impaired CSF circulation or absorption.",
+          "correct_answer": true,
+          "explanation": "Hydrocephalus occurs when CSF accumulates due to blocked circulation or impaired absorption, causing ventricular enlargement.",
+          "learning_objective": "Understand ventricular pathology"
+        }
+      ]
+    },
+    {
+      "id": "corpus_callosum_basics",
+      "structure_id": "corpus_callosum",
+      "title": "Corpus Callosum Connectivity",
+      "difficulty": "intermediate",
+      "questions": [
+        {
+          "id": "cc_q1",
+          "type": "multiple_choice",
+          "question": "What is the primary function of the corpus callosum?",
+          "options": [
+            "Connect brain to spinal cord",
+            "Connect left and right hemispheres",
+            "Connect frontal and occipital lobes",
+            "Connect cortex to brainstem"
+          ],
+          "correct_answer": 1,
+          "explanation": "The corpus callosum is the largest white matter structure connecting the left and right cerebral hemispheres, enabling interhemispheric communication.",
+          "learning_objective": "Understand corpus callosum function"
+        },
+        {
+          "id": "cc_q2",
+          "type": "multiple_choice",
+          "question": "Surgical sectioning of the corpus callosum may be performed to treat:",
+          "options": [
+            "Parkinson's disease",
+            "Severe epilepsy",
+            "Depression",
+            "Chronic pain"
+          ],
+          "correct_answer": 1,
+          "explanation": "Corpus callosotomy may be performed in severe, intractable epilepsy to prevent seizure spread between hemispheres.",
+          "learning_objective": "Know clinical applications of corpus callosum surgery"
+        },
+        {
+          "id": "cc_q3",
+          "type": "true_false",
+          "question": "The corpus callosum contains approximately 200-250 million axons.",
+          "correct_answer": true,
+          "explanation": "The corpus callosum is a massive bundle containing 200-250 million commissural fibers connecting corresponding areas of both hemispheres.",
+          "learning_objective": "Recognize the scale of corpus callosum connectivity"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "total_questions": 15,
+    "difficulty_levels": ["beginner", "intermediate", "advanced"],
+    "question_types": ["multiple_choice", "true_false", "fill_blank", "matching"]
+  }
+}

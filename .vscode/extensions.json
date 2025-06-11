@@ -1,0 +1,64 @@
+{
+    // VSCode Extensions for NeuroVision Development
+    "recommendations": [
+        // === REQUIRED: Godot Development ===
+        "geequlim.godot-tools",              // Essential: GDScript language support
+        "alfish.godot-files",                // Godot file icons and associations
+        
+        // === HIGHLY RECOMMENDED: Code Quality ===
+        "streetsidesoftware.code-spell-checker", // Spell check for comments/strings
+        "usernamehw.errorlens",              // Show errors inline
+        "gruntfuggly.todo-tree",             // Track TODOs and FIXMEs
+        "shardulm94.trailing-spaces",        // Highlight trailing spaces
+        
+        // === AI ASSISTANTS ===
+        "Anthropic.claude-code",             // Claude AI integration
+        "GitHub.copilot",                    // GitHub Copilot
+        
+        // === VERSION CONTROL ===
+        "eamodio.gitlens",                   // Advanced Git features
+        "mhutchie.git-graph",                // Visualize git branches
+        "donjayamanne.githistory",           // View file history
+        
+        // === PRODUCTIVITY ===
+        "PKief.material-icon-theme",         // Better file icons
+        "alefragnani.Bookmarks",             // Bookmark important code
+        "alefragnani.project-manager",       // Manage multiple projects
+        "Gruntfuggly.todo-tree",            // TODO/FIXME tracking
+        
+        // === CODE FORMATTING ===
+        "razoric.gdscript-toolkit-formatter", // GDScript formatter (experimental)
+        "EditorConfig.EditorConfig",         // Maintain consistent coding styles
+        
+        // === DOCUMENTATION ===
+        "yzhang.markdown-all-in-one",        // Markdown support
+        "bierner.markdown-preview-github-styles", // GitHub-style markdown preview
+        "DavidAnson.vscode-markdownlint",   // Markdown linting
+        
+        // === DEBUGGING ===
+        "hediet.debug-visualizer",           // Visualize data while debugging
+        
+        // === OPTIONAL: Enhanced Development ===
+        "wayou.vscode-todo-highlight",       // Highlight TODOs
+        "christian-kohler.path-intellisense", // Auto-complete file paths
+        "naumovs.color-highlight",           // Preview colors in code
+        "kisstkondoros.vscode-gutter-preview", // Preview images in gutter
+        "adpyke.codesnap",                   // Take beautiful code screenshots
+        
+        // === OPTIONAL: Themes ===
+        "PKief.material-icon-theme",         // Material Design icons
+        "zhuangtongfa.material-theme",       // Material Theme
+        "sdras.night-owl",                   // Night Owl theme (great for long coding sessions)
+        
+        // === ACCESSIBILITY TESTING ===
+        "deque-systems.vscode-axe-linter"    // Accessibility linting
+    ],
+    
+    // Extensions that might conflict or aren't needed
+    "unwantedRecommendations": [
+        "dbaeumer.vscode-eslint",            // JavaScript linter (not needed for GDScript)
+        "esbenp.prettier-vscode",            // Code formatter (doesn't support GDScript)
+        "ms-python.python",                  // Python support (unless using for other scripts)
+        "ms-vscode.cpptools"                 // C++ tools (not needed for GDScript)
+    ]
+}

@@ -1,0 +1,256 @@
+{
+  // ====== Godot Configuration ======
+  "godot.editorPath": "/Applications/Godot.app/Contents/MacOS/Godot",
+  "godot.lsp.serverPort": 6008,
+  "godot.sceneFileConfig": {
+    "autoOpen": true,
+    "autoClose": false
+  },
+
+  // ====== File Associations ======
+  "files.associations": {
+    "*.gd": "gdscript",
+    "*.tscn": "godot-scene",
+    "*.tres": "godot-resource",
+    "*.godot": "ini",
+    "*.import": "ini",
+    "*.cfg": "ini",
+    "project.godot": "ini"
+  },
+
+  // ====== Editor Settings ======
+  "editor.fontSize": 14,
+  "editor.fontFamily": "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
+  "editor.fontLigatures": true,
+  "editor.rulers": [80, 100],
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 100,
+  "editor.formatOnSave": false, // GDScript doesn't have formatter
+  "editor.formatOnPaste": false,
+  "editor.minimap.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.indentation": true,
+  "editor.renderWhitespace": "selection",
+  "editor.smoothScrolling": true,
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+
+  // ====== GDScript Specific ======
+  "[gdscript]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
+    "editor.trimAutoWhitespace": true,
+    "editor.autoIndent": "full",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace"
+  },
+
+  // ====== Terminal Settings ======
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.windows": "powershell",
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.fontFamily": "'JetBrains Mono', monospace",
+
+  // ====== Git Settings ======
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.postCommitCommand": "none",
+
+  // ====== Files & Search ======
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/*.tmp": true,
+    "**/Thumbs.db": true,
+    "**/.godot/**": false, // Show .godot folder for debugging
+    "**/releases": true,
+    "**/exports": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/.godot": true,
+    "**/releases": true,
+    "**/exports": true,
+    "**/*.glb": true,
+    "**/*.blend": true,
+    "**/*.import": true,
+    "**/addons": true
+  },
+
+  // ====== NeuroVision Spell Check ======
+  "cSpell.words": [
+    // Godot terms
+    "Godot",
+    "gdscript",
+    "tscn",
+    "tres",
+    "gltf",
+    "glb",
+    "autoload",
+    "autoloads",
+    "singleton",
+    "viewport",
+    "raycast",
+    "raycasting",
+    "collider",
+    "lerp",
+    "slerp",
+    "aabb",
+    "reparent",
+    "instancing",
+    "shader",
+    "multimesh",
+    "occluder",
+
+    // NeuroVision specific
+    "NeuroVision",
+    "NeuroVis",
+    "WCAG",
+
+    // Neuroanatomy terms
+    "neuroanatomy",
+    "hippocampus",
+    "amygdala",
+    "cortex",
+    "cortical",
+    "cerebellum",
+    "cerebellar",
+    "brainstem",
+    "midbrain",
+    "pons",
+    "medulla",
+    "thalamus",
+    "hypothalamus",
+    "striatum",
+    "putamen",
+    "caudate",
+    "pallidum",
+    "substantia",
+    "nigra",
+    "corpus",
+    "callosum",
+    "ventricle",
+    "ventricles",
+    "ventricular",
+    "synapse",
+    "synaptic",
+    "neurotransmitter",
+    "axon",
+    "axonal",
+    "dendrite",
+    "dendritic",
+    "neuron",
+    "neuronal",
+    "glia",
+    "glial",
+    "astrocyte",
+    "oligodendrocyte",
+    "microglia",
+    "ependymal",
+    "myelin",
+    "myelination",
+    "ganglion",
+    "ganglia",
+    "plexus",
+    "commissure",
+    "fasciculus",
+    "gyrus",
+    "gyri",
+    "sulcus",
+    "sulci",
+    "fissure",
+
+    // Technical terms
+    "signin",
+    "signout",
+    "oauth",
+    "firebase",
+    "gemini",
+    "preload",
+    "onready",
+    "func",
+    "var",
+    "const",
+    "enum",
+    "signal",
+    "export",
+    "setget",
+    "tool",
+    "class_name",
+    "extends"
+  ],
+
+  // ====== Workspace Settings ======
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+
+  // ====== Extension Specific ======
+  "DockerRun.DisableDockerrc": true,
+  "markdown.preview.fontSize": 14,
+  "markdown.preview.lineHeight": 1.6,
+
+  // ====== Debug Settings ======
+  "debug.console.fontSize": 13,
+  "debug.console.fontFamily": "'JetBrains Mono', monospace",
+  "debug.showBreakpointsInOverviewRuler": true,
+
+  // ====== Problem Highlighting ======
+  "problems.decorations.enabled": true,
+  "problems.showCurrentInStatus": true,
+
+  // ====== Workspace Recommendations ======
+  "extensions.ignoreRecommendations": false,
+  "workbench.startupEditor": "none",
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "vscode-icons",
+
+  // ====== Custom File Icons ======
+  "material-icon-theme.files.associations": {
+    "*.gd": "godot",
+    "*.tscn": "godot-scene",
+    "*.tres": "godot-resource"
+  },
+
+  // ====== Code Lens ======
+  "editor.codeLens": true,
+  "gdscript.showReferenceCodeLens": true,
+
+  // ====== IntelliSense ======
+  "editor.parameterHints.enabled": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.suggestSelection": "first",
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+
+  // ====== Error Lens (if installed) ======
+  "errorLens.enabled": true,
+  "errorLens.fontSize": "12px",
+  "errorLens.margin": "20px",
+
+  // ====== TODO Highlight (if installed) ======
+  "todohighlight.keywords": [
+    "TODO:",
+    "FIXME:",
+    "BUG:",
+    "HACK:",
+    "NOTE:",
+    "OPTIMIZE:",
+    "REFACTOR:",
+    "NEUROVIS:"
+  ]
+}

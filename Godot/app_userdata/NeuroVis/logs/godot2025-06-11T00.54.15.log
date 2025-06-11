@@ -1,0 +1,49 @@
+Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
+Vulkan 1.2.283 - Forward+ - Using Device #0: Apple - Apple M2 Max
+ERROR: Can't create shader cache folder, no shader caching will happen: user://
+   at: RendererCompositorRD (servers/rendering/renderer_rd/renderer_compositor_rd.cpp:286)
+
+ERROR: 'The local function parameter "name" is shadowing an already-declared property in the base class "Node".'
+[ErrorRecovery] Manager initialized
+[Performance] Monitor initialized
+[Performance] Note: Global shader parameters not yet defined in project
+[Performance] Visual quality settings will use engine defaults
+[Performance] To enable advanced visual effects, define these in Project Settings:
+[Performance]   - texture_lod_bias (float)
+[Performance]   - glow_enabled (bool)
+[Performance]   - ssr_enabled (bool)
+[Performance] Unknown graphics, starting with MEDIUM quality
+[Performance] Applied MEDIUM quality settings
+[Performance] Monitoring started
+[Accessibility] Manager initialized
+[Content] Manager initialized
+[Progress] Tracker initialized
+[Auth] Manager initialized
+[Network] Manager initialized
+[Settings] Manager initialized
+[Settings] No settings file found, using defaults
+[StructureContent] Service initializing...
+[StructureContent] Loaded 5 brain structures
+[Assessment] Loaded 5 assessments
+[ExplorationScene] Initialized
+[BrainInteraction] Controller initialized
+[ModelLoader] System initialized
+[CameraPresets] Initialized with 8 presets
+[ExplorationScene] Camera presets initialized
+[Annotations] System initialized
+[ExplorationScene] Annotation system initialized
+[ExplorationScene] Quiz system initialized
+[ExplorationScene] Loading brain models...
+WARNING: Adding 'CollisionShape3D' as child to '@StaticBody3D@15' will make owner 'Internal-Structures' inconsistent. Consider unsetting the owner beforehand.
+   at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'CollisionShape3D' as child to '@StaticBody3D@16' will make owner 'Internal-Structures' inconsistent. Consider unsetting the owner beforehand.
+   at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'CollisionShape3D' as child to '@StaticBody3D@17' will make owner 'Internal-Structures' inconsistent. Consider unsetting the owner beforehand.
+   at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'CollisionShape3D' as child to '@StaticBody3D@18' will make owner 'Internal-Structures' inconsistent. Consider unsetting the owner beforehand.
+   at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'CollisionShape3D' as child to '@StaticBody3D@19' will make owner 'Internal-Structures' inconsistent. Consider unsetting the owner beforehand.
+   at: add_child (scene/main/node.cpp:1664)
+[ExplorationScene] Model loaded: Internal-Structures
+[ExplorationScene] Internal-Structures model loaded successfully
+[ExplorationScene] Selection cleared

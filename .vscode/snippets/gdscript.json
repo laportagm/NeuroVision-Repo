@@ -1,0 +1,352 @@
+{
+    // ===== NeuroVision Class Templates =====
+    "NeuroVision Class": {
+        "prefix": "nvclass",
+        "body": [
+            "class_name ${1:ClassName}",
+            "extends ${2:Node}",
+            "",
+            "## ${3:Brief description for NeuroVision educational neuroanatomy application}",
+            "",
+            "# === SIGNALS ===",
+            "signal ${4:example_signal}(${5:param}: ${6:Type})",
+            "",
+            "# === CONSTANTS ===",
+            "const ${7:CONSTANT_NAME}: ${8:Type} = ${9:value}",
+            "",
+            "# === EXPORTS ===",
+            "@export var ${10:exported_var}: ${11:Type} = ${12:default}",
+            "",
+            "# === NODES ===",
+            "@onready var ${13:node_ref}: ${14:NodeType} = \\$${15:NodePath}",
+            "",
+            "# === PRIVATE VARIABLES ===",
+            "var _${16:private_var}: ${17:Type} = ${18:default}",
+            "",
+            "# === PUBLIC METHODS ===",
+            "",
+            "func _ready() -> void:",
+            "\tprint(\"[${1}] Initialized\")",
+            "\t${0:pass}",
+            "",
+            "# === PRIVATE METHODS ===",
+            "",
+            "func _${19:private_method}() -> void:",
+            "\tpass"
+        ],
+        "description": "Create a NeuroVision-compliant GDScript class"
+    },
+    
+    "NeuroVision UI Component": {
+        "prefix": "nvui",
+        "body": [
+            "class_name ${1:UIComponentName}",
+            "extends ${2:Control}",
+            "",
+            "## UI component for ${3:purpose} in NeuroVision",
+            "",
+            "# === SIGNALS ===",
+            "signal closed()",
+            "signal item_selected(item_id: String)",
+            "",
+            "# === EXPORTS ===",
+            "@export var title_text: String = \"${4:Title}\"",
+            "@export var theme_override: Theme = null",
+            "",
+            "# === NODES ===",
+            "@onready var container: ${5:VBoxContainer} = \\$${6:Container}",
+            "@onready var title_label: Label = \\$${7:TitleLabel}",
+            "",
+            "# === PUBLIC METHODS ===",
+            "",
+            "func _ready() -> void:",
+            "\t_setup_ui()",
+            "\t_connect_signals()",
+            "\t",
+            "\t# Accessibility",
+            "\tAccessibilityManager.register_control(self)",
+            "",
+            "func show_content(data: Dictionary) -> void:",
+            "\t${0:pass}",
+            "",
+            "# === PRIVATE METHODS ===",
+            "",
+            "func _setup_ui() -> void:",
+            "\tif theme_override:",
+            "\t\ttheme = theme_override",
+            "\t",
+            "\ttitle_label.text = title_text",
+            "",
+            "func _connect_signals() -> void:",
+            "\tpass"
+        ],
+        "description": "Create a NeuroVision UI component with accessibility"
+    },
+    
+    // ===== Brain Interaction Patterns =====
+    "Brain Structure Handler": {
+        "prefix": "nvbrain",
+        "body": [
+            "func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3D) -> void:",
+            "\t\"\"\"Handle brain structure selection\"\"\"",
+            "\tprint(\"[${1:ClassName}] Selected: \", structure_name)",
+            "\t",
+            "\t# Get educational content",
+            "\tvar content = StructureContentService.get_structure_content(structure_name)",
+            "\t",
+            "\tif content.is_empty():",
+            "\t\t# Fallback content",
+            "\t\tcontent = {",
+            "\t\t\t\"name\": structure_name,",
+            "\t\t\t\"description\": \"Educational content pending.\"",
+            "\t\t}",
+            "\t",
+            "\t${0:# Handle content display}"
+        ],
+        "description": "Handle brain structure selection"
+    },
+    
+    // ===== Autoload Integration =====
+    "Performance Check": {
+        "prefix": "nvperf",
+        "body": [
+            "# Check performance before expensive operation",
+            "if PerformanceMonitor.get_average_fps() < 30:",
+            "\tprint(\"[${1:ClassName}] Performance warning - reducing quality\")",
+            "\t${0:# Adjust quality settings}"
+        ],
+        "description": "Check performance before expensive operations"
+    },
+    
+    "Error Handling": {
+        "prefix": "nverror",
+        "body": [
+            "# Error handling",
+            "var result = ${1:operation}()",
+            "if result != OK:",
+            "\tErrorRecoveryManager.handle_error(",
+            "\t\tErrorRecoveryManager.ErrorType.${2:RESOURCE_LOAD},",
+            "\t\t{",
+            "\t\t\t\"message\": \"${3:Failed to load resource}\",",
+            "\t\t\t\"context\": \"${4:Context}\"",
+            "\t\t}",
+            "\t)",
+            "\treturn"
+        ],
+        "description": "Handle errors with ErrorRecoveryManager"
+    },
+    
+    "Accessibility Registration": {
+        "prefix": "nvaccess",
+        "body": [
+            "# Register for accessibility",
+            "AccessibilityManager.register_control(self)",
+            "AccessibilityManager.set_description(self, \"${1:Description for screen readers}\")",
+            "",
+            "# Announce action",
+            "AccessibilityManager.announce(\"${2:Action completed}\")"
+        ],
+        "description": "Register UI element for accessibility"
+    },
+    
+    // ===== Common Functions =====
+    "Ready Function": {
+        "prefix": "ready",
+        "body": [
+            "func _ready() -> void:",
+            "\tprint(\"[${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}] Initialized\")",
+            "\t${0:pass}"
+        ],
+        "description": "Create _ready function with debug print"
+    },
+    
+    "Process Function": {
+        "prefix": "process",
+        "body": [
+            "func _process(delta: float) -> void:",
+            "\t${0:pass}"
+        ],
+        "description": "Create _process function"
+    },
+    
+    "Input Handler": {
+        "prefix": "input",
+        "body": [
+            "func _unhandled_input(event: InputEvent) -> void:",
+            "\tif event is InputEventKey and event.pressed:",
+            "\t\tmatch event.keycode:",
+            "\t\t\tKEY_${1:ESCAPE}:",
+            "\t\t\t\t${2:action}()",
+            "\t\t\t\tget_viewport().set_input_as_handled()"
+        ],
+        "description": "Handle input events"
+    },
+    
+    // ===== Signal Patterns =====
+    "Signal with Parameters": {
+        "prefix": "sig",
+        "body": [
+            "signal ${1:signal_name}(${2:param1}: ${3:Type}, ${4:param2}: ${5:Type})"
+        ],
+        "description": "Create a signal with parameters"
+    },
+    
+    "Connect Signal": {
+        "prefix": "connect",
+        "body": [
+            "${1:node}.${2:signal_name}.connect(${3:_on_}${2})"
+        ],
+        "description": "Connect a signal to a method"
+    },
+    
+    "Emit Signal": {
+        "prefix": "emit",
+        "body": [
+            "${1:signal_name}.emit(${2:parameters})"
+        ],
+        "description": "Emit a signal"
+    },
+    
+    // ===== Export Variables =====
+    "Export Group": {
+        "prefix": "expgroup",
+        "body": [
+            "@export_group(\"${1:Group Name}\")",
+            "@export var ${2:var_name}: ${3:Type} = ${4:default}",
+            "@export var ${5:var_name2}: ${6:Type} = ${7:default}"
+        ],
+        "description": "Create an export group"
+    },
+    
+    "Export Range": {
+        "prefix": "exprange",
+        "body": [
+            "@export_range(${1:0}, ${2:100}, ${3:1}) var ${4:value}: ${5:float} = ${6:50}"
+        ],
+        "description": "Export variable with range"
+    },
+    
+    // ===== Onready Variables =====
+    "Onready Variable": {
+        "prefix": "onready",
+        "body": [
+            "@onready var ${1:node_name}: ${2:NodeType} = \\$${3:NodePath}"
+        ],
+        "description": "Create an @onready variable"
+    },
+    
+    "Onready UI Elements": {
+        "prefix": "onreadyui",
+        "body": [
+            "# UI Elements",
+            "@onready var panel: ${1:Panel} = \\$${2:Panel}",
+            "@onready var label: Label = \\$${2}/Label",
+            "@onready var button: Button = \\$${2}/Button",
+            "@onready var container: ${3:VBoxContainer} = \\$${2}/Container"
+        ],
+        "description": "Common UI element references"
+    },
+    
+    // ===== Debug Helpers =====
+    "Debug Print": {
+        "prefix": "dprint",
+        "body": [
+            "print(\"[${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}] ${1:Message}: \", ${2:variable})"
+        ],
+        "description": "Print debug message with class name"
+    },
+    
+    "TODO Comment": {
+        "prefix": "todo",
+        "body": [
+            "# TODO: ${1:Task description} - ${2:Priority (HIGH/MEDIUM/LOW)}"
+        ],
+        "description": "Add a TODO comment"
+    },
+    
+    // ===== NeuroVision Specific =====
+    "Load Brain Model": {
+        "prefix": "nvloadmodel",
+        "body": [
+            "func _load_brain_model() -> void:",
+            "\tvar model_loader = preload(\"res://src/systems/3d_interaction/ModelLoader.gd\").new()",
+            "\tadd_child(model_loader)",
+            "\t",
+            "\tmodel_loader.model_loaded.connect(_on_model_loaded)",
+            "\tmodel_loader.model_load_failed.connect(_on_model_load_failed)",
+            "\t",
+            "\tmodel_loader.load_model_async(\"${1:Internal-Structures}\", _on_model_ready)",
+            "",
+            "func _on_model_ready(model_instance: Node3D) -> void:",
+            "\tif model_instance:",
+            "\t\t${2:brain_container}.add_child(model_instance)",
+            "\t\tprint(\"[${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}] Model loaded successfully\")"
+        ],
+        "description": "Load a brain model"
+    },
+    
+    "Quiz Question Handler": {
+        "prefix": "nvquiz",
+        "body": [
+            "func _on_quiz_answer_submitted(answer: Variant) -> void:",
+            "\tvar result = AssessmentService.submit_answer(answer)",
+            "\t",
+            "\tif result.is_correct:",
+            "\t\t# Show success feedback",
+            "\t\tProgressTracker.record_achievement(",
+            "\t\t\tProgressTracker.AchievementType.QUIZ_CORRECT,",
+            "\t\t\t{\"structure\": \"${1:structure_id}\"}",
+            "\t\t)",
+            "\telse:",
+            "\t\t# Show hint",
+            "\t\tpass",
+            "\t",
+            "\t${0:# Update UI}"
+        ],
+        "description": "Handle quiz answer submission"
+    },
+    
+    // ===== Camera Controls =====
+    "Camera Orbit Setup": {
+        "prefix": "nvcamera",
+        "body": [
+            "# Camera orbit variables",
+            "var _camera_distance: float = ${1:8.0}",
+            "var _camera_rotation: Vector2 = Vector2(${2:0}, deg_to_rad(${3:-15}))",
+            "var _is_rotating: bool = false",
+            "",
+            "func _update_camera_orbit() -> void:",
+            "\tcamera_pivot.rotation = Vector3.ZERO",
+            "\tcamera_pivot.rotate_y(_camera_rotation.x)",
+            "\tcamera_pivot.rotate_x(_camera_rotation.y)",
+            "\t_update_camera_position()",
+            "",
+            "func _update_camera_position() -> void:",
+            "\tvar offset = Vector3(0, 0, _camera_distance)",
+            "\tcamera.position = offset",
+            "\tcamera.look_at(camera_pivot.global_position, Vector3.UP)"
+        ],
+        "description": "Setup camera orbit controls"
+    },
+    
+    // ===== Resource Loading =====
+    "Preload Resource": {
+        "prefix": "preload",
+        "body": [
+            "const ${1:RESOURCE_NAME} = preload(\"res://${2:path/to/resource}\")"
+        ],
+        "description": "Preload a resource"
+    },
+    
+    "Load Resource": {
+        "prefix": "load",
+        "body": [
+            "var ${1:resource} = load(\"res://${2:path/to/resource}\")",
+            "if ${1}:",
+            "\t${0:# Use resource}",
+            "else:",
+            "\tpush_error(\"Failed to load resource: ${2}\")"
+        ],
+        "description": "Load a resource with error checking"
+    }
+}
