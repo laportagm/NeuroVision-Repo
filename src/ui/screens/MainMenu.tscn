@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://b4kj7nxvh8q5m"]
+[gd_scene load_steps=2 format=3 uid="uid://b4kj7nxvh8q5m"]
 
 [ext_resource type="Script" uid="uid://bi8bhh235ateg" path="res://src/ui/screens/MainMenu.gd" id="1_7xnqf"]
-[ext_resource type="Script" uid="uid://b0eqdsyeiudmv" path="res://src/ui/screens/MainMenuVBoxContainer.gd" id="2_s56f3"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -27,7 +26,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 alignment = 1
-script = ExtResource("2_s56f3")
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200, 40)

@@ -55,6 +55,14 @@ func is_reduce_motion_enabled() -> bool:
 	"""Check if reduce motion is enabled"""
 	return _reduce_motion
 
+func is_screen_reader_enabled() -> bool:
+	"""Check if screen reader support is enabled"""
+	return _accessibility_enabled
+
+func is_accessibility_enabled() -> bool:
+	"""Check if any accessibility features are enabled"""
+	return _accessibility_enabled
+
 # === PRIVATE METHODS ===
 
 func _load_accessibility_settings() -> void:

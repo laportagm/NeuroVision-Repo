@@ -39,6 +39,11 @@ func _ready() -> void:
 	"""Initialize the quiz panel"""
 	_setup_ui()
 	_connect_signals()
+	
+	# Enable keyboard input processing
+	set_process_unhandled_key_input(true)
+	focus_mode = Control.FOCUS_ALL
+	
 	hide()
 
 func show_assessment_list(assessments: Array) -> void:
@@ -51,7 +56,11 @@ func show_assessment_list(assessments: Array) -> void:
 	button_container.hide()
 	
 	# Create assessment buttons
-	for assessment in assessments:
+	var first_button = null
+	var prev_button = null
+	
+	for i in range(assessments.size()):
+		var assessment = assessments[i]
 		var btn = Button.new()
 		btn.text = "%s (%s)" % [assessment.title, assessment.difficulty]
 		btn.add_theme_font_size_override("font_size", 16)
@@ -60,8 +69,33 @@ func show_assessment_list(assessments: Array) -> void:
 		if assessment.best_score > 0:
 			btn.text += " - Best: %.0f%%" % assessment.best_score
 		
+		# Enable keyboard navigation
+		btn.focus_mode = Control.FOCUS_ALL
+		btn.add_theme_stylebox_override("focus", _create_focus_style())
+		
+		# Add number shortcuts for first 9 assessments
+		if i < 9:
+			var shortcut = Shortcut.new()
+			var key = InputEventKey.new()
+			key.keycode = KEY_1 + i
+			shortcut.events = [key]
+			btn.shortcut = shortcut
+		
+		# Set focus neighbors
+		if prev_button:
+			btn.focus_neighbor_top = prev_button.get_path()
+			prev_button.focus_neighbor_bottom = btn.get_path()
+		
 		btn.pressed.connect(func(): _on_assessment_selected(assessment.id))
 		options_container.add_child(btn)
+		
+		if not first_button:
+			first_button = btn
+		prev_button = btn
+	
+	# Focus first assessment
+	if first_button:
+		first_button.call_deferred("grab_focus")
 	
 	show()
 
@@ -195,11 +229,21 @@ func _setup_ui() -> void:
 	# Style buttons
 	submit_button.text = "Submit Answer"
 	submit_button.add_theme_color_override("font_color", Color.WHITE)
+	submit_button.focus_mode = Control.FOCUS_ALL
+	submit_button.add_theme_stylebox_override("focus", _create_focus_style())
 	
 	next_button.text = "Next Question"
 	next_button.add_theme_color_override("font_color", Color.WHITE)
+	next_button.focus_mode = Control.FOCUS_ALL
+	next_button.add_theme_stylebox_override("focus", _create_focus_style())
 	
 	skip_button.text = "Skip"
+	skip_button.focus_mode = Control.FOCUS_ALL
+	skip_button.add_theme_stylebox_override("focus", _create_focus_style())
+	
+	# Close button
+	close_button.focus_mode = Control.FOCUS_ALL
+	close_button.add_theme_stylebox_override("focus", _create_focus_style())
 	
 	# Progress bar styling
 	progress_bar.add_theme_stylebox_override("fill", _create_progress_style())
@@ -221,6 +265,16 @@ func _create_progress_style() -> StyleBox:
 	style.set_corner_radius_all(3)
 	return style
 
+func _create_focus_style() -> StyleBox:
+	"""Create focus indicator style for accessibility"""
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.2, 0.2, 0.3, 0.3)
+	style.border_color = Color.CYAN
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(5)
+	style.set_content_margin_all(8)
+	return style
+
 func _connect_signals() -> void:
 	"""Connect UI signals"""
 	submit_button.pressed.connect(_on_submit_pressed)
@@ -230,38 +284,111 @@ func _connect_signals() -> void:
 
 func _create_multiple_choice_options(options: Array) -> void:
 	"""Create multiple choice option buttons"""
+	var button_group = ButtonGroup.new()
+	
 	for i in range(options.size()):
 		var btn = Button.new()
 		btn.text = "%s. %s" % [char(65 + i), options[i]]  # A, B, C, D...
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.toggle_mode = true
-		btn.button_group = ButtonGroup.new()
+		btn.button_group = button_group
+		
+		# Enable keyboard navigation
+		btn.focus_mode = Control.FOCUS_ALL
+		btn.add_theme_stylebox_override("focus", _create_focus_style())
+		
+		# Add number key shortcuts (1-4 for typical quiz)
+		if i < 9:  # Support keys 1-9
+			var shortcut = Shortcut.new()
+			var key = InputEventKey.new()
+			key.keycode = KEY_1 + i
+			shortcut.events = [key]
+			btn.shortcut = shortcut
+		
+		# Store button first
+		options_container.add_child(btn)
+		_option_buttons.append(btn)
+		
+		# Set focus neighbors for Tab navigation after adding to tree
+		if i > 0 and _option_buttons.size() > 1:
+			var prev_btn = _option_buttons[i-1]
+			btn.focus_neighbor_top = prev_btn.get_path()
+			prev_btn.focus_neighbor_bottom = btn.get_path()
 		
 		btn.toggled.connect(func(pressed): 
 			if pressed: 
 				_on_option_selected(i)
+				# Announce selection for accessibility
+				if has_node("/root/AccessibilityManager") and AccessibilityManager.is_screen_reader_enabled():
+					AccessibilityManager.announce("Selected option %s" % btn.text)
 		)
+	
+	# Connect last option to submit button
+	if _option_buttons.size() > 0:
+		var last_btn = _option_buttons[-1]
+		last_btn.focus_neighbor_bottom = submit_button.get_path()
+		submit_button.focus_neighbor_top = last_btn.get_path()
 		
-		options_container.add_child(btn)
-		_option_buttons.append(btn)
+		# Set focus to first option when question is displayed
+		_option_buttons[0].call_deferred("grab_focus")
 
 func _create_true_false_options() -> void:
 	"""Create true/false option buttons"""
 	var options = ["True", "False"]
+	var button_group = ButtonGroup.new()
+	
 	for i in range(options.size()):
 		var btn = Button.new()
 		btn.text = options[i]
 		btn.add_theme_font_size_override("font_size", 16)
 		btn.toggle_mode = true
-		btn.button_group = ButtonGroup.new()
+		btn.button_group = button_group
+		
+		# Enable keyboard navigation
+		btn.focus_mode = Control.FOCUS_ALL
+		btn.add_theme_stylebox_override("focus", _create_focus_style())
+		
+		# Add T/F keyboard shortcuts
+		var shortcut = Shortcut.new()
+		var key = InputEventKey.new()
+		key.keycode = KEY_T if i == 0 else KEY_F
+		shortcut.events = [key]
+		btn.shortcut = shortcut
+		
+		# Also add number keys 1/2
+		var num_shortcut = Shortcut.new()
+		var num_key = InputEventKey.new()
+		num_key.keycode = KEY_1 + i
+		num_shortcut.events = [num_key]
+		# Combine shortcuts
+		btn.shortcut = shortcut
+		
+		# Add to scene first
+		options_container.add_child(btn)
+		_option_buttons.append(btn)
+		
+		# Set focus neighbors after adding to tree
+		if i == 1 and _option_buttons.size() > 1:
+			var prev_btn = _option_buttons[0]
+			btn.focus_neighbor_top = prev_btn.get_path()
+			prev_btn.focus_neighbor_bottom = btn.get_path()
 		
 		btn.toggled.connect(func(pressed): 
 			if pressed: 
 				_on_option_selected(i == 0)  # True = true, False = false
+				# Announce selection
+				if has_node("/root/AccessibilityManager") and AccessibilityManager.is_screen_reader_enabled():
+					AccessibilityManager.announce("Selected %s" % options[i])
 		)
+	
+	# Connect last option to submit button and set initial focus
+	if _option_buttons.size() > 0:
+		var last_btn = _option_buttons[-1]
+		last_btn.focus_neighbor_bottom = submit_button.get_path()
+		submit_button.focus_neighbor_top = last_btn.get_path()
 		
-		options_container.add_child(btn)
-		_option_buttons.append(btn)
+		# Set focus to first option
+		_option_buttons[0].call_deferred("grab_focus")
 
 func _clear_options() -> void:
 	"""Clear all option buttons"""
@@ -326,3 +453,28 @@ func _get_grade_color(grade: String) -> String:
 			return "#ff0000"
 		_:
 			return "#ffffff"
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	"""Handle keyboard input for accessibility"""
+	if not visible:
+		return
+		
+	if event is InputEventKey and event.pressed:
+		match event.keycode:
+			KEY_ESCAPE:
+				# Close the panel
+				_on_close_pressed()
+				get_viewport().set_input_as_handled()
+			KEY_ENTER, KEY_KP_ENTER:
+				# Submit answer if button is visible and enabled
+				if submit_button.visible and not submit_button.disabled:
+					_on_submit_pressed()
+					get_viewport().set_input_as_handled()
+				elif next_button.visible:
+					_on_next_pressed()
+					get_viewport().set_input_as_handled()
+			KEY_SPACE:
+				# Alternative submit key
+				if submit_button.visible and not submit_button.disabled and _selected_answer != null:
+					_on_submit_pressed()
+					get_viewport().set_input_as_handled()

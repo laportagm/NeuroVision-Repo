@@ -45,8 +45,9 @@ const LOD_FALLBACKS: Dictionary = {
 var _loaded_models: Dictionary = {}  # model_name -> ModelData
 var _loading_queue: Array = []
 var _active_loads: int = 0
-var _current_quality_level: int = PerformanceMonitor.QualityLevel.MEDIUM
+var _current_quality_level: int = PerformanceMonitor.QualityLevel.LOW  # Start with LOW by default
 var _model_cache: Dictionary = {}  # path -> Resource
+var _gpu_detector = null  # Will be initialized in _ready
 
 # Model data structure
 class ModelData:
@@ -61,10 +62,21 @@ class ModelData:
 func _ready() -> void:
 	print("[ModelLoader] System initialized")
 	
+	# Initialize GPU detector
+	var GPUDetectorScript = preload("res://src/systems/3d_interaction/GPUDetector.gd")
+	_gpu_detector = GPUDetectorScript.new()
+	add_child(_gpu_detector)
+	
+	# Detect GPU and set initial quality
+	var gpu_info = _gpu_detector.detect_gpu()
+	_current_quality_level = _gpu_detector.get_recommended_quality()
+	print("[ModelLoader] Initial quality level: " + PerformanceMonitor.QualityLevel.keys()[_current_quality_level])
+	
 	# Connect to performance monitor
 	if PerformanceMonitor:
 		PerformanceMonitor.quality_level_changed.connect(_on_quality_level_changed)
-		_current_quality_level = PerformanceMonitor.get_current_quality_level()
+		# Override with our detected quality
+		PerformanceMonitor.set_quality_level(_current_quality_level)
 
 func load_model(model_name: String, lod_level: int = -1) -> Node3D:
 	"""Load a brain model with specified LOD level"""
@@ -442,27 +454,41 @@ func _count_materials(node: Node3D) -> int:
 
 func _find_model_path(model_name: String, lod_level: int) -> String:
 	"""Find the path to a model file"""
-	# Try processed models first
+	print("[ModelLoader] Looking for model: %s at LOD level: %d" % [model_name, lod_level])
+	
+	# First, try exact LOD match in processed directory
+	var lod_suffix = LOD_SUFFIXES.get(lod_level, "")
+	var processed_path = PROCESSED_PATH + model_name + lod_suffix + ".glb"
+	if ResourceLoader.exists(processed_path):
+		print("[ModelLoader] Found processed LOD variant: " + processed_path)
+		return processed_path
+	
+	# Try LOD fallbacks in processed directory
 	for suffix in LOD_FALLBACKS[lod_level]:
 		var path = PROCESSED_PATH + model_name + suffix + ".glb"
 		if ResourceLoader.exists(path):
+			print("[ModelLoader] Found processed model with fallback: " + path)
 			return path
 		
 		# Try without suffix
 		if suffix == "":
 			path = PROCESSED_PATH + model_name + ".glb"
 			if ResourceLoader.exists(path):
+				print("[ModelLoader] Found processed model: " + path)
 				return path
 	
-	# Try raw models
+	# Fallback to raw models (original quality)
 	var raw_path = RAW_PATH + model_name + ".glb"
 	if ResourceLoader.exists(raw_path):
+		print("[ModelLoader] WARNING: No LOD variant found, using raw model: " + raw_path)
 		return raw_path
 	
 	# Try with different naming conventions
 	var variations = [
 		model_name.replace(" ", "_"),
 		model_name.replace("_", " "),
+		model_name.replace("-", "_"),
+		model_name.replace("_", "-"),
 		model_name.to_lower(),
 		model_name.to_upper()
 	]

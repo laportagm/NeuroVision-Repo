@@ -95,6 +95,18 @@ Build for all platforms:
 ./scripts/build/export_all_platforms.sh
 ```
 
+## 💾 Progress Persistence
+
+NeuroVis automatically saves user progress and achievements:
+- **Autosave**: Every 30 seconds
+- **Save on exit**: Progress is saved when closing the application
+- **JSON format**: Human-readable save files for easy debugging
+- **Backup protection**: Automatic backup before each save
+- **Location**: Save files are stored in the user data directory
+  - Windows: `%APPDATA%/NeuroVis/`
+  - macOS: `~/Library/Application Support/NeuroVis/`
+  - Linux: `~/.local/share/NeuroVis/`
+
 ## 🤝 Contributing
 
 Please read `CONTRIBUTING.md` for details on our code of conduct and the process for submitting pull requests.

@@ -49,14 +49,14 @@ func save_to_file() -> bool:
 	_save_mutex.lock()
 	
 	# Create save data structure
-	var save_data = {
+	var data_to_save = {
 		"version": SAVE_VERSION,
 		"timestamp": Time.get_unix_time_from_system(),
 		"data": _data_cache.duplicate()
 	}
 	
 	# Convert to JSON
-	var json_string = JSON.stringify(save_data, "\t")
+	var json_string = JSON.stringify(data_to_save, "\t")
 	
 	# Backup existing save file if it exists
 	if FileAccess.file_exists(SAVE_FILE_PATH):
@@ -110,10 +110,10 @@ func load_from_file() -> bool:
 		_save_mutex.unlock()
 		return backup_loaded
 	
-	var save_data = json.data
+	var loaded_data = json.data
 	
 	# Validate save data structure
-	if not _validate_save_data(save_data):
+	if not _validate_save_data(loaded_data):
 		push_error("[SimplePersistence] Invalid save data structure")
 		# Try to restore from backup
 		var backup_loaded = _restore_from_backup()
@@ -121,7 +121,7 @@ func load_from_file() -> bool:
 		return backup_loaded
 	
 	# Load the data
-	_data_cache = save_data.data.duplicate()
+	_data_cache = loaded_data.data.duplicate()
 	_is_dirty = false
 	
 	_save_mutex.unlock()
@@ -192,9 +192,9 @@ func _load_backup_directly() -> bool:
 	if parse_result != OK:
 		return false
 	
-	var save_data = json.data
-	if _validate_save_data(save_data):
-		_data_cache = save_data.data.duplicate()
+	var backup_data = json.data
+	if _validate_save_data(backup_data):
+		_data_cache = backup_data.data.duplicate()
 		_is_dirty = false
 		print("[SimplePersistence] Successfully restored from backup")
 		return true

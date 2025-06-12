@@ -1,6 +1,21 @@
 extends Node
 
 ## Tracks user learning progress and achievements
+##
+## This service manages all learning progress and achievement tracking for the NeuroVision
+## educational platform. It uses a JSON-based persistence system (SimplePersistence.gd)
+## with automatic saving every 30 seconds and on application exit.
+##
+## Features:
+## - Progress tracking per brain structure
+## - Achievement system with timestamps
+## - Automatic saving with backup protection
+## - Thread-safe operations
+## - Graceful corruption recovery
+##
+## The persistence system saves to:
+## - Main file: user://progress_data.save
+## - Backup: user://progress_data.save.backup
 
 signal progress_updated(category: String, progress: float)
 signal achievement_unlocked(achievement_id: String)
@@ -13,7 +28,7 @@ const PERSISTENCE_ENABLED: bool = true  # Feature flag for easy enable/disable
 const AUTOSAVE_INTERVAL: float = 30.0  # Save every 30 seconds
 
 # Preload the SimplePersistence class
-const SimplePersistence = preload("res://src/systems/persistence/SimplePersistence.gd")
+const SimplePersistenceClass = preload("res://src/systems/persistence/SimplePersistence.gd")
 
 # === PRIVATE VARIABLES ===
 var _user_progress: Dictionary = {}
@@ -29,7 +44,7 @@ func _ready() -> void:
 	
 	# Initialize persistence system
 	if PERSISTENCE_ENABLED:
-		_persistence = SimplePersistence.new()
+		_persistence = SimplePersistenceClass.new()
 		add_child(_persistence)
 		_setup_autosave()
 		print("[Progress] Persistence enabled with autosave every %.0f seconds" % AUTOSAVE_INTERVAL)
