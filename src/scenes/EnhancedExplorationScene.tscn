@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=3 uid="uid://b7nqm4jvtxcd2"]
 
-[ext_resource type="Script" uid="uid://btlrmvmaeh7x2" path="res://src/scenes/EnhancedExplorationScene.gd" id="1_script"]
+[ext_resource type="Script" path="res://src/scenes/EnhancedExplorationScene.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c7xqm4jv8n5kp" path="res://src/ui/components/StructureInfoPanel.tscn" id="2_panel"]
 [ext_resource type="Shader" path="res://src/ui/effects/shaders/glass_panel_v1.gdshader" id="3_glass"]
 

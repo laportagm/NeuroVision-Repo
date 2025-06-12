@@ -37,21 +37,6 @@ window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
-[rendering]
-
-anti_aliasing/quality/msaa_3d=2
-anti_aliasing/quality/screen_space_aa=1
-anti_aliasing/quality/use_taa=true
-anti_aliasing/quality/use_debanding=true
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality=2
-lights_and_shadows/directional_shadow/16_bits=true
-lights_and_shadows/positional_shadow/soft_shadow_filter_quality=2
-environment/ssao/quality=2
-environment/ssil/quality=2
-environment/glow/upscale_mode=1
-environment/screen_space_reflection/roughness_quality=2
-textures/default_filters/anisotropic_filtering_level=4
-
 [input]
 
 ui_accept={
@@ -82,7 +67,21 @@ zoom_out={
 ]
 }
 
+[debug]
+
+settings/network/remote_port=6007
+settings/network/max_clients=1
+settings/crashes_and_errors/max_errors_per_second=20
+settings/stdout/print_fps=false
+settings/stdout/verbose_stdout=false
+
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
+textures/default_filters/anisotropic_filtering_level=4
+textures/lod_bias=0.0
 anti_aliasing/quality/msaa_3d=1
+environment/screen_space_reflection/roughness_quality=2
+anti_aliasing/quality/screen_space_aa=1
+anti_aliasing/quality/use_taa=true
+anti_aliasing/quality/use_debanding=true

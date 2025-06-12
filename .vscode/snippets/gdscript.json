@@ -1,5 +1,4 @@
 {
-    // ===== NeuroVision Class Templates =====
     "NeuroVision Class": {
         "prefix": "nvclass",
         "body": [
@@ -36,7 +35,7 @@
         ],
         "description": "Create a NeuroVision-compliant GDScript class"
     },
-    
+
     "NeuroVision UI Component": {
         "prefix": "nvui",
         "body": [
@@ -82,8 +81,7 @@
         ],
         "description": "Create a NeuroVision UI component with accessibility"
     },
-    
-    // ===== Brain Interaction Patterns =====
+
     "Brain Structure Handler": {
         "prefix": "nvbrain",
         "body": [
@@ -105,8 +103,7 @@
         ],
         "description": "Handle brain structure selection"
     },
-    
-    // ===== Autoload Integration =====
+
     "Performance Check": {
         "prefix": "nvperf",
         "body": [
@@ -117,7 +114,7 @@
         ],
         "description": "Check performance before expensive operations"
     },
-    
+
     "Error Handling": {
         "prefix": "nverror",
         "body": [
@@ -135,7 +132,7 @@
         ],
         "description": "Handle errors with ErrorRecoveryManager"
     },
-    
+
     "Accessibility Registration": {
         "prefix": "nvaccess",
         "body": [
@@ -148,8 +145,8 @@
         ],
         "description": "Register UI element for accessibility"
     },
-    
-    // ===== Common Functions =====
+
+
     "Ready Function": {
         "prefix": "ready",
         "body": [
@@ -159,7 +156,7 @@
         ],
         "description": "Create _ready function with debug print"
     },
-    
+
     "Process Function": {
         "prefix": "process",
         "body": [
@@ -168,7 +165,7 @@
         ],
         "description": "Create _process function"
     },
-    
+
     "Input Handler": {
         "prefix": "input",
         "body": [
@@ -181,8 +178,7 @@
         ],
         "description": "Handle input events"
     },
-    
-    // ===== Signal Patterns =====
+
     "Signal with Parameters": {
         "prefix": "sig",
         "body": [
@@ -190,7 +186,7 @@
         ],
         "description": "Create a signal with parameters"
     },
-    
+
     "Connect Signal": {
         "prefix": "connect",
         "body": [
@@ -198,7 +194,7 @@
         ],
         "description": "Connect a signal to a method"
     },
-    
+
     "Emit Signal": {
         "prefix": "emit",
         "body": [
@@ -206,8 +202,7 @@
         ],
         "description": "Emit a signal"
     },
-    
-    // ===== Export Variables =====
+
     "Export Group": {
         "prefix": "expgroup",
         "body": [
@@ -217,7 +212,7 @@
         ],
         "description": "Create an export group"
     },
-    
+
     "Export Range": {
         "prefix": "exprange",
         "body": [
@@ -225,8 +220,7 @@
         ],
         "description": "Export variable with range"
     },
-    
-    // ===== Onready Variables =====
+
     "Onready Variable": {
         "prefix": "onready",
         "body": [
@@ -234,7 +228,7 @@
         ],
         "description": "Create an @onready variable"
     },
-    
+
     "Onready UI Elements": {
         "prefix": "onreadyui",
         "body": [
@@ -246,8 +240,8 @@
         ],
         "description": "Common UI element references"
     },
-    
-    // ===== Debug Helpers =====
+
+
     "Debug Print": {
         "prefix": "dprint",
         "body": [
@@ -255,7 +249,7 @@
         ],
         "description": "Print debug message with class name"
     },
-    
+
     "TODO Comment": {
         "prefix": "todo",
         "body": [
@@ -263,8 +257,7 @@
         ],
         "description": "Add a TODO comment"
     },
-    
-    // ===== NeuroVision Specific =====
+
     "Load Brain Model": {
         "prefix": "nvloadmodel",
         "body": [
@@ -284,7 +277,7 @@
         ],
         "description": "Load a brain model"
     },
-    
+
     "Quiz Question Handler": {
         "prefix": "nvquiz",
         "body": [
@@ -305,8 +298,7 @@
         ],
         "description": "Handle quiz answer submission"
     },
-    
-    // ===== Camera Controls =====
+
     "Camera Orbit Setup": {
         "prefix": "nvcamera",
         "body": [
@@ -328,8 +320,7 @@
         ],
         "description": "Setup camera orbit controls"
     },
-    
-    // ===== Resource Loading =====
+
     "Preload Resource": {
         "prefix": "preload",
         "body": [
@@ -337,7 +328,7 @@
         ],
         "description": "Preload a resource"
     },
-    
+
     "Load Resource": {
         "prefix": "load",
         "body": [

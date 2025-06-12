@@ -1,6 +1,7 @@
 {
     // VSCode Launch Configurations for NeuroVision
     // Note: Godot debugger extension has limited features
+    // Updated: Phase 1 cleanup - removed non-existent test scenes
     "version": "0.2.0",
     "configurations": [
         {
@@ -23,14 +24,14 @@
             "scene": "res://src/scenes/EnhancedExplorationScene.tscn"
         },
         {
-            // Test Glass Morphism Effects
-            "name": "Test Glass Effects",
+            // Run Component Gallery (if implemented)
+            "name": "Component Gallery",
             "type": "godot",
             "request": "launch",
             "project": "${workspaceFolder}",
             "port": 6007,
             "address": "127.0.0.1",
-            "scene": "res://test_glass_morphism.tscn"
+            "scene": "res://src/ui/components/ComponentGallery.tscn"
         },
         {
             // Debug whatever scene is currently open in Godot
@@ -75,3 +76,7 @@
 //    - Create multiple project.godot files
 //    - Use conditional code based on OS.has_feature()
 //    - Create in-game debug menu
+//
+// NOTE: Phase 1 cleanup updates:
+// - Removed reference to non-existent test_glass_morphism.tscn
+// - launch_app.gd moved to src/utils/ (use from Godot editor if needed)

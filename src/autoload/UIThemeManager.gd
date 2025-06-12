@@ -20,7 +20,6 @@ const TRANSITION_DURATION = 0.3
 var _current_theme: String = DEFAULT_THEME
 var _loaded_themes: Dictionary = {}
 var _transition_tween: Tween = null
-var _theme_cache: Dictionary = {}
 
 # === PUBLIC VARIABLES ===
 var current_theme_resource: Theme = null

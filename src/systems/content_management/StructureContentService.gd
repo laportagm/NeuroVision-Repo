@@ -26,18 +26,32 @@ func get_structure_content(structure_id_or_name: String) -> Dictionary:
 		push_error("[StructureContent] Content not loaded yet")
 		return {}
 	
+	print("[StructureContent] Looking up content for: '", structure_id_or_name, "'")
+	
 	# Try direct ID lookup first
 	var structure_id = structure_id_or_name.to_lower().replace(" ", "_")
 	if _content_data.has(structure_id):
+		print("[StructureContent] Found by direct ID lookup: ", structure_id)
 		return _content_data[structure_id].duplicate(true)
 	
 	# Try model name mapping
 	var normalized_name = _normalize_model_name(structure_id_or_name)
+	print("[StructureContent] Normalized name: '", normalized_name, "'")
+	
 	if _model_name_map.has(normalized_name):
 		structure_id = _model_name_map[normalized_name]
+		print("[StructureContent] Found by model name mapping: ", structure_id)
 		return _content_data[structure_id].duplicate(true)
 	
+	# Try exact match without normalization
+	for map_key in _model_name_map:
+		if map_key == structure_id_or_name.to_lower():
+			structure_id = _model_name_map[map_key]
+			print("[StructureContent] Found by exact match: ", structure_id)
+			return _content_data[structure_id].duplicate(true)
+	
 	# Fuzzy search as fallback
+	print("[StructureContent] Falling back to fuzzy search")
 	return _fuzzy_search_structure(structure_id_or_name)
 
 func search_structures(query: String) -> Array:
@@ -158,6 +172,7 @@ func _build_model_name_mappings() -> void:
 		for model_name in structure.get("modelNames", []):
 			var normalized = _normalize_model_name(model_name)
 			_model_name_map[normalized] = structure_id
+			print("[StructureContent] Mapped '", model_name, "' -> '", normalized, "' -> '", structure_id, "'")
 		
 		# Also map display name
 		var normalized_display = _normalize_model_name(structure.displayName)
@@ -165,7 +180,12 @@ func _build_model_name_mappings() -> void:
 
 func _normalize_model_name(model_name: String) -> String:
 	"""Normalize a model name for matching"""
-	return model_name.to_lower().strip_edges().replace(" (good)", "").replace("_", " ")
+	var normalized = model_name.to_lower().strip_edges()
+	normalized = normalized.replace(" (good)", "")
+	normalized = normalized.replace("(good)", "")
+	normalized = normalized.replace("_", " ")
+	normalized = normalized.strip_edges()  # Remove any trailing spaces
+	return normalized
 
 func _fuzzy_search_structure(query: String) -> Dictionary:
 	"""Fuzzy search for a structure when exact match fails"""
