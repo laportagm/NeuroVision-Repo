@@ -169,33 +169,6 @@ func _apply_theme_immediate(theme: Theme, theme_name: String) -> void:
 	theme_changed.emit(theme_name)
 	theme_transition_completed.emit()
 
-func _animate_theme_transition(new_theme: Theme, theme_name: String) -> void:
-	"""Animate theme transition with fade effect"""
-	if _transition_tween and _transition_tween.is_running():
-		_transition_tween.kill()
-	
-	_transition_tween = create_tween()
-	
-	# Create overlay for transition
-	var overlay = ColorRect.new()
-	overlay.color = Color.BLACK
-	overlay.modulate.a = 0.0
-	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	get_tree().root.add_child(overlay)
-	
-	# Fade to black
-	_transition_tween.tween_property(overlay, "modulate:a", 1.0, theme_transition_duration * 0.5)
-	_transition_tween.tween_callback(func():
-		_apply_theme_immediate(new_theme, theme_name)
-	)
-	
-	# Fade back
-	_transition_tween.tween_property(overlay, "modulate:a", 0.0, theme_transition_duration * 0.5)
-	_transition_tween.tween_callback(func():
-		overlay.queue_free()
-		theme_transition_completed.emit()
-	)
 
 func _apply_theme_to_tree(node: Node, theme: Theme) -> void:
 	"""Recursively apply theme to all Control nodes"""
@@ -234,3 +207,248 @@ func is_current_theme_accessible() -> bool:
 	"""Check if current theme has accessibility features"""
 	var features = get_theme_accessibility_features(_current_theme)
 	return features.high_contrast or features.colorblind_safe
+
+# === ENHANCED THEME MANAGEMENT ===
+
+## Preview a theme temporarily without applying globally
+func preview_theme(theme: Theme, preview_duration: float = 5.0) -> void:
+	"""Preview a theme temporarily before committing to change"""
+	if not theme:
+		push_error("[UIThemeManager] Cannot preview null theme")
+		return
+	
+	print("[UIThemeManager] Previewing theme for " + str(preview_duration) + " seconds")
+	
+	# Store current theme for restoration
+	var previous_theme = current_theme_resource
+	var previous_name = _current_theme
+	
+	# Apply preview theme without saving
+	current_theme_resource = theme
+	_apply_theme_to_tree(get_tree().root, theme)
+	
+	# Create timer for automatic restoration
+	var timer = Timer.new()
+	timer.wait_time = preview_duration
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		print("[UIThemeManager] Preview ended, restoring previous theme")
+		current_theme_resource = previous_theme
+		_current_theme = previous_name
+		_apply_theme_to_tree(get_tree().root, previous_theme)
+		timer.queue_free()
+	)
+	
+	add_child(timer)
+	timer.start()
+
+## Save user theme preferences
+func save_user_theme_preferences(preferences: Dictionary) -> void:
+	"""Save comprehensive theme preferences"""
+	if not SettingsManager:
+		push_warning("[UIThemeManager] SettingsManager not available")
+		return
+	
+	# Save individual preferences
+	for key in preferences:
+		SettingsManager.set_setting("theme_" + key, preferences[key])
+	
+	# Save timestamp
+	SettingsManager.set_setting("theme_preferences_updated", Time.get_unix_time_from_system())
+	
+	print("[UIThemeManager] Saved theme preferences: " + str(preferences.keys()))
+
+## Create custom theme variant based on modifications
+func create_custom_theme_variant(base_theme: String, modifications: Dictionary) -> Theme:
+	"""Create a custom variant of a base theme with modifications"""
+	
+	# Get base theme
+	var base = _get_theme(base_theme)
+	if not base:
+		push_error("[UIThemeManager] Base theme not found: " + base_theme)
+		return null
+	
+	# Duplicate base theme
+	var custom_theme = base.duplicate(true)
+	
+	# Apply modifications
+	for mod_type in modifications:
+		var mod_data = modifications[mod_type]
+		
+		match mod_type:
+			"colors":
+				_apply_color_modifications(custom_theme, mod_data)
+			"fonts":
+				_apply_font_modifications(custom_theme, mod_data)
+			"styleboxes":
+				_apply_stylebox_modifications(custom_theme, mod_data)
+			"constants":
+				_apply_constant_modifications(custom_theme, mod_data)
+	
+	# Add metadata
+	custom_theme.set_meta("base_theme", base_theme)
+	custom_theme.set_meta("modifications", modifications)
+	custom_theme.set_meta("created_at", Time.get_unix_time_from_system())
+	
+	return custom_theme
+
+## Monitor theme performance impact
+func monitor_theme_performance() -> Dictionary:
+	"""Monitor performance impact of current theme"""
+	var performance_data = {
+		"fps": Engine.get_frames_per_second(),
+		"render_time": Performance.get_monitor(Performance.TIME_PROCESS),
+		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		"video_mem": OS.get_static_memory_usage() / 1024.0 / 1024.0,
+		"theme_complexity": _calculate_theme_complexity(current_theme_resource),
+		"active_effects": _count_active_effects()
+	}
+	
+	# Check if theme is impacting performance
+	if performance_data.fps < 30:
+		push_warning("[UIThemeManager] Low FPS detected: " + str(performance_data.fps))
+		performance_data["performance_warning"] = true
+	
+	return performance_data
+
+## Reset to default theme
+func reset_to_default_theme() -> void:
+	"""Reset theme to default settings"""
+	print("[UIThemeManager] Resetting to default theme")
+	
+	# Clear any custom themes from cache
+	for theme_name in _loaded_themes:
+		if not theme_name in THEMES:
+			_loaded_themes.erase(theme_name)
+	
+	# Reset to default
+	set_theme(DEFAULT_THEME, true)
+	
+	# Clear saved preferences
+	if SettingsManager:
+		SettingsManager.set_setting("ui_theme", DEFAULT_THEME)
+		SettingsManager.set_setting("theme_preferences_updated", 0)
+
+# === ENHANCED TRANSITION SYSTEM ===
+
+func _animate_theme_transition(new_theme: Theme, theme_name: String) -> void:
+	"""Enhanced theme transition with shader effects"""
+	if _transition_tween and _transition_tween.is_running():
+		_transition_tween.kill()
+	
+	# Check if we have ThemeEffectsManager available
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
+	if effects_manager and effects_manager.has_method("animate_theme_transition"):
+		# Use advanced transition if available
+		effects_manager.animate_theme_transition(current_theme_resource, new_theme, theme_transition_duration)
+		
+		# Apply theme after effect starts
+		get_tree().create_timer(theme_transition_duration * 0.5).timeout.connect(func():
+			_apply_theme_immediate(new_theme, theme_name)
+		)
+	else:
+		# Fallback to simple transition
+		_transition_tween = create_tween()
+		
+		# Create overlay for transition
+		var overlay = ColorRect.new()
+		overlay.color = Color.BLACK
+		overlay.modulate.a = 0.0
+		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		get_tree().root.add_child(overlay)
+		
+		# Fade to black
+		_transition_tween.tween_property(overlay, "modulate:a", 1.0, theme_transition_duration * 0.5)
+		_transition_tween.tween_callback(func():
+			_apply_theme_immediate(new_theme, theme_name)
+		)
+		
+		# Fade back
+		_transition_tween.tween_property(overlay, "modulate:a", 0.0, theme_transition_duration * 0.5)
+		_transition_tween.tween_callback(func():
+			overlay.queue_free()
+			theme_transition_completed.emit()
+		)
+
+# === PRIVATE HELPER METHODS ===
+
+func _apply_color_modifications(theme: Theme, color_mods: Dictionary) -> void:
+	"""Apply color modifications to theme"""
+	for node_type in color_mods:
+		var type_mods = color_mods[node_type]
+		for color_name in type_mods:
+			var color_value = type_mods[color_name]
+			if color_value is Color:
+				theme.set_color(color_name, node_type, color_value)
+			elif color_value is String:
+				# Handle hex color strings
+				theme.set_color(color_name, node_type, Color(color_value))
+
+func _apply_font_modifications(theme: Theme, font_mods: Dictionary) -> void:
+	"""Apply font modifications to theme"""
+	for node_type in font_mods:
+		var type_mods = font_mods[node_type]
+		for font_name in type_mods:
+			var font_data = type_mods[font_name]
+			if font_data is Font:
+				theme.set_font(font_name, node_type, font_data)
+
+func _apply_stylebox_modifications(theme: Theme, stylebox_mods: Dictionary) -> void:
+	"""Apply stylebox modifications to theme"""
+	for node_type in stylebox_mods:
+		var type_mods = stylebox_mods[node_type]
+		for stylebox_name in type_mods:
+			var stylebox_data = type_mods[stylebox_name]
+			if stylebox_data is StyleBox:
+				theme.set_stylebox(stylebox_name, node_type, stylebox_data)
+
+func _apply_constant_modifications(theme: Theme, constant_mods: Dictionary) -> void:
+	"""Apply constant modifications to theme"""
+	for node_type in constant_mods:
+		var type_mods = constant_mods[node_type]
+		for constant_name in type_mods:
+			var constant_value = type_mods[constant_name]
+			if constant_value is int:
+				theme.set_constant(constant_name, node_type, constant_value)
+
+func _calculate_theme_complexity(theme: Theme) -> int:
+	"""Calculate complexity score for theme"""
+	if not theme:
+		return 0
+	
+	var complexity = 0
+	
+	# Count styleboxes with effects
+	var types = ["Button", "Panel", "LineEdit", "Label"]
+	var stylebox_names = ["normal", "hover", "pressed", "focus", "disabled"]
+	
+	for type in types:
+		for stylebox_name in stylebox_names:
+			if theme.has_stylebox(stylebox_name, type):
+				var stylebox = theme.get_stylebox(stylebox_name, type)
+				if stylebox is StyleBoxFlat:
+					if stylebox.shadow_size > 0:
+						complexity += 2
+					if stylebox.border_width_left > 0:
+						complexity += 1
+					if stylebox.bg_color.a < 1.0:
+						complexity += 1
+	
+	return complexity
+
+func _count_active_effects() -> int:
+	"""Count active visual effects"""
+	var count = 0
+	
+	# Check for active transitions
+	if _transition_tween and _transition_tween.is_running():
+		count += 1
+	
+	# Check ThemeEffectsManager if available
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
+	if effects_manager and effects_manager.has_method("get_active_effects_count"):
+		var effects_data = effects_manager.get_active_effects_count()
+		count += effects_data.get("total", 0)
+	
+	return count

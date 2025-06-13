@@ -78,12 +78,8 @@ func _ready() -> void:
 		print("[ModelLoader] Initial quality level: %d" % _current_quality_level)
 	
 	# Connect to performance monitor if available
-	var perf_monitor = get_node_or_null("/root/PerformanceMonitor")
-	if perf_monitor and perf_monitor.has_signal("quality_level_changed"):
-		perf_monitor.quality_level_changed.connect(_on_quality_level_changed)
-		# Override with our detected quality
-		if perf_monitor.has_method("set_quality_level"):
-			perf_monitor.set_quality_level(_current_quality_level)
+	# Use call_deferred to ensure the node tree is ready
+	call_deferred("_connect_to_performance_monitor")
 
 func load_model(model_name: String, lod_level: int = -1) -> Dictionary:
 	"""Load a brain model with specified LOD level"""
@@ -613,6 +609,21 @@ func _scan_for_models() -> Array:
 			file_name = dir.get_next()
 	
 	return models
+
+func _connect_to_performance_monitor() -> void:
+	"""Connect to PerformanceMonitor after scene tree is ready"""
+	# Check if we're in the scene tree
+	if not is_inside_tree():
+		return
+		
+	# Try to get PerformanceMonitor from autoloads
+	var perf_monitor = get_node_or_null("/root/PerformanceMonitor")
+	if perf_monitor and perf_monitor.has_signal("quality_level_changed"):
+		perf_monitor.quality_level_changed.connect(_on_quality_level_changed)
+		# Override with our detected quality
+		if perf_monitor.has_method("set_quality_level"):
+			perf_monitor.set_quality_level(_current_quality_level)
+			print("[ModelLoader] Connected to PerformanceMonitor")
 
 func _clean_model_name(model_name: String) -> String:
 	"""Clean model name for display"""

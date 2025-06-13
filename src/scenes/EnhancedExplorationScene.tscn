@@ -6,13 +6,13 @@
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
-ambient_light_source = 1
-ambient_light_color = Color(0.1, 0.1, 0.15, 1)
+background_color = Color(0.16, 0.16, 0.16, 0.666667)
+ambient_light_color = Color(0.160784, 0.160784, 0.231373, 0)
 ambient_light_energy = 0.3
 reflected_light_source = 2
 tonemap_mode = 2
-ssao_enabled = true
 ssao_intensity = 0.8
+ssao_horizon = 0.17
 glow_enabled = true
 glow_strength = 1.2
 glow_bloom = 0.4
@@ -29,6 +29,7 @@ emission_energy_multiplier = 0.3
 rim_enabled = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_1"]
+radius = 0.001
 radial_segments = 32
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2"]
@@ -76,7 +77,7 @@ border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.05)
+border_color = Color(1, 1, 1, 0.0235294)
 corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
@@ -88,9 +89,11 @@ script = ExtResource("1_script")
 [node name="Environment" type="Node" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+process_priority = 1
 environment = SubResource("Environment_1")
 
 [node name="Lighting" type="Node3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96354, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment/Lighting"]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
@@ -239,10 +242,13 @@ text = "?"
 
 [node name="LeftPanel" type="PanelContainer" parent="UI/MainUI"]
 custom_minimum_size = Vector2(320, 0)
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 9
 anchor_bottom = 1.0
-offset_top = 90.0
+offset_top = 81.0
+offset_right = 320.0
 offset_bottom = -20.0
+grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2")
 
@@ -390,6 +396,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Annotations" type="Node2D" parent="UI/AnnotationLayer"]
+position = Vector2(0, -2)
 
 [node name="Systems" type="Node" parent="."]
 

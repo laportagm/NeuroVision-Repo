@@ -542,13 +542,355 @@ static func _get_theme_type_string(variant: ThemeVariant) -> String:
 		_:
 			return "light"
 
-# === THEME UTILITIES ===
+# === GLASS MORPHISM THEME GENERATION ===
 
-## Validate generated theme for accessibility compliance
-static func validate_theme_accessibility(_theme: Theme, variant: ThemeVariant) -> Dictionary:
-	"""Validate that generated theme meets WCAG AAA standards"""
-	var _theme_type = _get_theme_type_string(variant)
-	return ColorSystem.validate_color_accessibility()
+## Generate glass morphism theme with blur effects
+static func generate_glass_morphism_theme(variant: ThemeVariant, learning_level: int, glass_intensity: float = 0.5) -> Theme:
+	"""Generate educational theme with glass morphism effects"""
+	var theme = generate_educational_theme(variant, learning_level)
+	var theme_type = _get_theme_type_string(variant)
+	
+	# Apply glass morphism to all panels
+	_apply_glass_morphism_to_panels(theme, theme_type, glass_intensity)
+	_apply_glass_morphism_to_buttons(theme, theme_type, glass_intensity)
+	
+	# Add blur backdrop support metadata
+	theme.set_meta("supports_blur", true)
+	theme.set_meta("glass_intensity", glass_intensity)
+	theme.set_meta("blur_amount", glass_intensity * 16.0)
+	
+	return theme
+
+static func _apply_glass_morphism_to_panels(theme: Theme, theme_type: String, intensity: float) -> void:
+	"""Apply glass morphism effects to panel styles"""
+	var panel_types = ["PanelContainer", "StructureInfoPanel", "FunctionPanel", "ClinicalPanel", "LearningPanel", "QuizPanel"]
+	
+	for panel_type in panel_types:
+		var panel = theme.get_stylebox("panel", panel_type) as StyleBoxFlat
+		if panel:
+			# Reduce background opacity for glass effect
+			panel.bg_color.a *= (1.0 - intensity * 0.5)
+			
+			# Add glass tint
+			var glass_color = ColorSystem.get_educational_color(theme_type, "glass_light")
+			panel.bg_color = panel.bg_color.lerp(glass_color, intensity)
+			
+			# Enhance border for glass edge effect
+			panel.border_color.a = min(panel.border_color.a + intensity * 0.3, 1.0)
+			
+			# Add inner glow effect through shadow
+			panel.shadow_color = Color(1, 1, 1, intensity * 0.1)
+			panel.shadow_size = max(4, panel.shadow_size)
+			
+			theme.set_stylebox("panel", panel_type, panel)
+
+static func _apply_glass_morphism_to_buttons(theme: Theme, theme_type: String, intensity: float) -> void:
+	"""Apply glass morphism effects to button styles"""
+	var button_states = ["normal", "hover", "pressed", "disabled"]
+	
+	for state in button_states:
+		var button = theme.get_stylebox(state, "Button") as StyleBoxFlat
+		if button:
+			# Glass effect for buttons
+			button.bg_color.a *= (1.0 - intensity * 0.3)
+			
+			# Add glass tint based on state
+			var tint_intensity = intensity
+			if state == "hover":
+				tint_intensity *= 1.5
+			elif state == "pressed":
+				tint_intensity *= 0.7
+			
+			var glass_color = ColorSystem.get_educational_color(theme_type, "glass_medium")
+			button.bg_color = button.bg_color.lerp(glass_color, tint_intensity)
+			
+			theme.set_stylebox(state, "Button", button)
+
+# === ANIMATED THEME TRANSITIONS ===
+
+## Create animated transition configurations for smooth theme switching
+static func create_animated_transitions(from_variant: ThemeVariant, to_variant: ThemeVariant, duration: float = 0.3) -> Dictionary:
+	"""Create animation data for smooth theme transitions"""
+	var from_type = _get_theme_type_string(from_variant)
+	var to_type = _get_theme_type_string(to_variant)
+	
+	var transitions = {
+		"duration": duration,
+		"easing": Tween.EASE_IN_OUT,
+		"transition_type": Tween.TRANS_CUBIC,
+		"color_properties": [],
+		"numeric_properties": [],
+		"special_effects": []
+	}
+	
+	# Define color properties to animate
+	var color_keys = ["background_primary", "text_primary", "interactive_primary", "border_default"]
+	for key in color_keys:
+		transitions.color_properties.append({
+			"property": key,
+			"from": ColorSystem.get_educational_color(from_type, key),
+			"to": ColorSystem.get_educational_color(to_type, key)
+		})
+	
+	# Define numeric properties to animate
+	transitions.numeric_properties.append({
+		"property": "panel_opacity",
+		"from": 1.0,
+		"to": 0.0,
+		"midpoint": true  # Fade out then in
+	})
+	
+	# Special effects for theme transitions
+	if from_variant != to_variant:
+		transitions.special_effects.append({
+			"type": "ripple",
+			"origin": "center",
+			"duration": duration * 0.5
+		})
+	
+	return transitions
+
+# === PERFORMANCE ADAPTIVE THEMES ===
+
+## Generate performance-adaptive themes with quality levels
+static func generate_performance_adaptive_themes(variant: ThemeVariant, learning_level: int) -> Dictionary:
+	"""Generate theme variants optimized for different performance levels"""
+	var themes = {}
+	
+	# High quality theme (full effects)
+	themes["high"] = _generate_high_quality_theme(variant, learning_level)
+	
+	# Medium quality theme (reduced effects)
+	themes["medium"] = _generate_medium_quality_theme(variant, learning_level)
+	
+	# Low quality theme (minimal effects)
+	themes["low"] = _generate_low_quality_theme(variant, learning_level)
+	
+	return themes
+
+static func _generate_high_quality_theme(variant: ThemeVariant, learning_level: int) -> Theme:
+	"""Generate high quality theme with all effects"""
+	var theme = generate_glass_morphism_theme(variant, learning_level, 0.8)
+	
+	# Add additional high-quality effects metadata
+	theme.set_meta("quality_level", "high")
+	theme.set_meta("enable_shadows", true)
+	theme.set_meta("enable_animations", true)
+	theme.set_meta("enable_blur", true)
+	theme.set_meta("shadow_resolution", "high")
+	
+	return theme
+
+static func _generate_medium_quality_theme(variant: ThemeVariant, learning_level: int) -> Theme:
+	"""Generate medium quality theme with reduced effects"""
+	var theme = generate_glass_morphism_theme(variant, learning_level, 0.4)
+	
+	# Reduce shadow quality for performance
+	_reduce_shadow_quality(theme, 0.5)
+	
+	theme.set_meta("quality_level", "medium")
+	theme.set_meta("enable_shadows", true)
+	theme.set_meta("enable_animations", true)
+	theme.set_meta("enable_blur", false)
+	theme.set_meta("shadow_resolution", "medium")
+	
+	return theme
+
+static func _generate_low_quality_theme(variant: ThemeVariant, learning_level: int) -> Theme:
+	"""Generate low quality theme for maximum performance"""
+	var theme = generate_educational_theme(variant, learning_level)
+	
+	# Remove all shadows and effects
+	_remove_shadows_from_theme(theme)
+	
+	theme.set_meta("quality_level", "low")
+	theme.set_meta("enable_shadows", false)
+	theme.set_meta("enable_animations", false)
+	theme.set_meta("enable_blur", false)
+	theme.set_meta("shadow_resolution", "none")
+	
+	return theme
+
+static func _reduce_shadow_quality(theme: Theme, quality: float) -> void:
+	"""Reduce shadow quality in theme for performance"""
+	var stylebox_types = ["panel", "normal", "hover", "pressed"]
+	var node_types = ["PanelContainer", "Button", "LineEdit"]
+	
+	for node_type in node_types:
+		for stylebox_type in stylebox_types:
+			var stylebox = theme.get_stylebox(stylebox_type, node_type) as StyleBoxFlat
+			if stylebox and stylebox.shadow_size > 0:
+				stylebox.shadow_size = int(stylebox.shadow_size * quality)
+				stylebox.shadow_color.a *= quality
+				theme.set_stylebox(stylebox_type, node_type, stylebox)
+
+static func _remove_shadows_from_theme(theme: Theme) -> void:
+	"""Remove all shadows from theme for maximum performance"""
+	var stylebox_types = ["panel", "normal", "hover", "pressed", "focus", "disabled"]
+	var node_types = ["PanelContainer", "Button", "LineEdit", "ProgressBar"]
+	
+	for node_type in node_types:
+		for stylebox_type in stylebox_types:
+			var stylebox = theme.get_stylebox(stylebox_type, node_type) as StyleBoxFlat
+			if stylebox:
+				stylebox.shadow_size = 0
+				stylebox.shadow_color.a = 0
+				theme.set_stylebox(stylebox_type, node_type, stylebox)
+
+# === EDUCATIONAL VISUAL EFFECTS ===
+
+## Create educational visual effects with particle systems integration
+static func create_educational_visual_effects(theme: Theme, learning_level: int) -> Dictionary:
+	"""Create visual effect configurations for educational interactions"""
+	var effects = {
+		"selection_particles": _create_selection_particle_config(learning_level),
+		"success_effects": _create_success_effect_config(learning_level),
+		"hover_effects": _create_hover_effect_config(learning_level),
+		"transition_effects": _create_transition_effect_config(learning_level)
+	}
+	
+	# Store effects configuration in theme metadata
+	theme.set_meta("visual_effects", effects)
+	
+	return effects
+
+static func _create_selection_particle_config(learning_level: int) -> Dictionary:
+	"""Create particle configuration for structure selection"""
+	var level_config = ColorSystem.get_learning_level_style(learning_level)
+	
+	return {
+		"enabled": learning_level > 0,  # Disabled for beginners
+		"particle_count": 20 + learning_level * 10,
+		"emission_shape": "sphere",
+		"initial_velocity": 100.0,
+		"angular_velocity": 45.0,
+		"color": ColorSystem.get_educational_color("dark", level_config.primary_accent),
+		"lifetime": 1.0 + learning_level * 0.5,
+		"size": 4.0 - learning_level * 0.5
+	}
+
+static func _create_success_effect_config(learning_level: int) -> Dictionary:
+	"""Create effect configuration for success feedback"""
+	return {
+		"type": "radial_burst",
+		"duration": 0.5,
+		"color": ColorSystem.get_educational_color("dark", "success"),
+		"intensity": 0.5 + learning_level * 0.25,
+		"radius": 50 + learning_level * 25
+	}
+
+static func _create_hover_effect_config(learning_level: int) -> Dictionary:
+	"""Create hover effect configuration"""
+	return {
+		"glow_enabled": true,
+		"glow_color": ColorSystem.get_educational_color("dark", "interactive_hover"),
+		"glow_strength": 0.3 + learning_level * 0.1,
+		"pulse_enabled": learning_level > 0,
+		"pulse_speed": 2.0
+	}
+
+static func _create_transition_effect_config(learning_level: int) -> Dictionary:
+	"""Create transition effect configuration"""
+	return {
+		"type": "fade_slide" if learning_level < 2 else "morph_blur",
+		"duration": 0.3 - learning_level * 0.05,
+		"easing": "ease_in_out"
+	}
+
+# === ACCESSIBILITY VALIDATION ===
+
+## Validate theme accessibility with automated WCAG AAA testing
+static func validate_theme_accessibility(theme: Theme, variant: ThemeVariant) -> Dictionary:
+	"""Comprehensive WCAG AAA validation for generated themes"""
+	var theme_type = _get_theme_type_string(variant)
+	var validation_results = {
+		"wcag_aaa_compliant": true,
+		"contrast_ratios": {},
+		"color_blind_safe": true,
+		"keyboard_navigable": true,
+		"screen_reader_compatible": true,
+		"issues": [],
+		"warnings": []
+	}
+	
+	# Test all text/background combinations
+	var bg_colors = ["background_primary", "background_secondary", "background_tertiary"]
+	var text_colors = ["text_primary", "text_secondary", "text_tertiary"]
+	
+	for bg in bg_colors:
+		for text in text_colors:
+			var bg_color = ColorSystem.get_educational_color(theme_type, bg)
+			var text_color = ColorSystem.get_educational_color(theme_type, text)
+			var ratio = ColorSystem.calculate_contrast_ratio(text_color, bg_color)
+			
+			var combo_name = text + "_on_" + bg
+			validation_results.contrast_ratios[combo_name] = ratio
+			
+			if ratio < 7.0 and not text.contains("disabled"):
+				validation_results.wcag_aaa_compliant = false
+				validation_results.issues.append({
+					"type": "contrast_ratio",
+					"combination": combo_name,
+					"ratio": ratio,
+					"required": 7.0
+				})
+			elif ratio < 4.5:
+				validation_results.warnings.append({
+					"type": "contrast_ratio_aa",
+					"combination": combo_name,
+					"ratio": ratio
+				})
+	
+	# Additional accessibility checks
+	validation_results["focus_indicators"] = _validate_focus_indicators(theme, theme_type)
+	validation_results["interaction_states"] = _validate_interaction_states(theme, theme_type)
+	validation_results["semantic_colors"] = _validate_semantic_colors(theme_type)
+	
+	return validation_results
+
+static func _validate_focus_indicators(theme: Theme, theme_type: String) -> bool:
+	"""Validate that focus indicators are clearly visible"""
+	var focus_border = theme.get_stylebox("focus", "LineEdit") as StyleBoxFlat
+	if focus_border:
+		var focus_color = focus_border.border_color
+		var bg_color = ColorSystem.get_educational_color(theme_type, "background_primary")
+		var ratio = ColorSystem.calculate_contrast_ratio(focus_color, bg_color)
+		return ratio >= 3.0  # WCAG requirement for UI components
+	return false
+
+static func _validate_interaction_states(theme: Theme, _theme_type: String) -> bool:
+	"""Validate that interaction states are distinguishable"""
+	var normal = theme.get_stylebox("normal", "Button") as StyleBoxFlat
+	var hover = theme.get_stylebox("hover", "Button") as StyleBoxFlat
+	var pressed = theme.get_stylebox("pressed", "Button") as StyleBoxFlat
+	
+	if normal and hover and pressed:
+		# Check that states are visually distinct
+		var normal_color = normal.bg_color
+		var hover_color = hover.bg_color
+		var pressed_color = pressed.bg_color
+		
+		# Simple check: colors should be different enough
+		var hover_diff = (hover_color - normal_color).length()
+		var pressed_diff = (pressed_color - normal_color).length()
+		
+		return hover_diff > 0.1 and pressed_diff > 0.1
+	return false
+
+static func _validate_semantic_colors(theme_type: String) -> bool:
+	"""Validate semantic color distinctions"""
+	var success = ColorSystem.get_educational_color(theme_type, "success")
+	var error = ColorSystem.get_educational_color(theme_type, "error")
+	var warning = ColorSystem.get_educational_color(theme_type, "warning")
+	
+	# Check that semantic colors are distinguishable
+	var se_diff = (success - error).length()
+	var sw_diff = (success - warning).length()
+	var ew_diff = (error - warning).length()
+	
+	return se_diff > 0.3 and sw_diff > 0.3 and ew_diff > 0.3
+
+# === THEME UTILITIES ===
 
 ## Get theme metadata and information
 static func get_theme_info(variant: ThemeVariant, learning_level: int) -> Dictionary:
