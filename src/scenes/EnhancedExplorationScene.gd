@@ -461,9 +461,31 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 		structure_id = _mesh_to_structure_id[structure_name]
 		print("[EnhancedExplorationScene] Converted to structure ID: ", structure_id)
 	else:
-		# Fallback: use the mesh name as structure ID
-		structure_id = structure_name
-		push_warning("[EnhancedExplorationScene] No structure ID mapping for mesh: ", structure_name)
+		# Try normalized version
+		var normalized_name = structure_name.to_lower().strip_edges()
+		normalized_name = normalized_name.replace(" (good)", "").replace("(good)", "").strip_edges()
+		
+		# Check if normalized version exists
+		var found = false
+		for mesh_name in _mesh_to_structure_id:
+			var normalized_mesh = mesh_name.to_lower().strip_edges()
+			normalized_mesh = normalized_mesh.replace(" (good)", "").replace("(good)", "").strip_edges()
+			
+			if normalized_mesh == normalized_name:
+				structure_id = _mesh_to_structure_id[mesh_name]
+				print("[EnhancedExplorationScene] Found mapping via normalization: ", structure_id)
+				found = true
+				break
+		
+		if not found:
+			# Special case for known problematic names
+			if normalized_name == "hipp and others":
+				structure_id = "hippocampus"
+				print("[EnhancedExplorationScene] Applied special case mapping to hippocampus")
+			else:
+				# Fallback: use the mesh name as structure ID
+				structure_id = structure_name
+				push_warning("[EnhancedExplorationScene] No structure ID mapping for mesh: ", structure_name)
 	
 	# Show selection sphere
 	if mesh_instance:
@@ -595,6 +617,13 @@ func _on_internal_structures_loaded(model_instance: Node3D) -> void:
 				_mesh_to_structure_id[mesh_name] = structure_id
 				print("[EnhancedExplorationScene] Mapped mesh '", mesh_name, "' to structure ID '", structure_id, "'")
 				found_mapping = true
+			# Also check with different capitalization patterns
+			elif structure_mapping.has("Hipp and Others (good)") and mesh_name == "Hipp And Others (good)":
+				var structure_id = structure_mapping["Hipp and Others (good)"]
+				_brain_structures[structure_id] = child
+				_mesh_to_structure_id[mesh_name] = structure_id
+				print("[EnhancedExplorationScene] Mapped mesh '", mesh_name, "' to structure ID '", structure_id, "' (capitalization fix)")
+				found_mapping = true
 			else:
 				# Try case-insensitive match
 				for model_name in structure_mapping:
@@ -618,7 +647,15 @@ func _on_internal_structures_loaded(model_instance: Node3D) -> void:
 							break
 			
 			if not found_mapping:
-				push_warning("[EnhancedExplorationScene] No mapping found for mesh: ", mesh_name)
+				# Last resort - check if this is a known problematic case
+				var normalized = mesh_name.to_lower().replace(" (good)", "").replace("_", " ").strip_edges()
+				if normalized == "hipp and others":
+					_brain_structures["hippocampus"] = child
+					_mesh_to_structure_id[mesh_name] = "hippocampus"
+					print("[EnhancedExplorationScene] Applied hardcoded mapping for hippocampus variant")
+					found_mapping = true
+				else:
+					push_warning("[EnhancedExplorationScene] No mapping found for mesh: ", mesh_name)
 	
 	# Populate structure list with data from JSON
 	_populate_structure_list(structures_data)

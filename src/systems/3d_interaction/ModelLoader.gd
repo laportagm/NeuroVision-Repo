@@ -70,15 +70,22 @@ func _ready() -> void:
 	# Detect GPU and set initial quality
 	var _gpu_info = _gpu_detector.detect_gpu()  # Prefixed with _ to indicate intentionally unused
 	_current_quality_level = _gpu_detector.get_recommended_quality()
-	print("[ModelLoader] Initial quality level: " + PerformanceMonitor.QualityLevel.keys()[_current_quality_level])
 	
-	# Connect to performance monitor
-	if PerformanceMonitor:
-		PerformanceMonitor.quality_level_changed.connect(_on_quality_level_changed)
+	var quality_names = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
+	if _current_quality_level < quality_names.size():
+		print("[ModelLoader] Initial quality level: " + quality_names[_current_quality_level])
+	else:
+		print("[ModelLoader] Initial quality level: %d" % _current_quality_level)
+	
+	# Connect to performance monitor if available
+	var perf_monitor = get_node_or_null("/root/PerformanceMonitor")
+	if perf_monitor and perf_monitor.has_signal("quality_level_changed"):
+		perf_monitor.quality_level_changed.connect(_on_quality_level_changed)
 		# Override with our detected quality
-		PerformanceMonitor.set_quality_level(_current_quality_level)
+		if perf_monitor.has_method("set_quality_level"):
+			perf_monitor.set_quality_level(_current_quality_level)
 
-func load_model(model_name: String, lod_level: int = -1) -> Node3D:
+func load_model(model_name: String, lod_level: int = -1) -> Dictionary:
 	"""Load a brain model with specified LOD level"""
 	if lod_level == -1:
 		lod_level = _get_recommended_lod()
@@ -87,18 +94,38 @@ func load_model(model_name: String, lod_level: int = -1) -> Node3D:
 	if model_name in _loaded_models:
 		var model_data = _loaded_models[model_name]
 		if lod_level in model_data.instances:
-			return model_data.instances[lod_level].duplicate()
+			return {
+				"mesh_instance": model_data.instances[lod_level].duplicate(),
+				"error": ""
+			}
 	
-	# Add to loading queue
-	_loading_queue.append({
-		"name": model_name,
-		"lod": lod_level,
-		"callback": null
-	})
+	# Try to load synchronously
+	var model_path = _find_model_path(model_name, lod_level)
+	if model_path == "":
+		return {
+			"mesh_instance": null,
+			"error": "Model file not found: %s LOD %d" % [model_name, lod_level]
+		}
 	
-	_process_loading_queue()
+	var model_resource = _load_resource(model_path)
+	if not model_resource:
+		return {
+			"mesh_instance": null,
+			"error": "Failed to load model resource: %s" % model_path
+		}
 	
-	return null
+	var instance = _create_model_instance(model_resource, model_name)
+	if instance:
+		_register_loaded_model(model_name, instance, lod_level)
+		return {
+			"mesh_instance": instance,
+			"error": ""
+		}
+	else:
+		return {
+			"mesh_instance": null,
+			"error": "Failed to create model instance"
+		}
 
 func load_model_async(model_name: String, callback: Callable, lod_level: int = -1) -> void:
 	"""Load a model asynchronously with callback"""

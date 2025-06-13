@@ -185,6 +185,11 @@ func _normalize_model_name(model_name: String) -> String:
 	normalized = normalized.replace("(good)", "")
 	normalized = normalized.replace("_", " ")
 	normalized = normalized.strip_edges()  # Remove any trailing spaces
+	
+	# Special handling for known variations
+	if normalized == "hipp and others":
+		normalized = "hippocampus"
+	
 	return normalized
 
 func _fuzzy_search_structure(query: String) -> Dictionary:
