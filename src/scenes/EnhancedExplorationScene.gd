@@ -64,7 +64,7 @@ var _camera_presets: Node = null
 var _annotation_system: Node = null
 var _brain_structures: Dictionary = {}  # structure_id -> MeshInstance3D
 var _mesh_to_structure_id: Dictionary = {}  # mesh_name -> structure_id
-var _quiz_panel = null
+var _quiz_panel: QuizPanel = null
 var _current_structure_id: String = ""
 var _structure_buttons: Dictionary = {}  # structure_id -> Button
 var _is_loading: bool = false
@@ -140,23 +140,19 @@ func toggle_axis_indicator(should_show: bool) -> void:
 # === PRIVATE METHODS ===
 
 func _setup_ui() -> void:
-	"""Setup all UI elements"""
-	# Apply enhanced theme styling immediately
-	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
-		print("[EnhancedExplorationScene] Applying enhanced theme styling")
-		UIThemeManager.apply_enhanced_styling_immediately()
+	"""Setup all UI elements with Material 3 styling"""
+	# Apply M3 theme to all UI components
+	_apply_m3_theme_to_ui()
 	
 	# Configure view presets
 	view_presets.selected = 0
 	view_presets.item_selected.connect(_on_view_preset_selected)
 	
-	# Only apply manual button styling if theme manager not available
-	if not (UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately")):
-		# Apply glass styling to all buttons
-		_style_button(label_toggle)
-		_style_button(quiz_button)
-		_style_button(help_button)
-		_style_button(help_close)
+	# Apply M3 button styling to all buttons
+	_apply_m3_button_styling(label_toggle, "Labels", M3ComponentApplicator.ButtonVariant.SECONDARY)
+	_apply_m3_button_styling(quiz_button, "Quiz", M3ComponentApplicator.ButtonVariant.SECONDARY)
+	_apply_m3_button_styling(help_button, "?", M3ComponentApplicator.ButtonVariant.ICON)
+	_apply_m3_button_styling(help_close, "✕", M3ComponentApplicator.ButtonVariant.ICON)
 	
 	# Configure buttons
 	label_toggle.toggled.connect(_on_labels_toggled)
@@ -168,35 +164,63 @@ func _setup_ui() -> void:
 	help_overlay.visible = false
 	loading_overlay.visible = false
 	
-	# Set initial performance display
-	performance_label.text = "FPS: -- | Quality: --"
+	# Set initial performance display with M3 typography
+	if performance_label:
+		M3ComponentApplicator.apply_m3_text_styling(performance_label, M3ComponentApplicator.TypographyScale.LABEL_SMALL)
+		performance_label.text = "FPS: -- | Quality: --"
+		performance_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
 
-func _style_button(button: Button) -> void:
-	"""Apply glass morphism styling to a button"""
-	var style_normal = StyleBoxFlat.new()
-	style_normal.bg_color = Color(1, 1, 1, 0.05)
-	style_normal.corner_radius_top_left = 8
-	style_normal.corner_radius_top_right = 8
-	style_normal.corner_radius_bottom_left = 8
-	style_normal.corner_radius_bottom_right = 8
-	style_normal.border_width_left = 1
-	style_normal.border_width_top = 1
-	style_normal.border_width_right = 1
-	style_normal.border_width_bottom = 1
-	style_normal.border_color = Color(1, 1, 1, 0.1)
+func _apply_m3_theme_to_ui() -> void:
+	"""Apply Material 3 theme to all UI components"""
+	# Apply M3 to top bar
+	if top_bar:
+		M3ComponentApplicator.apply_m3_header_bar(top_bar)
+		# Style status label
+		if status_label:
+			M3ComponentApplicator.apply_m3_text_styling(status_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
+			status_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
 	
-	var style_hover = style_normal.duplicate()
-	style_hover.bg_color = Color(1, 1, 1, 0.1)
-	style_hover.border_color = Color(0.23, 0.51, 0.96, 0.5)
+	# Apply M3 to left panel (Brain Structures)
+	if left_panel:
+		M3ComponentApplicator.apply_m3_panel_styling(left_panel, M3ComponentApplicator.PanelVariant.SURFACE)
+		# Find and style the title label
+		var title_label = left_panel.get_node_or_null("VBoxContainer/TitleLabel")
+		if title_label and title_label is Label:
+			M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
+			title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 	
-	var style_pressed = style_normal.duplicate()
-	style_pressed.bg_color = Color(0.23, 0.51, 0.96, 0.3)
-	style_pressed.border_color = Color(0.23, 0.51, 0.96, 0.8)
+	# Apply M3 to bottom panel
+	if bottom_panel:
+		M3ComponentApplicator.apply_m3_panel_styling(bottom_panel, M3ComponentApplicator.PanelVariant.SURFACE_VARIANT)
 	
-	button.add_theme_stylebox_override("normal", style_normal)
-	button.add_theme_stylebox_override("hover", style_hover)
-	button.add_theme_stylebox_override("pressed", style_pressed)
-	button.add_theme_stylebox_override("focus", style_hover)
+	# Apply M3 to overlays
+	if help_overlay:
+		M3ComponentApplicator.apply_m3_modal_dialog(help_overlay)
+		var help_text = help_overlay.get_node_or_null("HelpContent/HelpText")
+		if help_text and help_text is RichTextLabel:
+			help_text.add_theme_color_override("default_color", M3DesignTokens.M3_COLORS["on_surface"])
+			help_text.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_medium"]["size"])
+	
+	# Apply M3 to loading overlay
+	if loading_overlay:
+		loading_overlay.color = M3DesignTokens.M3_COLORS["scrim"]
+		if loading_label:
+			M3ComponentApplicator.apply_m3_text_styling(loading_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
+			loading_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
+		if loading_progress:
+			M3ComponentApplicator.apply_m3_to_component(loading_progress)
+
+func _apply_m3_button_styling(button: Button, text: String, variant: M3ComponentApplicator.ButtonVariant) -> void:
+	"""Apply M3 styling to a button with motion"""
+	if not button:
+		return
+	
+	button.text = text
+	M3ComponentApplicator.apply_m3_button_styling(button, variant)
+	
+	# Add motion effects
+	if ClassDB.class_exists("ButtonMotionHandler"):
+		ButtonMotionHandler.setup_button_hover_animation(button)
 
 func _setup_scene() -> void:
 	"""Initialize scene components"""
@@ -326,53 +350,45 @@ func _populate_structure_list(structures: Array) -> void:
 		child.queue_free()
 	_structure_buttons.clear()
 	
-	# Add structure buttons with glass styling
+	# Add structure buttons with M3 styling
 	for structure in structures:
 		var button = Button.new()
 		button.text = structure.get("displayName", structure.get("name", "Unknown"))
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.flat = true
-		button.custom_minimum_size = Vector2(0, 50)  # Improved height for better clickability
-		button.add_theme_font_size_override("font_size", 16)  # Larger font
+		button.custom_minimum_size = Vector2(0, 48)  # M3 standard button height
 		
-		# Glass panel styling with hover animation
+		# Apply M3 tertiary button styling for list items
+		M3ComponentApplicator.apply_m3_button_styling(button, M3ComponentApplicator.ButtonVariant.TERTIARY)
+		
+		# Override some styling for list appearance
+		button.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
+		
+		# Create custom style for list items
 		var style_normal = StyleBoxFlat.new()
-		style_normal.bg_color = Color(1, 1, 1, 0.03)
-		style_normal.corner_radius_top_left = 12
-		style_normal.corner_radius_top_right = 12
-		style_normal.corner_radius_bottom_left = 12
-		style_normal.corner_radius_bottom_right = 12
-		style_normal.border_width_left = 1
-		style_normal.border_width_top = 1
-		style_normal.border_width_right = 1
-		style_normal.border_width_bottom = 1
-		style_normal.border_color = Color(1, 1, 1, 0.08)
-		style_normal.content_margin_left = 20
-		style_normal.content_margin_right = 20
-		style_normal.content_margin_top = 15
-		style_normal.content_margin_bottom = 15
+		style_normal.bg_color = Color.TRANSPARENT
+		style_normal.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["medium"])
+		style_normal.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 		
-		var style_hover = style_normal.duplicate()
-		style_hover.bg_color = Color(1, 1, 1, 0.08)
-		style_hover.border_color = Color(1, 1, 1, 0.2)
+		var style_hover = StyleBoxFlat.new()
+		style_hover.bg_color = M3DesignTokens.M3_COLORS["primary_container"]
+		style_hover.bg_color.a = 0.08
+		style_hover.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["medium"])
+		style_hover.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 		
-		# Active state for selected structure
-		var style_pressed = style_normal.duplicate()
-		style_pressed.bg_color = Color(0.23, 0.51, 0.96, 0.2)
-		style_pressed.border_color = Color(0.23, 0.51, 0.96, 0.5)
+		var style_pressed = StyleBoxFlat.new()
+		style_pressed.bg_color = M3DesignTokens.M3_COLORS["primary_container"]
+		style_pressed.bg_color.a = 0.12
+		style_pressed.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["medium"])
+		style_pressed.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 		
 		button.add_theme_stylebox_override("normal", style_normal)
 		button.add_theme_stylebox_override("hover", style_hover)
 		button.add_theme_stylebox_override("pressed", style_pressed)
 		button.add_theme_stylebox_override("focus", style_hover)
 		
-		# Add hover animation
-		button.mouse_entered.connect(func():
-			var tween = create_tween()
-			tween.tween_property(button, "position:x", 4, 0.3).set_ease(Tween.EASE_OUT))
-		button.mouse_exited.connect(func():
-			var tween = create_tween()
-			tween.tween_property(button, "position:x", 0, 0.3).set_ease(Tween.EASE_OUT))
+		# Add M3 motion effects
+		if ClassDB.class_exists("ButtonMotionHandler"):
+			ButtonMotionHandler.setup_button_hover_animation(button)
 		
 		button.pressed.connect(_on_structure_button_pressed.bind(structure.get("id", "")))
 		structure_items.add_child(button)
@@ -421,7 +437,10 @@ func _on_view_preset_selected(index: int) -> void:
 func _on_labels_toggled(toggled: bool) -> void:
 	"""Handle label toggle"""
 	if _annotation_system:
-		_annotation_system.set_visibility(toggled)
+		# Only toggle if the current state differs from the desired state
+		var current_visible = _annotation_system.is_visible() if _annotation_system.has_method("is_visible") else false
+		if current_visible != toggled:
+			_annotation_system.toggle_visibility()
 	update_status("Labels " + ("enabled" if toggled else "disabled"))
 
 func _on_quiz_pressed() -> void:
@@ -514,11 +533,11 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 	# Update status
 	update_status("Selected: " + structure_id)
 	
-	# Highlight button
+	# Highlight button with M3 colors
 	for id in _structure_buttons:
 		_structure_buttons[id].modulate = Color.WHITE
 	if _structure_buttons.has(_current_structure_id):
-		_structure_buttons[_current_structure_id].modulate = Color.CYAN
+		_structure_buttons[_current_structure_id].modulate = M3DesignTokens.M3_COLORS["primary"]
 	
 	structure_selected.emit(structure_id)
 

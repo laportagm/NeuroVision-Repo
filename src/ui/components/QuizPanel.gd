@@ -1,6 +1,7 @@
-extends Panel
+class_name QuizPanel
+extends PanelContainer
 
-## Educational quiz interface panel
+## Educational quiz interface panel with Material 3 design
 
 signal answer_submitted(answer: Variant)
 signal next_question_requested()
@@ -63,7 +64,9 @@ func show_assessment_list(assessments: Array) -> void:
 		var assessment = assessments[i]
 		var btn = Button.new()
 		btn.text = "%s (%s)" % [assessment.title, assessment.difficulty]
-		btn.add_theme_font_size_override("font_size", 16)
+		
+		# Apply M3 secondary button styling
+		M3ComponentApplicator.apply_m3_button_styling(btn, M3ComponentApplicator.ButtonVariant.SECONDARY)
 		
 		# Show best score if available
 		if assessment.best_score > 0:
@@ -71,7 +74,11 @@ func show_assessment_list(assessments: Array) -> void:
 		
 		# Enable keyboard navigation
 		btn.focus_mode = Control.FOCUS_ALL
-		btn.add_theme_stylebox_override("focus", _create_focus_style())
+		btn.add_theme_stylebox_override("focus", _create_m3_focus_style())
+		
+		# Add motion effect
+		if ClassDB.class_exists("ButtonMotionHandler"):
+			ButtonMotionHandler.setup_button_hover_animation(btn)
 		
 		# Add number shortcuts for first 9 assessments
 		if i < 9:
@@ -220,59 +227,88 @@ func clear_quiz() -> void:
 # === PRIVATE METHODS ===
 
 func _setup_ui() -> void:
-	"""Setup the UI components"""
+	"""Setup the UI components with Material 3 styling"""
 	custom_minimum_size = Vector2(PANEL_WIDTH, PANEL_HEIGHT)
 	
-	# Style the panel
-	add_theme_stylebox_override("panel", _create_panel_style())
+	# Apply M3 modal sheet styling
+	M3ComponentApplicator.apply_m3_panel_styling(self, M3ComponentApplicator.PanelVariant.MODAL)
 	
-	# Style buttons
+	# Style title label with M3 typography
+	if title_label:
+		M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
+		title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	
+	# Style question label
+	if question_label:
+		question_label.add_theme_color_override("default_color", M3DesignTokens.M3_COLORS["on_surface"])
+		question_label.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
+	
+	# Style buttons with M3
 	submit_button.text = "Submit Answer"
-	submit_button.add_theme_color_override("font_color", Color.WHITE)
+	M3ComponentApplicator.apply_m3_button_styling(submit_button, M3ComponentApplicator.ButtonVariant.PRIMARY)
 	submit_button.focus_mode = Control.FOCUS_ALL
-	submit_button.add_theme_stylebox_override("focus", _create_focus_style())
 	
 	next_button.text = "Next Question"
-	next_button.add_theme_color_override("font_color", Color.WHITE)
+	M3ComponentApplicator.apply_m3_button_styling(next_button, M3ComponentApplicator.ButtonVariant.SECONDARY)
 	next_button.focus_mode = Control.FOCUS_ALL
-	next_button.add_theme_stylebox_override("focus", _create_focus_style())
 	
 	skip_button.text = "Skip"
+	M3ComponentApplicator.apply_m3_button_styling(skip_button, M3ComponentApplicator.ButtonVariant.TERTIARY)
 	skip_button.focus_mode = Control.FOCUS_ALL
-	skip_button.add_theme_stylebox_override("focus", _create_focus_style())
 	
-	# Close button
+	# Close button as icon button
+	M3ComponentApplicator.apply_m3_button_styling(close_button, M3ComponentApplicator.ButtonVariant.ICON)
 	close_button.focus_mode = Control.FOCUS_ALL
-	close_button.add_theme_stylebox_override("focus", _create_focus_style())
 	
-	# Progress bar styling
-	progress_bar.add_theme_stylebox_override("fill", _create_progress_style())
+	# Add motion to buttons
+	if ClassDB.class_exists("ButtonMotionHandler"):
+		ButtonMotionHandler.setup_button_hover_animation(submit_button)
+		ButtonMotionHandler.setup_button_hover_animation(next_button)
+		ButtonMotionHandler.setup_button_hover_animation(skip_button)
+		ButtonMotionHandler.setup_button_hover_animation(close_button)
+	
+	# Progress bar styling with M3
+	_apply_m3_progress_styling()
 
-func _create_panel_style() -> StyleBox:
-	"""Create panel style"""
+func _apply_m3_progress_styling() -> void:
+	"""Apply Material 3 styling to progress bar"""
+	if not progress_bar:
+		return
+	
+	var bg_style = StyleBoxFlat.new()
+	bg_style.bg_color = M3DesignTokens.M3_COLORS["surface_variant"]
+	bg_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["full"])
+	
+	var fill_style = StyleBoxFlat.new()
+	fill_style.bg_color = M3DesignTokens.M3_COLORS["primary"]
+	fill_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["full"])
+	
+	progress_bar.add_theme_stylebox_override("background", bg_style)
+	progress_bar.add_theme_stylebox_override("fill", fill_style)
+	
+	# Style progress label
+	if progress_label:
+		M3ComponentApplicator.apply_m3_text_styling(progress_label, M3ComponentApplicator.TypographyScale.LABEL_MEDIUM)
+
+func _create_m3_feedback_style(is_correct: bool) -> StyleBox:
+	"""Create M3 feedback panel style"""
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.15, 0.95)
-	style.border_color = Color.CYAN
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(10)
-	style.set_content_margin_all(20)
+	if is_correct:
+		style.bg_color = M3DesignTokens.M3_COLORS["success_container"]
+	else:
+		style.bg_color = M3DesignTokens.M3_COLORS["error_container"]
+	style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["medium"])
+	style.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 	return style
 
-func _create_progress_style() -> StyleBox:
-	"""Create progress bar style"""
+func _create_m3_focus_style() -> StyleBox:
+	"""Create M3 focus indicator style for accessibility"""
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color.CYAN
-	style.set_corner_radius_all(3)
-	return style
-
-func _create_focus_style() -> StyleBox:
-	"""Create focus indicator style for accessibility"""
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.2, 0.2, 0.3, 0.3)
-	style.border_color = Color.CYAN
-	style.set_border_width_all(3)
-	style.set_corner_radius_all(5)
-	style.set_content_margin_all(8)
+	style.bg_color = Color.TRANSPARENT
+	style.border_color = M3DesignTokens.M3_COLORS["primary"]
+	style.set_border_width_all(M3DesignTokens.M3_ACCESSIBILITY["focus_indicator_width"])
+	style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["small"])
+	style.set_content_margin_all(M3DesignTokens.M3_SPACING["small"])
 	return style
 
 func _connect_signals() -> void:
@@ -283,19 +319,25 @@ func _connect_signals() -> void:
 	close_button.pressed.connect(_on_close_pressed)
 
 func _create_multiple_choice_options(options: Array) -> void:
-	"""Create multiple choice option buttons"""
+	"""Create multiple choice option buttons with M3 styling"""
 	var button_group = ButtonGroup.new()
 	
 	for i in range(options.size()):
 		var btn = Button.new()
 		btn.text = "%s. %s" % [char(65 + i), options[i]]  # A, B, C, D...
-		btn.add_theme_font_size_override("font_size", 14)
 		btn.toggle_mode = true
 		btn.button_group = button_group
 		
+		# Apply M3 tertiary button styling for options
+		M3ComponentApplicator.apply_m3_button_styling(btn, M3ComponentApplicator.ButtonVariant.TERTIARY)
+		
 		# Enable keyboard navigation
 		btn.focus_mode = Control.FOCUS_ALL
-		btn.add_theme_stylebox_override("focus", _create_focus_style())
+		btn.add_theme_stylebox_override("focus", _create_m3_focus_style())
+		
+		# Add motion effect
+		if ClassDB.class_exists("ButtonMotionHandler"):
+			ButtonMotionHandler.setup_button_hover_animation(btn)
 		
 		# Add number key shortcuts (1-4 for typical quiz)
 		if i < 9:  # Support keys 1-9
@@ -346,7 +388,7 @@ func _create_true_false_options() -> void:
 		
 		# Enable keyboard navigation
 		btn.focus_mode = Control.FOCUS_ALL
-		btn.add_theme_stylebox_override("focus", _create_focus_style())
+		btn.add_theme_stylebox_override("focus", _create_m3_focus_style())
 		
 		# Add T/F keyboard shortcuts
 		var shortcut = Shortcut.new()

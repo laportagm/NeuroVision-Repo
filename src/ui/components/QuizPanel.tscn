@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/ui/components/QuizPanel.gd" id="1_quiz"]
 
-[node name="QuizPanel" type="Panel"]
+[node name="QuizPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(500, 600)
 anchors_preset = 8
 anchor_left = 0.5

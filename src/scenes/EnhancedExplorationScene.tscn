@@ -85,6 +85,9 @@ corner_radius_bottom_left = 16
 
 [node name="ExplorationScene" type="Node3D"]
 script = ExtResource("1_script")
+trackpad_zoom_sensitivity = null
+trackpad_rotate_sensitivity = null
+trackpad_zoom_damping = null
 
 [node name="Environment" type="Node" parent="."]
 
@@ -396,7 +399,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Annotations" type="Node2D" parent="UI/AnnotationLayer"]
-position = Vector2(0, -2)
+position = Vector2(17, 23)
 
 [node name="Systems" type="Node" parent="."]
 

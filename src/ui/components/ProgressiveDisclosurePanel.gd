@@ -210,44 +210,37 @@ func _setup_ui() -> void:
 	_apply_theme()
 
 func _apply_theme() -> void:
-	"""Apply enhanced visual theme"""
-	# Main panel style with glass morphism
-	var panel_style = StyleBoxFlat.new()
-	panel_style.bg_color = panel_color
-	panel_style.corner_radius_top_left = 12
-	panel_style.corner_radius_top_right = 12
-	panel_style.corner_radius_bottom_left = 12
-	panel_style.corner_radius_bottom_right = 12
-	panel_style.shadow_color = Color(0, 0, 0, 0.6)
-	panel_style.shadow_size = 15
-	panel_style.shadow_offset = Vector2(3, 3)
-	panel_style.border_width_left = 1
-	panel_style.border_width_top = 1
-	panel_style.border_width_right = 1
-	panel_style.border_width_bottom = 1
-	panel_style.border_color = Color(1, 1, 1, 0.1)
-	add_theme_stylebox_override("panel", panel_style)
+	"""Apply Material 3 theme with progressive disclosure styling"""
+	# Main panel with M3 surface container style
+	M3ComponentApplicator.apply_m3_panel_styling(self, M3ComponentApplicator.PanelVariant.SURFACE_CONTAINER)
 	
-	# Header style
-	var header_style = StyleBoxFlat.new()
-	header_style.bg_color = header_color
-	header_style.corner_radius_top_left = 12
-	header_style.corner_radius_top_right = 12
-	header_style.content_margin_left = 20
-	header_style.content_margin_right = 20
-	header_style.content_margin_top = 16
-	header_style.content_margin_bottom = 16
-	_header.add_theme_stylebox_override("panel", header_style)
+	# Header with M3 surface variant style
+	if _header:
+		M3ComponentApplicator.apply_m3_panel_styling(_header, M3ComponentApplicator.PanelVariant.SURFACE_VARIANT)
+		var header_style = _header.get_theme_stylebox("panel")
+		if header_style and header_style is StyleBoxFlat:
+			header_style.corner_radius_bottom_left = 0
+			header_style.corner_radius_bottom_right = 0
 	
-	# Title styling
-	_title_label.add_theme_color_override("font_color", text_color)
-	_title_label.add_theme_font_size_override("font_size", 22)
+	# Title with M3 typography
+	if _title_label:
+		M3ComponentApplicator.apply_m3_text_styling(_title_label, M3ComponentApplicator.TypographyScale.HEADLINE_SMALL)
+		_title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 	
-	# Close button styling
-	_close_button.text = "✕"
-	_close_button.flat = true
-	_close_button.add_theme_color_override("font_color", secondary_color)
-	_close_button.add_theme_font_size_override("font_size", 20)
+	# Close button as M3 icon button
+	if _close_button:
+		_close_button.text = "✕"
+		_close_button.flat = true
+		M3ComponentApplicator.apply_m3_button_styling(_close_button, M3ComponentApplicator.ButtonVariant.ICON)
+		_close_button.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		
+		# Add motion effect
+		if ClassDB.class_exists("ButtonMotionHandler"):
+			ButtonMotionHandler.setup_button_hover_animation(_close_button)
+	
+	# Apply M3 scroll styling
+	if _content_scroll:
+		M3ComponentApplicator.apply_m3_to_component(_content_scroll)
 
 func _setup_auto_hide() -> void:
 	"""Setup enhanced auto-hide functionality"""
@@ -375,30 +368,34 @@ func _create_advanced_section(content: Dictionary) -> void:
 		_add_rich_content(section, "Alternate Names", alt_names.join(", "))
 
 func _create_section(title: String, is_expanded: bool, priority: LearningContentManager.ContentPriority) -> VBoxContainer:
-	"""Create an expandable content section"""
+	"""Create an expandable content section with M3 styling"""
 	var section_container = VBoxContainer.new()
-	section_container.add_theme_constant_override("separation", 8)
+	section_container.add_theme_constant_override("separation", M3DesignTokens.M3_SPACING["small"])
 	
 	# Section header with expand/collapse
 	var header_container = HBoxContainer.new()
-	header_container.add_theme_constant_override("separation", 12)
+	header_container.add_theme_constant_override("separation", M3DesignTokens.M3_SPACING["medium"])
 	
-	# Expand/collapse button
+	# Expand/collapse button as M3 icon button
 	var expand_button = Button.new()
 	expand_button.text = COLLAPSE_ICON if is_expanded else EXPAND_ICON
 	expand_button.flat = true
-	expand_button.custom_minimum_size = Vector2(24, 24)
-	expand_button.add_theme_color_override("font_color", accent_color)
-	expand_button.add_theme_font_size_override("font_size", 14)
+	expand_button.custom_minimum_size = Vector2(32, 32)
+	M3ComponentApplicator.apply_m3_button_styling(expand_button, M3ComponentApplicator.ButtonVariant.ICON)
+	expand_button.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 	
-	# Section title
+	# Add motion to expand button
+	if ClassDB.class_exists("ButtonMotionHandler"):
+		ButtonMotionHandler.setup_button_hover_animation(expand_button)
+	
+	# Section title with M3 typography
 	var title_label = Label.new()
 	title_label.text = title
-	title_label.add_theme_color_override("font_color", accent_color)
-	title_label.add_theme_font_size_override("font_size", 18)
+	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
+	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 	
-	# Priority indicator
-	var priority_indicator = _create_priority_indicator(priority)
+	# Priority indicator with M3 styling
+	var priority_indicator = _create_m3_priority_indicator(priority)
 	
 	header_container.add_child(expand_button)
 	header_container.add_child(title_label)
@@ -535,34 +532,45 @@ func _create_level_button(text: String, level: int) -> Button:
 	button.pressed.connect(_on_level_button_pressed.bind(level))
 	return button
 
-func _create_priority_indicator(priority: LearningContentManager.ContentPriority) -> Control:
-	"""Create visual priority indicator"""
-	var indicator = ColorRect.new()
-	indicator.custom_minimum_size = Vector2(3, 16)
+func _create_m3_priority_indicator(priority: LearningContentManager.ContentPriority) -> Control:
+	"""Create M3-styled visual priority indicator"""
+	var indicator_container = PanelContainer.new()
+	var style = StyleBoxFlat.new()
 	
+	# Set size
+	indicator_container.custom_minimum_size = Vector2(8, 24)
+	
+	# M3 color scheme for priorities
 	match priority:
 		LearningContentManager.ContentPriority.ESSENTIAL:
-			indicator.color = Color.RED
+			style.bg_color = M3DesignTokens.M3_COLORS["error"]
 		LearningContentManager.ContentPriority.IMPORTANT:
-			indicator.color = Color.ORANGE
+			style.bg_color = M3DesignTokens.M3_COLORS["warning"]
 		LearningContentManager.ContentPriority.SUPPLEMENTARY:
-			indicator.color = Color.YELLOW
+			style.bg_color = M3DesignTokens.M3_COLORS["info"]
 		LearningContentManager.ContentPriority.ADVANCED:
-			indicator.color = Color.CYAN
+			style.bg_color = M3DesignTokens.M3_COLORS["tertiary"]
 		_:
-			indicator.color = Color.GRAY
+			style.bg_color = M3DesignTokens.M3_COLORS["outline"]
 	
-	return indicator
+	style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["full"])
+	indicator_container.add_theme_stylebox_override("panel", style)
+	
+	return indicator_container
+
+# Keep the old function for compatibility but have it call the new one
+func _create_priority_indicator(priority: LearningContentManager.ContentPriority) -> Control:
+	return _create_m3_priority_indicator(priority)
 
 # === CONTENT CREATION HELPERS ===
 
 func _add_rich_content(parent: Node, title: String, content: String) -> void:
-	"""Add rich text content with optional title"""
+	"""Add rich text content with M3 typography"""
 	if title != "":
 		var title_label = Label.new()
 		title_label.text = title
-		title_label.add_theme_color_override("font_color", accent_color)
-		title_label.add_theme_font_size_override("font_size", 16)
+		M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_SMALL)
+		title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 		parent.add_child(title_label)
 	
 	if content != "":
@@ -570,8 +578,8 @@ func _add_rich_content(parent: Node, title: String, content: String) -> void:
 		content_label.text = content
 		content_label.fit_content = true
 		content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		content_label.add_theme_color_override("default_color", text_color)
-		content_label.add_theme_font_size_override("normal_font_size", 14)
+		content_label.add_theme_color_override("default_color", M3DesignTokens.M3_COLORS["on_surface"])
+		content_label.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_medium"]["size"])
 		content_label.bbcode_enabled = true
 		content_label.custom_minimum_size.y = 40
 		parent.add_child(content_label)

@@ -32,6 +32,7 @@ var _update_timer: float = 0.0
 
 func _ready() -> void:
 	visible = false
+	_apply_m3_theme()
 	_setup_ui()
 	
 	# Make sure we're on top
@@ -58,29 +59,69 @@ func _process(delta: float) -> void:
 
 # === PRIVATE METHODS ===
 
+func _apply_m3_theme() -> void:
+	"""Apply Material 3 theme to the debug menu"""
+	# Set control size and positioning
+	custom_minimum_size = Vector2(400, 600)
+	anchor_left = 0.5
+	anchor_top = 0.5
+	anchor_right = 0.5
+	anchor_bottom = 0.5
+	offset_left = -200
+	offset_top = -300
+	offset_right = 200
+	offset_bottom = 300
+
 func _setup_ui() -> void:
-	# Create scene buttons
+	# Apply M3 modal dialog styling to panel
+	if panel:
+		M3ComponentApplicator.apply_m3_modal_dialog(panel)
+	
+	# Apply M3 typography to labels
+	if fps_label:
+		M3ComponentApplicator.apply_m3_text_styling(fps_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
+	if memory_label:
+		M3ComponentApplicator.apply_m3_text_styling(memory_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
+	
+	# Create scene buttons with M3 styling
 	for scene_name in SCENES:
 		var btn = Button.new()
 		btn.text = scene_name
+		M3ComponentApplicator.apply_m3_button_styling(btn, M3ComponentApplicator.ButtonVariant.SECONDARY)
+		
+		# Add motion effects
+		if ClassDB.class_exists("ButtonMotionHandler"):
+			ButtonMotionHandler.setup_button_hover_animation(btn)
+		
 		btn.pressed.connect(_on_scene_button_pressed.bind(SCENES[scene_name]))
 		scene_buttons.add_child(btn)
 	
-	# Setup quality options
+	# Setup quality options with M3 styling
 	quality_option.add_item("Low")
 	quality_option.add_item("Medium")
 	quality_option.add_item("High")
 	quality_option.add_item("Ultra")
 	quality_option.selected = 1  # Default to Medium
 	quality_option.item_selected.connect(_on_quality_changed)
+	M3ComponentApplicator.apply_m3_to_component(quality_option)
 	
-	# Connect settings
-	debug_draw.toggled.connect(_on_debug_draw_toggled)
-	show_fps.toggled.connect(_on_show_fps_toggled)
+	# Apply M3 checkbox styling
+	if debug_draw:
+		M3ComponentApplicator.apply_m3_to_component(debug_draw)
+		debug_draw.toggled.connect(_on_debug_draw_toggled)
+	if show_fps:
+		M3ComponentApplicator.apply_m3_to_component(show_fps)
+		show_fps.toggled.connect(_on_show_fps_toggled)
 	
-	# Add close button
+	# Add close button with M3 styling
 	var close_btn = Button.new()
 	close_btn.text = "Close (F12)"
+	M3ComponentApplicator.apply_m3_button_styling(close_btn, M3ComponentApplicator.ButtonVariant.ICON)
+	
+	# Add motion effect to close button
+	if ClassDB.class_exists("ButtonMotionHandler"):
+		ButtonMotionHandler.setup_button_hover_animation(close_btn)
+	
 	close_btn.pressed.connect(func(): visible = false)
 	$Panel/VBox.add_child(close_btn)
 

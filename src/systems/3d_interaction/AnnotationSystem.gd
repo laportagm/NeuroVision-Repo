@@ -99,6 +99,10 @@ func toggle_visibility() -> void:
 	_update_all_annotations()
 	annotation_visibility_changed.emit(_visibility_enabled)
 
+func is_visible() -> bool:
+	"""Returns the current visibility state of the annotation system"""
+	return _visibility_enabled
+
 func highlight_annotation(id: String, highlight: bool = true) -> void:
 	"""Highlight or unhighlight an annotation"""
 	if not _annotations.has(id):

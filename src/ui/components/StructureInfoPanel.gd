@@ -217,51 +217,35 @@ func _setup_ui() -> void:
 	_close_button.pressed.connect(_on_close_pressed)
 
 func _apply_theme() -> void:
-	"""Apply visual theme to panel"""
-	# Check if UIThemeManager has enhanced styling available
-	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
-		# Let the theme manager handle the styling
-		print("[StructureInfoPanel] Using enhanced theme system")
-		# Remove any manual overrides to let theme system work
-		remove_theme_stylebox_override("panel")
-		if _header:
-			_header.remove_theme_stylebox_override("panel")
-		# The theme will be applied automatically by UIThemeManager
-	else:
-		# Fallback to manual styling if theme manager not available
-		print("[StructureInfoPanel] Using fallback manual styling")
-		# Panel background
-		var panel_style = StyleBoxFlat.new()
-		panel_style.bg_color = panel_color
-		panel_style.corner_radius_top_left = 8
-		panel_style.corner_radius_top_right = 8
-		panel_style.corner_radius_bottom_left = 8
-		panel_style.corner_radius_bottom_right = 8
-		panel_style.shadow_color = Color(0, 0, 0, 0.5)
-		panel_style.shadow_size = 10
-		panel_style.shadow_offset = Vector2(2, 2)
-		add_theme_stylebox_override("panel", panel_style)
+	"""Apply Material 3 theme to panel using M3ComponentApplicator"""
+	# Apply M3 glass morphism panel styling
+	M3ComponentApplicator.apply_m3_panel_styling(self, M3ComponentApplicator.PanelVariant.GLASS)
+	
+	# Apply M3 header bar styling
+	if _header:
+		M3ComponentApplicator.apply_m3_panel_styling(_header, M3ComponentApplicator.PanelVariant.SURFACE_VARIANT)
+		# Make header corners match panel
+		var header_style = _header.get_theme_stylebox("panel")
+		if header_style and header_style is StyleBoxFlat:
+			header_style.corner_radius_bottom_left = 0
+			header_style.corner_radius_bottom_right = 0
+	
+	# Apply M3 typography to title
+	if _title_label:
+		M3ComponentApplicator.apply_m3_text_styling(_title_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
+		_title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	
+	# Style close button as M3 icon button
+	if _close_button:
+		_close_button.text = "✕"
+		_close_button.flat = true
+		M3ComponentApplicator.apply_m3_button_styling(_close_button, M3ComponentApplicator.ButtonVariant.ICON)
+		_close_button.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		_close_button.add_theme_font_size_override("font_size", 20)
 		
-		# Header style
-		var header_style = StyleBoxFlat.new()
-		header_style.bg_color = header_color
-		header_style.corner_radius_top_left = 8
-		header_style.corner_radius_top_right = 8
-		header_style.content_margin_left = 16
-		header_style.content_margin_right = 16
-		header_style.content_margin_top = 12
-		header_style.content_margin_bottom = 12
-		_header.add_theme_stylebox_override("panel", header_style)
-	
-	# Title style - always apply these
-	_title_label.add_theme_color_override("font_color", text_color)
-	_title_label.add_theme_font_size_override("font_size", 24)
-	
-	# Close button style - always apply these
-	_close_button.text = "✕"
-	_close_button.flat = true
-	_close_button.add_theme_color_override("font_color", text_color)
-	_close_button.add_theme_font_size_override("font_size", 18)
+		# Add hover effect
+		if ClassDB.class_exists("ButtonMotionHandler"):
+			ButtonMotionHandler.setup_button_hover_animation(_close_button)
 
 func _setup_auto_hide() -> void:
 	"""Setup auto-hide timer"""
@@ -285,63 +269,63 @@ func _clear_content() -> void:
 		child.queue_free()
 
 func _add_section(title: String, content: String) -> void:
-	"""Add a content section to the panel"""
-	# Section title
+	"""Add a content section to the panel with M3 styling"""
+	# Section title with M3 typography
 	var title_label = Label.new()
 	title_label.text = title
-	title_label.add_theme_color_override("font_color", accent_color)
-	title_label.add_theme_font_size_override("font_size", 18)
+	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
+	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 	_info_content.add_child(title_label)
 	
-	# Section content
+	# Section content with M3 typography
 	var content_label = RichTextLabel.new()
 	content_label.text = content
 	content_label.fit_content = true
 	content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content_label.add_theme_color_override("default_color", text_color)
-	content_label.add_theme_font_size_override("normal_font_size", 16)
+	content_label.add_theme_color_override("default_color", M3DesignTokens.M3_COLORS["on_surface"])
+	content_label.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
 	content_label.bbcode_enabled = true
 	content_label.custom_minimum_size.y = 60
 	_info_content.add_child(content_label)
 	
-	# Spacing
-	_add_spacer(16)
+	# Spacing using M3 spacing system
+	_add_spacer(M3DesignTokens.M3_SPACING["medium"])
 
 func _add_connections_section(connections: Array) -> void:
-	"""Add connections section"""
+	"""Add connections section with M3 styling"""
 	var title_label = Label.new()
 	title_label.text = "Connections"
-	title_label.add_theme_color_override("font_color", accent_color)
-	title_label.add_theme_font_size_override("font_size", 16)
+	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
+	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 	_info_content.add_child(title_label)
 	
 	for connection in connections:
 		var item_label = Label.new()
 		item_label.text = "• " + str(connection)
-		item_label.add_theme_color_override("font_color", text_color)
-		item_label.add_theme_font_size_override("font_size", 14)
+		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
+		item_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
-	_add_spacer(12)
+	_add_spacer(M3DesignTokens.M3_SPACING["small"])
 
 func _add_objectives_section(objectives: Array) -> void:
-	"""Add learning objectives section"""
+	"""Add learning objectives section with M3 styling"""
 	var title_label = Label.new()
 	title_label.text = "Learning Objectives"
-	title_label.add_theme_color_override("font_color", accent_color)
-	title_label.add_theme_font_size_override("font_size", 16)
+	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
+	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["secondary"])
 	_info_content.add_child(title_label)
 	
 	for i in range(objectives.size()):
 		var item_label = Label.new()
 		item_label.text = str(i + 1) + ". " + str(objectives[i])
-		item_label.add_theme_color_override("font_color", text_color)
-		item_label.add_theme_font_size_override("font_size", 14)
+		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
+		item_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
-	_add_spacer(12)
+	_add_spacer(M3DesignTokens.M3_SPACING["small"])
 
 func _add_spacer(height: int) -> void:
 	"""Add vertical spacing"""
@@ -350,47 +334,40 @@ func _add_spacer(height: int) -> void:
 	_info_content.add_child(spacer)
 
 func _add_list_section(title: String, items: Array, bullet: String = "•") -> void:
-	"""Add a bulleted list section"""
+	"""Add a bulleted list section with M3 styling"""
 	var title_label = Label.new()
 	title_label.text = title
-	title_label.add_theme_color_override("font_color", accent_color)
-	title_label.add_theme_font_size_override("font_size", 16)
+	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
+	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
 	_info_content.add_child(title_label)
 	
 	for item in items:
 		var item_label = Label.new()
 		item_label.text = bullet + " " + str(item)
-		item_label.add_theme_color_override("font_color", text_color)
-		item_label.add_theme_font_size_override("font_size", 14)
+		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
+		item_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
-	_add_spacer(12)
+	_add_spacer(M3DesignTokens.M3_SPACING["small"])
 
 func _add_category_tag(category: String) -> void:
-	"""Add a category tag at the top"""
+	"""Add a category tag with M3 chip styling"""
 	var tag_container = PanelContainer.new()
 	var tag_style = StyleBoxFlat.new()
-	tag_style.bg_color = accent_color
-	tag_style.bg_color.a = 0.2
-	tag_style.corner_radius_top_left = 4
-	tag_style.corner_radius_top_right = 4
-	tag_style.corner_radius_bottom_left = 4
-	tag_style.corner_radius_bottom_right = 4
-	tag_style.content_margin_left = 8
-	tag_style.content_margin_right = 8
-	tag_style.content_margin_top = 4
-	tag_style.content_margin_bottom = 4
+	tag_style.bg_color = M3DesignTokens.M3_COLORS["primary_container"]
+	tag_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["chip"])
+	tag_style.set_content_margin_all(M3DesignTokens.M3_SPACING["small"])
 	tag_container.add_theme_stylebox_override("panel", tag_style)
 	
 	var tag_label = Label.new()
 	tag_label.text = category
-	tag_label.add_theme_color_override("font_color", accent_color)
-	tag_label.add_theme_font_size_override("font_size", 12)
+	M3ComponentApplicator.apply_m3_text_styling(tag_label, M3ComponentApplicator.TypographyScale.LABEL_MEDIUM)
+	tag_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_primary_container"])
 	tag_container.add_child(tag_label)
 	
 	_info_content.add_child(tag_container)
-	_add_spacer(8)
+	_add_spacer(M3DesignTokens.M3_SPACING["small"])
 
 func _on_close_pressed() -> void:
 	"""Handle close button pressed"""
@@ -398,26 +375,19 @@ func _on_close_pressed() -> void:
 	close_requested.emit()
 
 func _add_quiz_button() -> void:
-	"""Add a button to start quiz for this structure"""
-	_add_spacer(20)
+	"""Add a button to start quiz with M3 styling"""
+	_add_spacer(M3DesignTokens.M3_SPACING["large"])
 	
 	var quiz_button = Button.new()
 	quiz_button.text = "Take Quiz"
-	quiz_button.add_theme_font_size_override("font_size", 16)
-	quiz_button.custom_minimum_size = Vector2(120, 40)
+	quiz_button.custom_minimum_size = Vector2(120, 48)
 	
-	# Style the button
-	var button_style = StyleBoxFlat.new()
-	button_style.bg_color = accent_color
-	button_style.corner_radius_top_left = 4
-	button_style.corner_radius_top_right = 4
-	button_style.corner_radius_bottom_left = 4
-	button_style.corner_radius_bottom_right = 4
-	quiz_button.add_theme_stylebox_override("normal", button_style)
+	# Apply M3 primary button styling
+	M3ComponentApplicator.apply_m3_button_styling(quiz_button, M3ComponentApplicator.ButtonVariant.PRIMARY)
 	
-	var hover_style = button_style.duplicate()
-	hover_style.bg_color = accent_color * 1.2
-	quiz_button.add_theme_stylebox_override("hover", hover_style)
+	# Add motion effects
+	if ClassDB.class_exists("ButtonMotionHandler"):
+		ButtonMotionHandler.setup_button_hover_animation(quiz_button)
 	
 	quiz_button.pressed.connect(_on_quiz_pressed)
 	

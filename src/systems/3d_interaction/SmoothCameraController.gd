@@ -7,7 +7,7 @@ signal zoom_changed(distance: float)
 signal rotation_changed(rotation: Vector2)
 
 # === CONSTANTS ===
-const MIN_ZOOM: float = 5.0
+const MIN_ZOOM: float = 3.0
 const MAX_ZOOM: float = 50.0
 const ZOOM_SPEED: float = 0.1
 const ROTATION_SPEED: float = 0.003
@@ -67,17 +67,17 @@ func _ready() -> void:
 	_target_rotation = initial_rotation
 	_current_pan = Vector3.ZERO
 	_target_pan = Vector3.ZERO
-	
+
 	if not camera:
 		camera = Camera3D.new()
 		add_child(camera)
-	
+
 	if not pivot:
 		pivot = Node3D.new()
 		pivot.name = "Pivot"
 		add_child(pivot)
 		camera.reparent(pivot)
-	
+
 	camera.fov = fov
 	_update_camera_transform()
 
@@ -110,15 +110,15 @@ func focus_on_target(target: Node3D, distance: float = -1.0) -> void:
 	"""Smoothly focus camera on target"""
 	if not target:
 		return
-	
+
 	_focus_target = target
 	_is_focusing = true
 	_focus_progress = 0.0
-	
+
 	# Calculate target position
 	var target_pos = target.global_position
 	_target_pan = target_pos
-	
+
 	# Calculate optimal distance if not specified
 	if distance < 0:
 		if target.has_method("get_aabb"):
@@ -127,7 +127,7 @@ func focus_on_target(target: Node3D, distance: float = -1.0) -> void:
 			distance = size * 2.0
 		else:
 			distance = 15.0
-	
+
 	_target_distance = clamp(distance, MIN_ZOOM, MAX_ZOOM)
 
 func set_rotation_limits(horizontal: float, vertical: float) -> void:
@@ -164,7 +164,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 				Input.set_default_cursor_shape(Input.CURSOR_DRAG)
 			else:
 				Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-		
+
 		MOUSE_BUTTON_MIDDLE:
 			_is_panning = event.pressed
 			if event.pressed:
@@ -172,11 +172,11 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 				Input.set_default_cursor_shape(Input.CURSOR_MOVE)
 			else:
 				Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-		
+
 		MOUSE_BUTTON_WHEEL_UP:
 			if event.pressed:
 				_zoom_velocity -= ZOOM_SPEED * zoom_sensitivity
-		
+
 		MOUSE_BUTTON_WHEEL_DOWN:
 			if event.pressed:
 				_zoom_velocity += ZOOM_SPEED * zoom_sensitivity
@@ -185,24 +185,24 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 	"""Handle mouse motion input"""
 	var delta = event.position - _last_mouse_position
 	_last_mouse_position = event.position
-	
+
 	if _is_rotating:
 		var rotation_delta = delta * ROTATION_SPEED * mouse_sensitivity
 		if invert_x:
 			rotation_delta.x *= -1
 		if invert_y:
 			rotation_delta.y *= -1
-		
+
 		_rotation_velocity = rotation_delta
 		_target_rotation.x -= rotation_delta.x
 		_target_rotation.y -= rotation_delta.y
 		_target_rotation.y = clamp(_target_rotation.y, -deg_to_rad(VERTICAL_ANGLE_LIMIT), deg_to_rad(VERTICAL_ANGLE_LIMIT))
-	
+
 	elif _is_panning:
 		var pan_delta = delta * PAN_SPEED * _current_distance
 		var right = camera.global_transform.basis.x
 		var up = camera.global_transform.basis.y
-		
+
 		_pan_velocity = -right * pan_delta.x + up * pan_delta.y
 		_target_pan += _pan_velocity
 
@@ -218,7 +218,7 @@ func _handle_pan_gesture(event: InputEventPanGesture) -> void:
 		rotation_delta.x *= -1
 	if invert_y:
 		rotation_delta.y *= -1
-	
+
 	_rotation_velocity = rotation_delta
 	_target_rotation.x -= rotation_delta.x
 	_target_rotation.y += rotation_delta.y
@@ -230,12 +230,12 @@ func _handle_smooth_movement(delta: float) -> void:
 	if abs(_zoom_velocity) > 0.001:
 		_target_distance += _zoom_velocity
 		_target_distance = clamp(_target_distance, MIN_ZOOM, MAX_ZOOM)
-		
+
 		if enable_inertia and not Input.is_action_pressed("ui_accept"):
 			_zoom_velocity *= inertia_decay
 		else:
 			_zoom_velocity = 0.0
-	
+
 	# Apply rotation velocity with inertia
 	if enable_inertia and not _is_rotating and _rotation_velocity.length() > 0.001:
 		_target_rotation -= _rotation_velocity
@@ -243,19 +243,19 @@ func _handle_smooth_movement(delta: float) -> void:
 		_rotation_velocity *= inertia_decay
 	elif not _is_rotating:
 		_rotation_velocity = Vector2.ZERO
-	
+
 	# Apply pan velocity with inertia
 	if enable_inertia and not _is_panning and _pan_velocity.length() > 0.001:
 		_target_pan += _pan_velocity * delta * 60.0
 		_pan_velocity *= inertia_decay
 	elif not _is_panning:
 		_pan_velocity = Vector3.ZERO
-	
+
 	# Smooth interpolation
 	_current_distance = lerp(_current_distance, _target_distance, zoom_smoothing)
 	_current_rotation = _current_rotation.lerp(_target_rotation, rotation_smoothing)
 	_current_pan = _current_pan.lerp(_target_pan, pan_smoothing)
-	
+
 	# Emit signals
 	zoom_changed.emit(_current_distance)
 	rotation_changed.emit(_current_rotation)
@@ -264,15 +264,15 @@ func _handle_focus_animation(delta: float) -> void:
 	"""Handle smooth focus animation"""
 	if not _is_focusing:
 		return
-	
+
 	_focus_progress += delta * 2.0
 	if _focus_progress >= 1.0:
 		_focus_progress = 1.0
 		_is_focusing = false
-	
+
 	# Smooth ease-in-out curve
 	var t = _focus_progress * _focus_progress * (3.0 - 2.0 * _focus_progress)
-	
+
 	if _focus_target and is_instance_valid(_focus_target):
 		var target_pos = _focus_target.global_position
 		_target_pan = _target_pan.lerp(target_pos, t)
@@ -281,9 +281,9 @@ func _update_camera_transform() -> void:
 	"""Update camera position and rotation"""
 	# Update pivot position
 	pivot.position = _current_pan
-	
+
 	# Update pivot rotation
 	pivot.rotation = Vector3(_current_rotation.y, _current_rotation.x, 0)
-	
+
 	# Update camera distance
 	camera.position = Vector3(0, 0, _current_distance)
