@@ -25,22 +25,22 @@ uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_l
 vec4 gaussian_blur(sampler2D tex, vec2 uv, vec2 pixel_size, float amount, int quality) {
     vec4 color = vec4(0.0);
     float total_weight = 0.0;
-    
+
     // Adjust sample count based on quality setting
     int samples = 5 + quality * 3;
     float sigma = amount * 0.5;
-    
+
     for (int x = -samples; x <= samples; x++) {
         for (int y = -samples; y <= samples; y++) {
             float distance = length(vec2(float(x), float(y)));
             float weight = exp(-(distance * distance) / (2.0 * sigma * sigma));
-            
+
             vec2 offset = vec2(float(x), float(y)) * pixel_size * amount;
             color += texture(tex, uv + offset) * weight;
             total_weight += weight;
         }
     }
-    
+
     return color / total_weight;
 }
 
@@ -63,7 +63,7 @@ vec3 chromatic_aberration(sampler2D tex, vec2 uv, vec2 pixel_size, float amount)
 void fragment() {
     vec2 screen_uv = SCREEN_UV;
     vec2 pixel_size = SCREEN_PIXEL_SIZE;
-    
+
     // Sample and blur the background
     vec4 blurred_bg;
     if (blur_amount > 0.0) {
@@ -71,22 +71,22 @@ void fragment() {
     } else {
         blurred_bg = texture(screen_texture, screen_uv);
     }
-    
+
     // Apply chromatic aberration if enabled
     if (enable_chromatic_aberration && aberration_amount > 0.0) {
         blurred_bg.rgb = chromatic_aberration(screen_texture, screen_uv, pixel_size, aberration_amount);
     }
-    
+
     // Adjust color properties
     blurred_bg.rgb = adjust_saturation(blurred_bg.rgb, saturation_boost);
     blurred_bg.rgb *= brightness;
-    
+
     // Get original UI element color
     vec4 original_color = texture(TEXTURE, UV);
-    
+
     // Apply glass tint
     vec3 tinted_bg = mix(blurred_bg.rgb, tint_color.rgb, tint_color.a);
-    
+
     // Add subtle noise for texture
     if (noise_amount > 0.0) {
         vec2 noise_uv = UV * 5.0 + TIME * 0.01;
@@ -94,10 +94,10 @@ void fragment() {
         float noise = fract(sin(dot(noise_uv, vec2(12.9898, 78.233))) * 43758.5453);
         tinted_bg += (noise - 0.5) * noise_amount;
     }
-    
+
     // Blend glass effect with original UI element
     vec3 final_color = mix(tinted_bg, original_color.rgb, original_color.a * (1.0 - glass_opacity));
-    
+
     // Preserve original alpha for proper UI compositing
     COLOR = vec4(final_color, original_color.a);
 }

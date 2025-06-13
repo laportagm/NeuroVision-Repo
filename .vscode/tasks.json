@@ -73,6 +73,32 @@
             "problemMatcher": []
         },
         {
+            "label": "🔗 Launch Editor with LSP",
+            "type": "shell",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
+            "args": [
+                "--editor",
+                "--path", 
+                "${workspaceFolder}",
+                "--lsp-port",
+                "6008"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "detail": "Launch Godot Editor with LSP server for VS Code integration"
+        },
+        {
             "label": "🧹 Clean Cache",
             "type": "shell",
             "command": "rm",

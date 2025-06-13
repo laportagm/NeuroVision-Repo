@@ -85,9 +85,6 @@ corner_radius_bottom_left = 16
 
 [node name="ExplorationScene" type="Node3D"]
 script = ExtResource("1_script")
-trackpad_zoom_sensitivity = null
-trackpad_rotate_sensitivity = null
-trackpad_zoom_damping = null
 
 [node name="Environment" type="Node" parent="."]
 
@@ -167,8 +164,10 @@ mouse_filter = 2
 [node name="TopBar" type="PanelContainer" parent="UI/MainUI"]
 material = SubResource("ShaderMaterial_1")
 custom_minimum_size = Vector2(0, 80)
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 10
 anchor_right = 1.0
+grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1")
 
@@ -188,10 +187,12 @@ size_flags_horizontal = 3
 
 [node name="ViewControls" type="HBoxContainer" parent="UI/MainUI/TopBar/TopBarContent"]
 layout_mode = 2
+metadata/_edit_group_ = true
 
 [node name="ViewLabel" type="Label" parent="UI/MainUI/TopBar/TopBarContent/ViewControls"]
 modulate = Color(0.8, 0.8, 0.8, 1)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "View:"
 
@@ -246,11 +247,11 @@ text = "?"
 [node name="LeftPanel" type="PanelContainer" parent="UI/MainUI"]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 1
-anchors_preset = 9
+anchors_preset = -1
 anchor_bottom = 1.0
-offset_top = 81.0
+offset_top = 110.0
 offset_right = 320.0
-offset_bottom = -20.0
+offset_bottom = -49.0
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2")
@@ -261,6 +262,7 @@ theme_override_constants/separation = 15
 
 [node name="Title" type="Label" parent="UI/MainUI/LeftPanel/StructureList"]
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 24
 text = "Brain Structures"
 
@@ -323,6 +325,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0, 0, 0, 0.8)
 
+[node name="LoadingLabel" type="Label" parent="UI/Overlays/LoadingOverlay"]
+layout_mode = 2
+offset_left = 540.0
+offset_top = 310.0
+offset_right = 803.0
+offset_bottom = 356.0
+theme_override_font_sizes/font_size = 24
+text = "Loading Brain Model..."
+horizontal_alignment = 1
+
 [node name="LoadingContent" type="VBoxContainer" parent="UI/Overlays/LoadingOverlay"]
 layout_mode = 0
 anchor_left = 0.5
@@ -333,12 +345,6 @@ offset_left = -100.0
 offset_top = -50.0
 offset_right = 100.0
 offset_bottom = 50.0
-
-[node name="LoadingLabel" type="Label" parent="UI/Overlays/LoadingOverlay/LoadingContent"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Loading Brain Model..."
-horizontal_alignment = 1
 
 [node name="ProgressBar" type="ProgressBar" parent="UI/Overlays/LoadingOverlay/LoadingContent"]
 custom_minimum_size = Vector2(200, 20)

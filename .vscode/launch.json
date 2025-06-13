@@ -1,41 +1,37 @@
 {
-    // VSCode Launch Configurations for NeuroVision
-    // Note: Godot debugger extension has limited features
-    // Updated: Phase 1 cleanup - removed non-existent test scenes
+    // VSCode Launch Configurations for NeuroVision Educational Platform
+    // Updated for current project structure and improved debugging workflow
     "version": "0.2.0",
     "configurations": [
         {
-            // Default: Run from main scene
-            "name": "Run NeuroVision",
-            "type": "godot",
+            // Launch Godot Editor with LSP enabled for development
+            "name": "🔧 Launch Godot Editor (LSP)",
+            "type": "node-terminal",
             "request": "launch",
-            "project": "${workspaceFolder}",
-            "port": 6007,
-            "address": "127.0.0.1"
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
+            "args": [
+                "--editor", 
+                "--path", 
+                "${workspaceFolder}",
+                "--lsp-port",
+                "6008"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
         },
         {
-            // Run Enhanced Scene directly (Glass Morphism UI)
-            "name": "Run Glass Morphism UI",
+            // Main Application - Educational Main Menu
+            "name": "🎓 Run NeuroVision (Main)",
             "type": "godot",
             "request": "launch",
             "project": "${workspaceFolder}",
             "port": 6007,
             "address": "127.0.0.1",
-            "scene": "res://src/scenes/EnhancedExplorationScene.tscn"
+            "scene": "main"
         },
         {
-            // Run Component Gallery (if implemented)
-            "name": "Component Gallery",
-            "type": "godot",
-            "request": "launch",
-            "project": "${workspaceFolder}",
-            "port": 6007,
-            "address": "127.0.0.1",
-            "scene": "res://src/ui/components/ComponentGallery.tscn"
-        },
-        {
-            // Debug whatever scene is currently open in Godot
-            "name": "Debug Current Scene",
+            // Debug whatever scene is currently open in Godot Editor
+            "name": "🔍 Debug Current Scene",
             "type": "godot",
             "request": "launch",
             "project": "${workspaceFolder}",
@@ -44,39 +40,92 @@
             "address": "127.0.0.1"
         },
         {
-            // Alternative port if 6007 is in use
-            "name": "Run (Alt Port 6008)",
+            // Alternative port configuration (matches project.godot remote_port)
+            "name": "🔄 Run (Alt Port 6008)",
             "type": "godot",
             "request": "launch",
             "project": "${workspaceFolder}",
             "port": 6008,
-            "address": "127.0.0.1"
+            "address": "127.0.0.1",
+            "scene": "main"
         }
     ]
 }
 
-// LIMITATIONS OF GODOT DEBUGGER:
-// - Cannot specify custom scene paths (only "main", "current", or "pinned")
-// - Cannot pass command line arguments
-// - Cannot set environment variables
-// - Limited debugging features compared to other languages
-//
-// WORKAROUNDS:
-// 1. To skip to a specific scene:
-//    - Open the scene in Godot Editor
-//    - Use "Debug Current Scene" configuration
-//    - Or temporarily change project.godot main_scene
-//
-// 2. For performance testing:
-//    - Add debug code to your _ready() functions
-//    - Use Godot's built-in profiler
-//    - Run from terminal: godot --path . --print-fps
-//
-// 3. For different configurations:
-//    - Create multiple project.godot files
-//    - Use conditional code based on OS.has_feature()
-//    - Create in-game debug menu
-//
-// NOTE: Phase 1 cleanup updates:
-// - Removed reference to non-existent test_glass_morphism.tscn
-// - launch_app.gd moved to src/utils/ (use from Godot editor if needed)
+/*
+=== NEUROVISION DEBUGGING GUIDE ===
+
+🎯 Available Launch Configurations:
+├── 🔧 Launch Godot Editor (LSP): Opens Godot Editor with LSP server on port 6008
+├── 🎓 Main App: Standard educational workflow (MainMenu → Exploration)
+├── 🔍 Current Scene: Debug whatever scene is open in Godot Editor
+└── 🔄 Alt Port: Use port 6008 if 6007 is occupied
+
+⚠️ GODOT DEBUGGER LIMITATIONS:
+The Godot VS Code extension only supports:
+├── scene: "main", "current", or "pinned" (no custom scene paths)
+├── No custom args or environment variables
+└── Limited debugging compared to other engines
+
+🔧 WORKAROUNDS FOR TESTING SPECIFIC SCENES:
+
+📋 Method 1 - Godot Editor:
+1. Open desired scene in Godot Editor (double-click .tscn file)
+2. Use "🔍 Debug Current Scene" configuration
+3. VS Code will debug the currently open scene
+
+📋 Method 2 - Temporary Main Scene:
+1. In project.godot, temporarily change main_scene to your test scene
+2. Use "🎓 Main App" configuration
+3. Remember to change back when done
+
+📋 Method 3 - Terminal Launch:
+├── Basic: godot --path . --scene res://path/to/your/scene.tscn
+├── Performance: godot --path . --print-fps --verbose
+└── Remote Debug: godot --path . --remote-debug 127.0.0.1:6007
+
+📚 EDUCATIONAL TESTING SCENES:
+├── Enhanced Exploration: src/scenes/EnhancedExplorationScene.tscn
+├── UI Components: src/ui/components/ThemePreviewPanel.tscn  
+├── Quiz System: tests/test_quiz_accessibility.tscn
+├── Progressive Disclosure: tests/demo_progressive_disclosure.tscn
+├── Model Loading: tests/test_model_loading_scene.tscn
+├── Highlight System: src/debug/HighlightSystemVisualTest.tscn
+└── Material 3: tests/test_m3_scene.tscn
+
+🔧 IN-GAME DEBUG FEATURES:
+├── F1: Debug console (type commands like 'test autoloads')
+├── F9: Material 3 theme testing
+├── F10: Theme cycling (Enhanced/Minimal/Material3)
+├── F1 + 'performance': Check educational platform performance
+├── F1 + 'models': List loaded educational 3D models
+└── F1 + 'test ui_safety': Validate educational UI components
+
+⚙️ PROJECT CONFIGURATION:
+├── Main Scene: res://src/ui/screens/MainMenu.tscn
+├── Remote Debug Port: 6008 (project.godot setting)
+├── Educational Autoloads: 15+ systems for learning platform
+├── Target Resolution: 1280x720 (educational display standard)
+└── Debug commands: Use F1 console for educational testing
+
+🏗️ DEVELOPMENT WORKFLOW:
+
+📋 Method A - Full LSP Development:
+1. Launch "🔧 Launch Godot Editor (LSP)" from VS Code
+2. Godot Editor opens with LSP server running on port 6008
+3. VS Code automatically connects for IntelliSense, go-to-definition, etc.
+4. Edit .gd files in VS Code with full language support
+5. Run/debug scenes from Godot Editor or VS Code
+
+📋 Method B - Quick Testing:
+1. Use Godot Editor to open specific test scenes
+2. Run "🔍 Debug Current Scene" from VS Code
+3. Use F1 console for in-game educational testing
+4. Terminal launch for performance testing with custom args
+
+📋 Method C - LSP Connection Check:
+1. Ensure Godot LSP extension is installed in VS Code
+2. Check settings.json has correct godot.lsp.serverPort: 6008
+3. Launch Godot Editor with LSP using "🔧 Launch Godot Editor (LSP)"
+4. Check VS Code status bar for "Godot LSP" connection indicator
+*/

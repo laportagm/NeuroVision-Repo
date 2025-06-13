@@ -37,7 +37,7 @@ const VERTICAL_ANGLE_LIMIT: float = 85.0
 @onready var status_label: Label = $UI/MainUI/BottomPanel/StatusBar/StatusLabel
 @onready var performance_label: Label = $UI/MainUI/BottomPanel/StatusBar/PerformanceInfo
 @onready var loading_overlay: ColorRect = $UI/Overlays/LoadingOverlay
-@onready var loading_label: Label = $UI/Overlays/LoadingOverlay/LoadingContent/LoadingLabel
+@onready var loading_label: Label = $UI/Overlays/LoadingOverlay/LoadingLabel
 @onready var loading_progress: ProgressBar = $UI/Overlays/LoadingOverlay/LoadingContent/ProgressBar
 @onready var help_overlay: PanelContainer = $UI/Overlays/HelpOverlay
 @onready var help_close: Button = $UI/Overlays/HelpOverlay/HelpContent/CloseButton
@@ -171,44 +171,144 @@ func _setup_ui() -> void:
 		performance_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
 
 func _apply_m3_theme_to_ui() -> void:
-	"""Apply Material 3 theme to all UI components"""
-	# Apply M3 to top bar
-	if top_bar:
-		M3ComponentApplicator.apply_m3_header_bar(top_bar)
-		# Style status label
-		if status_label:
-			M3ComponentApplicator.apply_m3_text_styling(status_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-			status_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
+	"""Apply comprehensive Material 3 theme to all UI components"""
+	print("[EnhancedExplorationScene] Applying M3 theme to all UI components")
 	
-	# Apply M3 to left panel (Brain Structures)
+	# Apply M3 to top bar with proper header styling
+	if top_bar:
+		M3ComponentApplicator.apply_m3_panel_styling(top_bar, M3ComponentApplicator.PanelVariant.SURFACE_CONTAINER)
+		_apply_m3_to_top_bar_components()
+	
+	# Apply M3 to left panel (Brain Structures) with navigation styling
 	if left_panel:
 		M3ComponentApplicator.apply_m3_panel_styling(left_panel, M3ComponentApplicator.PanelVariant.SURFACE)
-		# Find and style the title label
-		var title_label = left_panel.get_node_or_null("VBoxContainer/TitleLabel")
-		if title_label and title_label is Label:
-			M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-			title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+		_apply_m3_to_left_panel_components()
 	
-	# Apply M3 to bottom panel
+	# Apply M3 to bottom panel with status bar styling
 	if bottom_panel:
 		M3ComponentApplicator.apply_m3_panel_styling(bottom_panel, M3ComponentApplicator.PanelVariant.SURFACE_VARIANT)
+		_apply_m3_to_bottom_panel_components()
 	
-	# Apply M3 to overlays
+	# Apply M3 to modal overlays
+	_apply_m3_to_overlays()
+	
+	# Apply M3 to view controls dropdown
+	_apply_m3_to_view_controls()
+
+func _apply_m3_to_top_bar_components() -> void:
+	"""Apply M3 styling to top bar components"""
+	# Style the app title/logo
+	var logo_label = top_bar.get_node_or_null("TopBarContent/Logo")
+	if logo_label and logo_label is Label:
+		M3ComponentApplicator.apply_m3_text_styling(logo_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
+		logo_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	
+	# Style view controls label
+	var view_label = top_bar.get_node_or_null("TopBarContent/ViewControls/ViewLabel")
+	if view_label and view_label is Label:
+		M3ComponentApplicator.apply_m3_text_styling(view_label, M3ComponentApplicator.TypographyScale.LABEL_MEDIUM)
+		view_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+
+func _apply_m3_to_left_panel_components() -> void:
+	"""Apply M3 styling to left panel components"""
+	# Style the structures list title
+	var title_label = left_panel.get_node_or_null("StructureList/Title")
+	if title_label and title_label is Label:
+		M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
+		title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	
+	# Style the HSeparator
+	var separator = left_panel.get_node_or_null("StructureList/HSeparator")
+	if separator and separator is HSeparator:
+		separator.add_theme_color_override("separator", M3DesignTokens.M3_COLORS["outline_variant"])
+		separator.add_theme_constant_override("separation", 1)
+
+func _apply_m3_to_bottom_panel_components() -> void:
+	"""Apply M3 styling to bottom panel components"""
+	# Style status label with M3 typography
+	if status_label:
+		M3ComponentApplicator.apply_m3_text_styling(status_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
+		status_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
+	
+	# Style performance label with M3 typography  
+	if performance_label:
+		M3ComponentApplicator.apply_m3_text_styling(performance_label, M3ComponentApplicator.TypographyScale.LABEL_SMALL)
+		performance_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+
+func _apply_m3_to_overlays() -> void:
+	"""Apply M3 styling to modal overlays"""
+	# Style help overlay as M3 modal dialog
 	if help_overlay:
-		M3ComponentApplicator.apply_m3_modal_dialog(help_overlay)
+		M3ComponentApplicator.apply_m3_panel_styling(help_overlay, M3ComponentApplicator.PanelVariant.MODAL)
+		
+		# Style help title
+		var help_title = help_overlay.get_node_or_null("HelpContent/HelpTitle")
+		if help_title and help_title is Label:
+			M3ComponentApplicator.apply_m3_text_styling(help_title, M3ComponentApplicator.TypographyScale.HEADLINE_SMALL)
+			help_title.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+		
+		# Style help text
 		var help_text = help_overlay.get_node_or_null("HelpContent/HelpText")
 		if help_text and help_text is RichTextLabel:
 			help_text.add_theme_color_override("default_color", M3DesignTokens.M3_COLORS["on_surface"])
 			help_text.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_medium"]["size"])
 	
-	# Apply M3 to loading overlay
+	# Style loading overlay with M3 scrim
 	if loading_overlay:
 		loading_overlay.color = M3DesignTokens.M3_COLORS["scrim"]
+		
+		# Style loading label
 		if loading_label:
 			M3ComponentApplicator.apply_m3_text_styling(loading_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
 			loading_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
+		
+		# Style loading progress bar
 		if loading_progress:
-			M3ComponentApplicator.apply_m3_to_component(loading_progress)
+			_apply_m3_to_progress_bar(loading_progress)
+
+func _apply_m3_to_view_controls() -> void:
+	"""Apply M3 styling to view controls dropdown"""
+	if view_presets:
+		# Apply M3 filled variant button styling to dropdown
+		M3ComponentApplicator.apply_m3_to_component(view_presets)
+		view_presets.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
+		view_presets.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["body_medium"]["size"])
+		
+		# Style dropdown background
+		var dropdown_style = StyleBoxFlat.new()
+		dropdown_style.bg_color = M3DesignTokens.M3_COLORS["surface_container"]
+		dropdown_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["small"])
+		dropdown_style.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
+		dropdown_style.border_color = M3DesignTokens.M3_COLORS["outline"]
+		dropdown_style.set_border_width_all(1)
+		view_presets.add_theme_stylebox_override("normal", dropdown_style)
+		
+		# Style dropdown hover state
+		var dropdown_hover = dropdown_style.duplicate()
+		dropdown_hover.bg_color = M3DesignTokens.M3_COLORS["surface_container_high"]
+		view_presets.add_theme_stylebox_override("hover", dropdown_hover)
+
+func _apply_m3_to_progress_bar(progress_bar: ProgressBar) -> void:
+	"""Apply M3 styling to progress bar"""
+	if not progress_bar:
+		return
+	
+	# M3 progress bar background
+	var bg_style = StyleBoxFlat.new()
+	bg_style.bg_color = M3DesignTokens.M3_COLORS["surface_variant"]
+	bg_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["full"])
+	bg_style.content_margin_top = 4
+	bg_style.content_margin_bottom = 4
+	
+	# M3 progress bar fill
+	var fill_style = StyleBoxFlat.new()
+	fill_style.bg_color = M3DesignTokens.M3_COLORS["primary"]
+	fill_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["full"])
+	fill_style.content_margin_top = 4
+	fill_style.content_margin_bottom = 4
+	
+	progress_bar.add_theme_stylebox_override("background", bg_style)
+	progress_bar.add_theme_stylebox_override("fill", fill_style)
 
 func _apply_m3_button_styling(button: Button, text: String, variant: M3ComponentApplicator.ButtonVariant) -> void:
 	"""Apply M3 styling to a button with motion"""
