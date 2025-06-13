@@ -210,6 +210,90 @@ func is_current_theme_accessible() -> bool:
 
 # === ENHANCED THEME MANAGEMENT ===
 
+## Apply enhanced styling to all UI elements immediately
+func apply_enhanced_styling_immediately() -> void:
+	"""Apply modern visual enhancements to all UI elements"""
+	print("[UIThemeManager] Applying enhanced styling immediately")
+	
+	# Create enhanced style for panels
+	var enhanced_panel_style = StyleBoxFlat.new()
+	enhanced_panel_style.bg_color = Color(0.1, 0.1, 0.15, 0.95)
+	enhanced_panel_style.set_corner_radius_all(12)
+	enhanced_panel_style.shadow_color = Color(0, 0, 0, 0.3)
+	enhanced_panel_style.shadow_size = 8
+	enhanced_panel_style.shadow_offset = Vector2(0, 4)
+	enhanced_panel_style.border_color = Color(0.3, 0.3, 0.35, 0.5)
+	enhanced_panel_style.border_width_left = 1
+	enhanced_panel_style.border_width_top = 1
+	enhanced_panel_style.border_width_right = 1
+	enhanced_panel_style.border_width_bottom = 1
+	
+	# Create enhanced button styles
+	var button_normal = StyleBoxFlat.new()
+	button_normal.bg_color = Color(0.2, 0.2, 0.25, 0.9)
+	button_normal.set_corner_radius_all(8)
+	button_normal.shadow_color = Color(0, 0, 0, 0.2)
+	button_normal.shadow_size = 4
+	button_normal.shadow_offset = Vector2(0, 2)
+	
+	var button_hover = button_normal.duplicate()
+	button_hover.bg_color = Color(0.3, 0.3, 0.35, 0.95)
+	button_hover.shadow_size = 6
+	button_hover.border_color = Color.CYAN
+	button_hover.border_width_left = 2
+	button_hover.border_width_top = 2
+	button_hover.border_width_right = 2
+	button_hover.border_width_bottom = 2
+	
+	var button_pressed = button_normal.duplicate()
+	button_pressed.bg_color = Color(0.15, 0.15, 0.2, 0.95)
+	button_pressed.shadow_size = 2
+	button_pressed.shadow_offset = Vector2(0, 1)
+	
+	# Create or update current theme
+	if not current_theme_resource:
+		current_theme_resource = Theme.new()
+	
+	# Apply panel styles
+	current_theme_resource.set_stylebox("panel", "PanelContainer", enhanced_panel_style)
+	current_theme_resource.set_stylebox("panel", "Panel", enhanced_panel_style)
+	
+	# Apply button styles
+	current_theme_resource.set_stylebox("normal", "Button", button_normal)
+	current_theme_resource.set_stylebox("hover", "Button", button_hover)
+	current_theme_resource.set_stylebox("pressed", "Button", button_pressed)
+	
+	# Apply enhanced colors
+	current_theme_resource.set_color("font_color", "Button", Color.WHITE)
+	current_theme_resource.set_color("font_hover_color", "Button", Color.CYAN)
+	current_theme_resource.set_color("font_pressed_color", "Button", Color(0.8, 0.8, 0.9))
+	
+	# Apply to all UI nodes immediately
+	_apply_theme_to_tree(get_tree().root, current_theme_resource)
+	
+	# Apply glass morphism effect to panels if ThemeEffectsManager is available
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
+	if not effects_manager:
+		# Skip creating ThemeEffectsManager dynamically to avoid shader warnings
+		# It should be added as an autoload in project.godot if glass effects are desired
+		print("[UIThemeManager] ThemeEffectsManager not found - glass effects disabled")
+	
+	if effects_manager:
+		# Apply glass morphism to all panels
+		_apply_glass_morphism_to_panels(get_tree().root, effects_manager)
+	
+	print("[UIThemeManager] Enhanced styling applied successfully")
+
+## Apply glass morphism effect to all panel containers
+func _apply_glass_morphism_to_panels(node: Node, effects_manager: Node) -> void:
+	"""Recursively apply glass morphism to panel containers"""
+	if node is PanelContainer or node is Panel:
+		if effects_manager.has_method("apply_glass_morphism"):
+			effects_manager.apply_glass_morphism(node, 0.5)
+	
+	for child in node.get_children():
+		_apply_glass_morphism_to_panels(child, effects_manager)
+
 ## Preview a theme temporarily without applying globally
 func preview_theme(theme: Theme, preview_duration: float = 5.0) -> void:
 	"""Preview a theme temporarily before committing to change"""

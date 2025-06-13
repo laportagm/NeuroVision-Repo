@@ -25,6 +25,11 @@ func _ready() -> void:
 
 func _setup_ui() -> void:
 	"""Setup UI appearance"""
+	# Apply enhanced theme styling immediately
+	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
+		print("[MainMenu] Applying enhanced theme styling")
+		UIThemeManager.apply_enhanced_styling_immediately()
+	
 	# Add title
 	var title = Label.new()
 	title.text = "NeuroVision"

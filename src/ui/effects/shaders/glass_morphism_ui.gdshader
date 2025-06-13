@@ -17,10 +17,9 @@ uniform float aberration_amount : hint_range(0.0, 0.01, 0.001) = 0.003;
 uniform int blur_quality : hint_range(1, 3, 1) = 2; // 1=low, 2=medium, 3=high
 
 // Screen texture for background sampling
-uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear_mipmap;
+uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear;
 
-// Noise texture for subtle grain effect
-uniform sampler2D noise_texture : repeat_enable;
+// Note: Using procedural noise instead of texture for Metal compatibility
 
 // Function to apply Gaussian blur
 vec4 gaussian_blur(sampler2D tex, vec2 uv, vec2 pixel_size, float amount, int quality) {
@@ -91,7 +90,8 @@ void fragment() {
     // Add subtle noise for texture
     if (noise_amount > 0.0) {
         vec2 noise_uv = UV * 5.0 + TIME * 0.01;
-        float noise = texture(noise_texture, noise_uv).r;
+        // Use a simple procedural noise if texture is not available
+        float noise = fract(sin(dot(noise_uv, vec2(12.9898, 78.233))) * 43758.5453);
         tinted_bg += (noise - 0.5) * noise_amount;
     }
     

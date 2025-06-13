@@ -39,6 +39,10 @@ func _ready() -> void:
 	modulate.a = 0.0
 	print("[InfoPanel] Panel initialized. Offsets: ", offset_left, ", ", offset_right, " Visible: ", visible)
 	
+	# Apply enhanced theme if available
+	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
+		UIThemeManager.apply_enhanced_styling_immediately()
+	
 	# Add slide-in animation
 	modulate.a = 0
 	position.x += 20
@@ -214,34 +218,46 @@ func _setup_ui() -> void:
 
 func _apply_theme() -> void:
 	"""Apply visual theme to panel"""
-	# Panel background
-	var panel_style = StyleBoxFlat.new()
-	panel_style.bg_color = panel_color
-	panel_style.corner_radius_top_left = 8
-	panel_style.corner_radius_top_right = 8
-	panel_style.corner_radius_bottom_left = 8
-	panel_style.corner_radius_bottom_right = 8
-	panel_style.shadow_color = Color(0, 0, 0, 0.5)
-	panel_style.shadow_size = 10
-	panel_style.shadow_offset = Vector2(2, 2)
-	add_theme_stylebox_override("panel", panel_style)
+	# Check if UIThemeManager has enhanced styling available
+	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
+		# Let the theme manager handle the styling
+		print("[StructureInfoPanel] Using enhanced theme system")
+		# Remove any manual overrides to let theme system work
+		remove_theme_stylebox_override("panel")
+		if _header:
+			_header.remove_theme_stylebox_override("panel")
+		# The theme will be applied automatically by UIThemeManager
+	else:
+		# Fallback to manual styling if theme manager not available
+		print("[StructureInfoPanel] Using fallback manual styling")
+		# Panel background
+		var panel_style = StyleBoxFlat.new()
+		panel_style.bg_color = panel_color
+		panel_style.corner_radius_top_left = 8
+		panel_style.corner_radius_top_right = 8
+		panel_style.corner_radius_bottom_left = 8
+		panel_style.corner_radius_bottom_right = 8
+		panel_style.shadow_color = Color(0, 0, 0, 0.5)
+		panel_style.shadow_size = 10
+		panel_style.shadow_offset = Vector2(2, 2)
+		add_theme_stylebox_override("panel", panel_style)
+		
+		# Header style
+		var header_style = StyleBoxFlat.new()
+		header_style.bg_color = header_color
+		header_style.corner_radius_top_left = 8
+		header_style.corner_radius_top_right = 8
+		header_style.content_margin_left = 16
+		header_style.content_margin_right = 16
+		header_style.content_margin_top = 12
+		header_style.content_margin_bottom = 12
+		_header.add_theme_stylebox_override("panel", header_style)
 	
-	# Header style
-	var header_style = StyleBoxFlat.new()
-	header_style.bg_color = header_color
-	header_style.corner_radius_top_left = 8
-	header_style.corner_radius_top_right = 8
-	header_style.content_margin_left = 16
-	header_style.content_margin_right = 16
-	header_style.content_margin_top = 12
-	header_style.content_margin_bottom = 12
-	_header.add_theme_stylebox_override("panel", header_style)
-	
-	# Title style
+	# Title style - always apply these
 	_title_label.add_theme_color_override("font_color", text_color)
 	_title_label.add_theme_font_size_override("font_size", 24)
 	
-	# Close button style
+	# Close button style - always apply these
 	_close_button.text = "✕"
 	_close_button.flat = true
 	_close_button.add_theme_color_override("font_color", text_color)

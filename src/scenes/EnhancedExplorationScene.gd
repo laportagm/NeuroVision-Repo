@@ -141,15 +141,22 @@ func toggle_axis_indicator(should_show: bool) -> void:
 
 func _setup_ui() -> void:
 	"""Setup all UI elements"""
+	# Apply enhanced theme styling immediately
+	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
+		print("[EnhancedExplorationScene] Applying enhanced theme styling")
+		UIThemeManager.apply_enhanced_styling_immediately()
+	
 	# Configure view presets
 	view_presets.selected = 0
 	view_presets.item_selected.connect(_on_view_preset_selected)
 	
-	# Apply glass styling to all buttons
-	_style_button(label_toggle)
-	_style_button(quiz_button)
-	_style_button(help_button)
-	_style_button(help_close)
+	# Only apply manual button styling if theme manager not available
+	if not (UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately")):
+		# Apply glass styling to all buttons
+		_style_button(label_toggle)
+		_style_button(quiz_button)
+		_style_button(help_button)
+		_style_button(help_close)
 	
 	# Configure buttons
 	label_toggle.toggled.connect(_on_labels_toggled)
