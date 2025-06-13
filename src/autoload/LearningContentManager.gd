@@ -25,9 +25,9 @@ enum ContentPriority {
 
 # === CONSTANTS ===
 
-## Content hierarchy mapping based on learning levels
+## Content hierarchy mapping based on learning levels (using integer keys)
 const CONTENT_HIERARCHY = {
-	UIAdaptationManager.LearningLevel.BEGINNER: {
+	0: {  # BEGINNER
 		"fields": ["displayName", "keyFacts", "basicFunction"],
 		"max_key_facts": 3,
 		"max_learning_objectives": 2,
@@ -35,7 +35,7 @@ const CONTENT_HIERARCHY = {
 		"disclosure_level": DisclosureLevel.MINIMAL,
 		"content_complexity": "simplified"
 	},
-	UIAdaptationManager.LearningLevel.INTERMEDIATE: {
+	1: {  # INTERMEDIATE
 		"fields": ["displayName", "description", "function", "keyFacts", "learningObjectives", "clinicalRelevance", "category"],
 		"max_key_facts": 6,
 		"max_learning_objectives": 4,
@@ -43,7 +43,7 @@ const CONTENT_HIERARCHY = {
 		"disclosure_level": DisclosureLevel.DETAILED,
 		"content_complexity": "standard"
 	},
-	UIAdaptationManager.LearningLevel.ADVANCED: {
+	2: {  # ADVANCED
 		"fields": ["displayName", "alternateNames", "description", "function", "clinicalRelevance", "connections", "learningObjectives", "keyFacts", "category", "modelNames"],
 		"max_key_facts": -1,  # unlimited
 		"max_learning_objectives": -1,  # unlimited
@@ -88,14 +88,16 @@ func _ready() -> void:
 	print("[LearningContentManager] Initializing content hierarchy system")
 	
 	# Connect to UIAdaptationManager for learning level changes
-	if UIAdaptationManager:
-		UIAdaptationManager.learning_level_changed.connect(_on_learning_level_changed)
-		_current_learning_level = UIAdaptationManager.get_learning_level()
+	if has_node("/root/UIAdaptationManager"):
+		var ui_mgr = get_node("/root/UIAdaptationManager")
+		ui_mgr.learning_level_changed.connect(_on_learning_level_changed)
+		_current_learning_level = ui_mgr.get_learning_level()
 		print("[LearningContentManager] Connected to UIAdaptationManager - Level: " + str(_current_learning_level))
 	
 	# Connect to StructureContentService for content updates
-	if StructureContentService:
-		StructureContentService.content_ready.connect(_on_structure_content_ready)
+	if has_node("/root/StructureContentService"):
+		var content_svc = get_node("/root/StructureContentService")
+		content_svc.content_ready.connect(_on_structure_content_ready)
 		print("[LearningContentManager] Connected to StructureContentService")
 	
 	# Initialize content hierarchy for current level
@@ -105,7 +107,12 @@ func _ready() -> void:
 
 func get_filtered_content(structure_id: String) -> Dictionary:
 	"""Get content filtered for current learning level"""
-	if not StructureContentService or not StructureContentService.is_content_loaded():
+	if not has_node("/root/StructureContentService"):
+		push_warning("[LearningContentManager] StructureContentService not available")
+		return {}
+	
+	var content_svc = get_node("/root/StructureContentService")
+	if not content_svc.is_content_loaded():
 		push_warning("[LearningContentManager] StructureContentService not ready")
 		return {}
 	
@@ -115,7 +122,7 @@ func get_filtered_content(structure_id: String) -> Dictionary:
 		return _filtered_content_cache[cache_key].duplicate(true)
 	
 	# Get raw content from StructureContentService
-	var raw_content = StructureContentService.get_structure_content(structure_id)
+	var raw_content = content_svc.get_structure_content(structure_id)
 	if raw_content.is_empty():
 		push_warning("[LearningContentManager] No content found for structure: " + structure_id)
 		return {}
@@ -360,7 +367,7 @@ func _on_learning_level_changed(new_level: UIAdaptationManager.LearningLevel) ->
 		_current_learning_level = new_level
 		_update_content_hierarchy()
 
-func _on_structure_content_ready(structure_id: String, content: Dictionary) -> void:
+func _on_structure_content_ready(structure_id: String, _content: Dictionary) -> void:
 	"""Handle new structure content from StructureContentService"""
 	# Clear cached content for this structure
 	var cache_keys_to_remove = []

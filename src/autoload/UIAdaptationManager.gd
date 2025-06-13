@@ -7,6 +7,7 @@ signal layout_mode_changed(mode: LayoutMode)
 signal learning_level_changed(level: LearningLevel)
 signal content_hierarchy_updated(hierarchy: Dictionary)
 signal ui_adaptation_applied(adaptation_data: Dictionary)
+signal educational_theme_changed(theme: Theme, variant: int)
 
 # === ENUMS ===
 
@@ -23,10 +24,18 @@ enum LearningLevel {
 	ADVANCED        ## Complete information including research and technical details
 }
 
+enum ThemeVariant {
+	AUTO,           ## Automatically select theme based on system preferences
+	LIGHT,          ## Light theme for normal lighting conditions
+	DARK,           ## Dark theme for low-light environments
+	HIGH_CONTRAST   ## High contrast theme for accessibility
+}
+
 # === CONSTANTS ===
 
 const DEFAULT_LAYOUT_MODE = LayoutMode.STANDARD
 const DEFAULT_LEARNING_LEVEL = LearningLevel.INTERMEDIATE
+const DEFAULT_THEME_VARIANT = ThemeVariant.AUTO
 
 ## Screen size breakpoints for automatic layout adaptation
 const SCREEN_BREAKPOINTS = {
@@ -96,10 +105,12 @@ const CONTENT_HIERARCHY = {
 # === PRIVATE VARIABLES ===
 var _current_layout_mode: LayoutMode = DEFAULT_LAYOUT_MODE
 var _current_learning_level: LearningLevel = DEFAULT_LEARNING_LEVEL
+var _current_theme_variant: ThemeVariant = DEFAULT_THEME_VARIANT
 var _screen_size: Vector2
 var _is_touch_device: bool = false
 var _auto_adapt_enabled: bool = true
 var _content_hierarchy_cache: Dictionary = {}
+var _current_educational_theme: Theme = null
 
 # === PUBLIC METHODS ===
 
@@ -118,6 +129,9 @@ func _ready() -> void:
 	
 	# Apply initial adaptations
 	_apply_initial_adaptations()
+	
+	# Initialize educational theme
+	_apply_educational_theme()
 	
 	print("[UIAdaptationManager] UI adaptation system ready")
 
@@ -170,10 +184,39 @@ func set_learning_level(level: LearningLevel) -> void:
 	learning_level_changed.emit(level)
 	
 	print("[UIAdaptationManager] Learning level changed from " + str(old_level) + " to " + str(level))
+	
+	# Update educational theme for new learning level
+	_apply_educational_theme()
 
 func get_learning_level() -> LearningLevel:
 	"""Get the current learning level"""
 	return _current_learning_level
+
+func set_theme_variant(variant: ThemeVariant) -> void:
+	"""Set the current theme variant"""
+	if variant == _current_theme_variant:
+		return
+		
+	print("[UIAdaptationManager] Switching theme variant to: " + str(variant))
+	
+	var old_variant = _current_theme_variant
+	_current_theme_variant = variant
+	
+	# Apply new educational theme
+	_apply_educational_theme()
+	
+	# Save preference
+	_save_theme_preference()
+	
+	print("[UIAdaptationManager] Theme variant changed from " + str(old_variant) + " to " + str(variant))
+
+func get_theme_variant() -> ThemeVariant:
+	"""Get the current theme variant"""
+	return _current_theme_variant
+
+func get_current_educational_theme() -> Theme:
+	"""Get the currently applied educational theme"""
+	return _current_educational_theme
 
 func get_layout_configuration() -> Dictionary:
 	"""Get current layout configuration settings"""
@@ -237,11 +280,13 @@ func get_adaptation_status() -> Dictionary:
 	return {
 		"layout_mode": _current_layout_mode,
 		"learning_level": _current_learning_level,
+		"theme_variant": _current_theme_variant,
 		"screen_size": _screen_size,
 		"is_touch_device": _is_touch_device,
 		"auto_adapt_enabled": _auto_adapt_enabled,
 		"screen_count": DisplayServer.get_screen_count(),
-		"recommended_mode": get_recommended_layout_mode()
+		"recommended_mode": get_recommended_layout_mode(),
+		"has_educational_theme": _current_educational_theme != null
 	}
 
 # === PRIVATE METHODS ===
@@ -249,13 +294,15 @@ func get_adaptation_status() -> Dictionary:
 func _connect_to_existing_systems() -> void:
 	"""Connect to existing autoload systems"""
 	# Connect to SettingsManager
-	if SettingsManager:
-		SettingsManager.setting_changed.connect(_on_setting_changed)
+	if has_node("/root/SettingsManager"):
+		var settings_mgr = get_node("/root/SettingsManager")
+		settings_mgr.setting_changed.connect(_on_setting_changed)
 		print("[UIAdaptationManager] Connected to SettingsManager")
 	
 	# Connect to AccessibilityManager
-	if AccessibilityManager:
-		AccessibilityManager.accessibility_mode_changed.connect(_on_accessibility_changed)
+	if has_node("/root/AccessibilityManager"):
+		var accessibility_mgr = get_node("/root/AccessibilityManager")
+		accessibility_mgr.accessibility_mode_changed.connect(_on_accessibility_changed)
 		print("[UIAdaptationManager] Connected to AccessibilityManager")
 	
 	# Connect to window size changes
@@ -263,25 +310,32 @@ func _connect_to_existing_systems() -> void:
 
 func _load_adaptation_settings() -> void:
 	"""Load UI adaptation settings from SettingsManager"""
-	if not SettingsManager:
+	if not has_node("/root/SettingsManager"):
 		print("[UIAdaptationManager] SettingsManager not available, using defaults")
 		return
 	
+	var settings_mgr = get_node("/root/SettingsManager")
+	
 	# Load layout mode
-	var saved_layout = SettingsManager.get_setting("ui_layout_mode", str(DEFAULT_LAYOUT_MODE))
+	var saved_layout = settings_mgr.get_setting("ui_layout_mode", str(DEFAULT_LAYOUT_MODE))
 	if saved_layout is String and saved_layout.is_valid_int():
 		_current_layout_mode = int(saved_layout) as LayoutMode
 	
 	# Load learning level
-	var saved_level = SettingsManager.get_setting("ui_learning_level", str(DEFAULT_LEARNING_LEVEL))
+	var saved_level = settings_mgr.get_setting("ui_learning_level", str(DEFAULT_LEARNING_LEVEL))
 	if saved_level is String and saved_level.is_valid_int():
 		_current_learning_level = int(saved_level) as LearningLevel
 	
+	# Load theme variant
+	var saved_theme = settings_mgr.get_setting("ui_theme_variant", str(DEFAULT_THEME_VARIANT))
+	if saved_theme is String and saved_theme.is_valid_int():
+		_current_theme_variant = int(saved_theme) as ThemeVariant
+	
 	# Load auto adaptation setting
-	_auto_adapt_enabled = SettingsManager.get_setting("ui_auto_adapt", true)
+	_auto_adapt_enabled = settings_mgr.get_setting("ui_auto_adapt", true)
 	
 	print("[UIAdaptationManager] Loaded settings - Layout: " + str(_current_layout_mode) + 
-		  ", Level: " + str(_current_learning_level) + ", Auto: " + str(_auto_adapt_enabled))
+		  ", Level: " + str(_current_learning_level) + ", Theme: " + str(_current_theme_variant) + ", Auto: " + str(_auto_adapt_enabled))
 
 func _detect_screen_configuration() -> void:
 	"""Detect screen size and input capabilities"""
@@ -349,13 +403,71 @@ func _update_content_hierarchy() -> void:
 
 func _save_layout_preference() -> void:
 	"""Save layout mode preference"""
-	if SettingsManager:
-		SettingsManager.set_setting("ui_layout_mode", str(_current_layout_mode))
+	if has_node("/root/SettingsManager"):
+		var settings_mgr = get_node("/root/SettingsManager")
+		settings_mgr.set_setting("ui_layout_mode", str(_current_layout_mode))
 
 func _save_learning_level_preference() -> void:
 	"""Save learning level preference"""
-	if SettingsManager:
-		SettingsManager.set_setting("ui_learning_level", str(_current_learning_level))
+	if has_node("/root/SettingsManager"):
+		var settings_mgr = get_node("/root/SettingsManager")
+		settings_mgr.set_setting("ui_learning_level", str(_current_learning_level))
+
+func _save_theme_preference() -> void:
+	"""Save theme variant preference"""
+	if has_node("/root/SettingsManager"):
+		var settings_mgr = get_node("/root/SettingsManager")
+		settings_mgr.set_setting("ui_theme_variant", str(_current_theme_variant))
+
+func _apply_educational_theme() -> void:
+	"""Apply educational theme based on current variant and learning level"""
+	var resolved_variant = _resolve_theme_variant()
+	var generator_variant = _convert_to_generator_variant(resolved_variant)
+	
+	# Load and use EducationalThemeGenerator directly
+	var theme_generator_script = load("res://src/ui/themes/EducationalThemeGenerator.gd")
+	
+	# Generate educational theme
+	_current_educational_theme = theme_generator_script.generate_educational_theme(generator_variant, _current_learning_level)
+	
+	# Apply theme to UI system
+	if has_node("/root/UIThemeManager"):
+		var theme_mgr = get_node("/root/UIThemeManager")
+		var theme_name = "educational_" + str(resolved_variant).to_lower() + "_level" + str(_current_learning_level)
+		theme_mgr.apply_theme(_current_educational_theme, theme_name)
+		print("[UIAdaptationManager] Applied educational theme - Variant: " + str(resolved_variant) + ", Level: " + str(_current_learning_level))
+	else:
+		push_warning("[UIAdaptationManager] UIThemeManager not available for educational theme application")
+	
+	# Emit signal for components that need theme updates
+	educational_theme_changed.emit(_current_educational_theme, generator_variant)
+
+func _resolve_theme_variant() -> ThemeVariant:
+	"""Resolve AUTO theme variant to specific variant based on system preferences"""
+	if _current_theme_variant != ThemeVariant.AUTO:
+		return _current_theme_variant
+	
+	# Auto-detect based on system preferences and accessibility needs
+	if has_node("/root/AccessibilityManager"):
+		var accessibility_mgr = get_node("/root/AccessibilityManager")
+		if accessibility_mgr.is_high_contrast_enabled():
+			return ThemeVariant.HIGH_CONTRAST
+	
+	# Check system theme preference (if available)
+	# For now, default to light theme - could be enhanced with OS theme detection
+	return ThemeVariant.LIGHT
+
+func _convert_to_generator_variant(variant: ThemeVariant) -> int:
+	"""Convert UIAdaptationManager ThemeVariant to EducationalThemeGenerator ThemeVariant"""
+	match variant:
+		ThemeVariant.LIGHT:
+			return 0  # EducationalThemeGenerator.ThemeVariant.LIGHT
+		ThemeVariant.DARK:
+			return 1  # EducationalThemeGenerator.ThemeVariant.DARK
+		ThemeVariant.HIGH_CONTRAST:
+			return 2  # EducationalThemeGenerator.ThemeVariant.HIGH_CONTRAST
+		_:
+			return 0  # EducationalThemeGenerator.ThemeVariant.LIGHT
 
 # === SIGNAL HANDLERS ===
 
@@ -372,6 +484,11 @@ func _on_setting_changed(setting_name: String, value: Variant) -> void:
 				var new_level = int(value) as LearningLevel
 				if new_level != _current_learning_level:
 					set_learning_level(new_level)
+		"ui_theme_variant":
+			if value is String and value.is_valid_int():
+				var new_variant = int(value) as ThemeVariant
+				if new_variant != _current_theme_variant:
+					set_theme_variant(new_variant)
 		"ui_auto_adapt":
 			if value is bool:
 				enable_auto_adaptation(value)
@@ -382,6 +499,10 @@ func _on_accessibility_changed(enabled: bool) -> void:
 		# When accessibility is enabled, prefer more spacious layouts
 		if _current_layout_mode == LayoutMode.COMPACT:
 			set_layout_mode(LayoutMode.STANDARD)
+		
+		# Auto-switch to high contrast theme if accessibility is enabled
+		if _current_theme_variant == ThemeVariant.AUTO:
+			_apply_educational_theme()  # Re-apply theme with accessibility consideration
 	
 	print("[UIAdaptationManager] Adapted to accessibility change: " + str(enabled))
 
@@ -442,5 +563,33 @@ func get_learning_level_description(level: LearningLevel) -> String:
 			return "Standard educational content with clinical context"
 		LearningLevel.ADVANCED:
 			return "Comprehensive information including research details"
+		_:
+			return ""
+
+func get_theme_variant_display_name(variant: ThemeVariant) -> String:
+	"""Get user-friendly display name for theme variant"""
+	match variant:
+		ThemeVariant.AUTO:
+			return "Auto"
+		ThemeVariant.LIGHT:
+			return "Light"
+		ThemeVariant.DARK:
+			return "Dark"
+		ThemeVariant.HIGH_CONTRAST:
+			return "High Contrast"
+		_:
+			return "Unknown"
+
+func get_theme_variant_description(variant: ThemeVariant) -> String:
+	"""Get description of theme variant features"""
+	match variant:
+		ThemeVariant.AUTO:
+			return "Automatically adapt theme based on system preferences and accessibility needs"
+		ThemeVariant.LIGHT:
+			return "Light theme optimized for normal lighting conditions"
+		ThemeVariant.DARK:
+			return "Dark theme for low-light environments and reduced eye strain"
+		ThemeVariant.HIGH_CONTRAST:
+			return "High contrast theme for accessibility and visual impairments"
 		_:
 			return ""

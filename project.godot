@@ -38,8 +38,6 @@ HighlightMaterialManager="*res://src/systems/3d_interaction/HighlightMaterialMan
 settings/network/remote_port=6008
 settings/network/max_clients=1
 settings/crashes_and_errors/max_errors_per_second=20
-settings/stdout/print_fps=false
-settings/stdout/verbose_stdout=false
 
 [display]
 

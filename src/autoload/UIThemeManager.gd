@@ -96,6 +96,28 @@ func reload_current_theme() -> void:
 	_current_theme = ""
 	set_theme(theme_name, false)
 
+func apply_theme(theme: Theme, theme_name: String = "custom") -> void:
+	"""Apply a Theme resource directly (used for dynamically generated themes)"""
+	if not theme:
+		push_error("[UIThemeManager] Cannot apply null theme")
+		return
+	
+	print("[UIThemeManager] Applying custom theme: " + theme_name)
+	
+	# Store the custom theme in our loaded themes cache
+	_loaded_themes[theme_name] = theme
+	
+	# Apply the theme directly without validation since it's a custom theme
+	current_theme_resource = theme
+	_current_theme = theme_name
+	
+	# Apply to all UI nodes
+	_apply_theme_to_tree(get_tree().root, theme)
+	
+	# Don't save custom themes to settings
+	theme_changed.emit(theme_name)
+	theme_transition_completed.emit()
+
 # === PRIVATE METHODS ===
 
 func _preload_themes() -> void:

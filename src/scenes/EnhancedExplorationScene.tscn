@@ -1,27 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://b7nqm4jvtxcd2"]
+[gd_scene load_steps=15 format=3 uid="uid://b7nqm4jvtxcd2"]
 
-[ext_resource type="Script" path="res://src/scenes/EnhancedExplorationScene.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dpsq7c55c00wh" path="res://src/scenes/EnhancedExplorationScene.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c7xqm4jv8n5kp" path="res://src/ui/components/StructureInfoPanel.tscn" id="2_panel"]
-[ext_resource type="Shader" path="res://src/ui/effects/shaders/glass_panel_v1.gdshader" id="3_glass"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
-shader = ExtResource("3_glass")
-shader_parameter/blur_amount = 5.0
-shader_parameter/tint_color = Color(0, 0, 0, 0.2)
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
-sky_top_color = Color(0, 0, 0, 1)
-sky_horizon_color = Color(0, 0, 0, 1)
-sky_curve = 0.05
-ground_bottom_color = Color(0, 0, 0, 1)
-ground_horizon_color = Color(0, 0, 0, 1)
-
-[sub_resource type="Sky" id="Sky_1"]
-sky_material = SubResource("ProceduralSkyMaterial_1")
+[ext_resource type="Shader" uid="uid://h4y0vnwquvpr" path="res://src/ui/effects/shaders/glass_panel_v1.gdshader" id="3_glass"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
-background_color = Color(0, 0, 0, 1)
 ambient_light_source = 1
 ambient_light_color = Color(0.1, 0.1, 0.15, 1)
 ambient_light_energy = 0.3
@@ -30,11 +14,8 @@ tonemap_mode = 2
 ssao_enabled = true
 ssao_intensity = 0.8
 glow_enabled = true
-glow_intensity = 0.8
 glow_strength = 1.2
 glow_bloom = 0.4
-fog_enabled = false
-volumetric_fog_enabled = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
 
@@ -42,12 +23,10 @@ volumetric_fog_enabled = false
 albedo_color = Color(0.8, 0.8, 0.85, 1)
 metallic = 0.2
 roughness = 0.1
-rim_enabled = true
-rim = 1.0
-rim_tint = 0.5
 emission_enabled = true
 emission = Color(0.23, 0.51, 0.96, 1)
-emission_energy = 0.3
+emission_energy_multiplier = 0.3
+rim_enabled = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_1"]
 radial_segments = 32
@@ -64,37 +43,34 @@ size = Vector2(20, 20)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3"]
 albedo_color = Color(0.05, 0.05, 0.08, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("3_glass")
+shader_parameter/blur_amount = 5.0
+shader_parameter/tint_color = Color(0, 0, 0, 0.2)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+content_margin_left = 20.0
+content_margin_top = 15.0
+content_margin_right = 20.0
+content_margin_bottom = 15.0
 bg_color = Color(0, 0, 0, 0.5)
-border_width_left = 0
-border_width_top = 0
-border_width_right = 0
-border_width_bottom = 0
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-content_margin_left = 20
-content_margin_top = 15
-content_margin_right = 20
-content_margin_bottom = 15
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
 bg_color = Color(1, 1, 1, 0.05)
-border_width_left = 0
-border_width_top = 0
-border_width_right = 0
-border_width_bottom = 0
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
-content_margin_left = 20
-content_margin_top = 20
-content_margin_right = 20
-content_margin_bottom = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3"]
+content_margin_left = 20.0
+content_margin_top = 15.0
+content_margin_right = 20.0
+content_margin_bottom = 15.0
 bg_color = Color(0.1, 0.1, 0.12, 0.92)
 border_width_left = 1
 border_width_top = 1
@@ -105,10 +81,6 @@ corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
-content_margin_left = 20
-content_margin_top = 15
-content_margin_right = 20
-content_margin_bottom = 15
 
 [node name="ExplorationScene" type="Node3D"]
 script = ExtResource("1_script")
@@ -154,6 +126,7 @@ far = 1000.0
 [node name="ModelHolder" type="Node3D" parent="BrainModelContainer"]
 
 [node name="PlaceholderBrain" type="MeshInstance3D" parent="BrainModelContainer/ModelHolder"]
+visible = false
 mesh = SubResource("BoxMesh_1")
 surface_material_override/0 = SubResource("StandardMaterial3D_1")
 
@@ -181,14 +154,16 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="TopBar" type="PanelContainer" parent="UI/MainUI"]
+material = SubResource("ShaderMaterial_1")
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 0
 anchor_right = 1.0
 mouse_filter = 2
-material = SubResource("ShaderMaterial_1")
 theme_override_styles/panel = SubResource("StyleBoxFlat_1")
 
 [node name="TopBarContent" type="HBoxContainer" parent="UI/MainUI/TopBar"]
@@ -246,8 +221,8 @@ theme_override_constants/separation = 15
 [node name="LabelToggle" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-toggle_mode = true
 theme_override_font_sizes/font_size = 16
+toggle_mode = true
 text = "Labels"
 
 [node name="QuizButton" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
@@ -328,6 +303,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="LoadingOverlay" type="ColorRect" parent="UI/Overlays"]
@@ -408,6 +385,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="Annotations" type="Node2D" parent="UI/AnnotationLayer"]
