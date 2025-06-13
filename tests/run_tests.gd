@@ -16,6 +16,7 @@ func _ready():
 	# Define test files to run
 	var test_files = [
 		"res://tests/unit/test_autoload_fixes.gd",
+		"res://tests/unit/test_ui_adaptation_manager_simple.gd",
 		"res://tests/unit/test_performance_monitor.gd",
 		"res://tests/unit/test_brain_interaction_controller.gd",
 		"res://tests/unit/test_model_loader.gd",
@@ -114,8 +115,10 @@ func run_test_method(test: Node, method_name: String) -> void:
 	# Run the test
 	if test.has_method(method_name):
 		var result = test.call(method_name)
-		if result is GDScriptFunctionState:
-			await result
+		# Handle async test methods
+		if result != null and typeof(result) == TYPE_OBJECT:
+			if result.has_method("is_valid") and result.is_valid():
+				await result
 		await get_tree().process_frame
 	
 	# Run lifecycle: after_each

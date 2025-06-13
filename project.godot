@@ -27,15 +27,18 @@ AuthenticationManager="*res://src/autoload/AuthenticationManager.gd"
 NetworkManager="*res://src/autoload/NetworkManager.gd"
 SettingsManager="*res://src/autoload/SettingsManager.gd"
 UIThemeManager="*res://src/autoload/UIThemeManager.gd"
+UIAdaptationManager="*res://src/autoload/UIAdaptationManager.gd"
 StructureContentService="*res://src/systems/content_management/StructureContentService.gd"
 AssessmentService="*res://src/systems/assessment/AssessmentService.gd"
 HighlightMaterialManager="*res://src/systems/3d_interaction/HighlightMaterialManager.gd"
 
 [debug]
 
-settings/network/remote_port=6007
+settings/network/remote_port=6008
 settings/network/max_clients=1
 settings/crashes_and_errors/max_errors_per_second=20
+settings/stdout/print_fps=false
+settings/stdout/verbose_stdout=false
 
 [display]
 
