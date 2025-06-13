@@ -162,7 +162,7 @@ static func _determine_performance_profile(gpu_info: Dictionary) -> PerformanceP
 	# Check for specific GPU vendors and models
 	var gpu_name = gpu_info.get("name", "").to_lower()
 	var vram_mb = gpu_info.get("vram_mb", 0)
-	var compute_units = gpu_info.get("compute_units", 0)
+	var _compute_units = gpu_info.get("compute_units", 0)
 	
 	# Intel integrated graphics
 	if gpu_name.contains("intel") and (gpu_name.contains("uhd") or gpu_name.contains("iris")):
@@ -248,7 +248,7 @@ static func _analyze_hardware_capabilities(gpu_info: Dictionary) -> int:
 
 # === OPTIMIZATION METHODS ===
 
-static func _apply_ultra_low_optimizations(theme: Theme, capabilities: int) -> void:
+static func _apply_ultra_low_optimizations(theme: Theme, _capabilities: int) -> void:
 	"""Apply maximum optimizations for ultra-low-end hardware"""
 	
 	# Remove all effects
@@ -310,7 +310,7 @@ static func _apply_high_optimizations(theme: Theme, capabilities: int) -> void:
 	if not (capabilities & HardwareCapability.BLUR_SUPPORT):
 		theme.set_meta("blur_quality", 2)
 
-static func _apply_ultra_optimizations(theme: Theme, capabilities: int) -> void:
+static func _apply_ultra_optimizations(theme: Theme, _capabilities: int) -> void:
 	"""Enable all features for ultra-high-end hardware"""
 	
 	# Enable everything at maximum quality

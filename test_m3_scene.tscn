@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/debug/M3DebugPanel.gd" id="1"]
+
+[node name="M3TestScene" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="M3DebugPanel" type="PanelContainer" parent="."]
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.4
+anchor_bottom = 0.5
+script = ExtResource("1")
+
+[node name="VBox" type="VBoxContainer" parent="M3DebugPanel"]
+layout_mode = 2
+
+[node name="ThemeLabel" type="Label" parent="M3DebugPanel/VBox"]
+layout_mode = 2
+text = "Current Theme: Dark"
+
+[node name="TestButton" type="Button" parent="M3DebugPanel/VBox"]
+layout_mode = 2
+text = "Toggle Material 3"
+
+[node name="CycleButton" type="Button" parent="M3DebugPanel/VBox"]
+layout_mode = 2
+text = "Cycle All Themes"
+
+[node name="InfoLabel" type="RichTextLabel" parent="M3DebugPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="TestElements" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+
+[node name="Label" type="Label" parent="TestElements"]
+layout_mode = 2
+text = "Material 3 Theme Test Elements"
+
+[node name="Button" type="Button" parent="TestElements"]
+layout_mode = 2
+text = "Primary Button"
+
+[node name="LineEdit" type="LineEdit" parent="TestElements"]
+layout_mode = 2
+placeholder_text = "Input Field"
+
+[node name="CheckBox" type="CheckBox" parent="TestElements"]
+layout_mode = 2
+text = "Checkbox Option"
+
+[node name="OptionButton" type="OptionButton" parent="TestElements"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="TestElements"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="TestElements"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label2" type="Label" parent="TestElements/Panel"]
+anchor_left = 0.1
+anchor_top = 0.1
+text = "Panel with content"

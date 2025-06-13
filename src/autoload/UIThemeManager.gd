@@ -10,11 +10,18 @@ signal theme_transition_completed()
 const THEMES = {
 	"dark": "res://src/ui/themes/themes/DarkTheme.tres",
 	"high_contrast": "res://src/ui/themes/themes/HighContrastTheme.tres", 
-	"colorblind": "res://src/ui/themes/themes/ColorblindTheme.tres"
+	"colorblind": "res://src/ui/themes/themes/ColorblindTheme.tres",
+	"material3": "dynamic",  # Generated dynamically
+	"material3_high_contrast": "dynamic",  # Generated dynamically
+	"material3_colorblind": "dynamic"  # Generated dynamically
 }
 
 const DEFAULT_THEME = "dark"
 const TRANSITION_DURATION = 0.3
+
+# Preload Material 3 generators
+const Material3Generator = preload("res://src/ui/themes/Material3ThemeGenerator.gd")
+const ContentAdaptiveGenerator = preload("res://src/ui/themes/ContentAdaptiveThemeGenerator.gd")
 
 # === PRIVATE VARIABLES ===
 var _current_theme: String = DEFAULT_THEME
@@ -75,6 +82,12 @@ func get_theme_display_name(theme_name: String) -> String:
 			return "High Contrast"
 		"colorblind":
 			return "Colorblind Safe"
+		"material3":
+			return "Material 3"
+		"material3_high_contrast":
+			return "Material 3 (High Contrast)"
+		"material3_colorblind":
+			return "Material 3 (Colorblind Safe)"
 		_:
 			return theme_name.capitalize()
 
@@ -87,6 +100,12 @@ func get_theme_description(theme_name: String) -> String:
 			return "Enhanced contrast for better visibility"
 		"colorblind":
 			return "Optimized colors for colorblind users"
+		"material3":
+			return "Google's Material You design system with adaptive colors"
+		"material3_high_contrast":
+			return "Material 3 with enhanced contrast for accessibility"
+		"material3_colorblind":
+			return "Material 3 optimized for color vision deficiencies"
 		_:
 			return ""
 
@@ -124,6 +143,9 @@ func _preload_themes() -> void:
 	"""Preload all theme resources"""
 	for theme_name in THEMES:
 		var theme_path = THEMES[theme_name]
+		# Skip dynamic themes - they'll be generated on demand
+		if theme_path == "dynamic":
+			continue
 		if ResourceLoader.exists(theme_path):
 			_loaded_themes[theme_name] = load(theme_path)
 			print("[UIThemeManager] Preloaded theme: " + theme_name)
@@ -143,16 +165,44 @@ func _get_theme(theme_name: String) -> Theme:
 	"""Get theme resource by name"""
 	if theme_name in _loaded_themes:
 		return _loaded_themes[theme_name]
+	
+	# Handle Material 3 dynamic theme generation
+	if theme_name.begins_with("material3"):
+		return _generate_material3_theme(theme_name)
 		
 	# Try to load if not preloaded
 	if theme_name in THEMES:
 		var theme_path = THEMES[theme_name]
-		if ResourceLoader.exists(theme_path):
+		if theme_path != "dynamic" and ResourceLoader.exists(theme_path):
 			var theme = load(theme_path)
 			_loaded_themes[theme_name] = theme
 			return theme
 			
 	return null
+
+func _generate_material3_theme(theme_name: String) -> Theme:
+	"""Generate Material 3 theme dynamically"""
+	var m3_generator = Material3Generator.new()
+	m3_generator.setup_dependencies()
+	
+	var variant = "default"
+	match theme_name:
+		"material3_high_contrast":
+			variant = "high_contrast"
+		"material3_colorblind":
+			variant = "colorblind_safe"
+	
+	var theme = m3_generator.generate_material3_theme(variant)
+	
+	# Cache the generated theme
+	_loaded_themes[theme_name] = theme
+	
+	# Add metadata for theme identification
+	theme.set_meta("is_material3", true)
+	theme.set_meta("m3_variant", variant)
+	
+	print("[UIThemeManager] Generated Material 3 theme: " + theme_name)
+	return theme
 
 func _apply_theme_immediate(theme: Theme, theme_name: String) -> void:
 	"""Apply theme immediately without animation"""
@@ -191,7 +241,8 @@ func get_theme_accessibility_features(theme_name: String) -> Dictionary:
 		"high_contrast": false,
 		"colorblind_safe": false,
 		"large_text": false,
-		"reduced_motion": false
+		"reduced_motion": false,
+		"wcag_aaa_compliant": false
 	}
 	
 	match theme_name:
@@ -200,6 +251,14 @@ func get_theme_accessibility_features(theme_name: String) -> Dictionary:
 			features.large_text = true
 		"colorblind":
 			features.colorblind_safe = true
+		"material3_high_contrast":
+			features.high_contrast = true
+			features.wcag_aaa_compliant = true
+		"material3_colorblind":
+			features.colorblind_safe = true
+			features.wcag_aaa_compliant = true
+		"material3":
+			features.wcag_aaa_compliant = true
 			
 	return features
 
@@ -207,6 +266,52 @@ func is_current_theme_accessible() -> bool:
 	"""Check if current theme has accessibility features"""
 	var features = get_theme_accessibility_features(_current_theme)
 	return features.high_contrast or features.colorblind_safe
+
+# === MATERIAL 3 INTEGRATION ===
+
+## Generate Material 3 theme for specific brain structure
+func generate_m3_brain_region_theme(region_name: String, complexity_level: int = 1) -> void:
+	"""Generate and apply Material 3 theme adapted for brain region"""
+	var theme = ContentAdaptiveGenerator.generate_brain_region_theme(
+		region_name, complexity_level, true
+	)
+	
+	# Apply the generated theme
+	apply_theme(theme, "material3_" + region_name.to_lower())
+	
+	print("[UIThemeManager] Applied Material 3 theme for region: " + region_name)
+
+## Check if current theme is Material 3
+func is_material3_active() -> bool:
+	"""Check if current theme uses Material 3 design system"""
+	return _current_theme.begins_with("material3")
+
+## Get Material 3 adaptive color for structure
+func get_m3_adaptive_color(structure_name: String) -> Color:
+	"""Get Material 3 adaptive color for a brain structure"""
+	if not is_material3_active():
+		return Color.WHITE
+		
+	var m3_generator = Material3Generator.new()
+	return m3_generator.generate_adaptive_color(structure_name)
+
+## Apply Material 3 glass morphism to control
+func apply_m3_glass_morphism(control: Control, intensity: float = 0.85) -> void:
+	"""Apply Material 3 glass morphism effect to a control"""
+	if not control:
+		return
+		
+	var m3_generator = Material3Generator.new()
+	var base_color = M3DesignTokens.M3_COLORS["surface"]
+	base_color.a = intensity
+	
+	var glass_style = m3_generator.create_glass_morphism_style(base_color)
+	
+	# Apply to different control types
+	if control is Panel or control is PanelContainer:
+		control.add_theme_stylebox_override("panel", glass_style)
+	elif control is Button:
+		control.add_theme_stylebox_override("normal", glass_style)
 
 # === ENHANCED THEME MANAGEMENT ===
 

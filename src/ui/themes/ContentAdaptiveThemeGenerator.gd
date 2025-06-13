@@ -6,7 +6,9 @@ extends Resource
 
 # Preload the ColorSystem and DesignTokens for direct access
 const ColorSystem = preload("res://src/ui/themes/EducationalColorSystem.gd")
-const DesignTokens = preload("res://src/ui/themes/DesignTokens.gd")
+const DesignTokensRef = preload("res://src/ui/themes/DesignTokens.gd")
+const M3Tokens = preload("res://src/ui/themes/M3DesignTokens.gd")
+const Material3Generator = preload("res://src/ui/themes/Material3ThemeGenerator.gd")
 
 # === LEARNING CONTEXT STRUCTURE ===
 
@@ -22,13 +24,25 @@ class LearningContext:
 # === BRAIN REGION THEME GENERATION ===
 
 ## Generate theme customized for specific brain region
-static func generate_brain_region_theme(region_name: String, complexity_level: int) -> Theme:
+static func generate_brain_region_theme(region_name: String, complexity_level: int, use_material3: bool = false) -> Theme:
 	"""Generate theme optimized for studying specific brain regions"""
 	
-	# Import EducationalThemeGenerator for base theme generation
-	var base_theme = EducationalThemeGenerator.generate_educational_theme(
-		EducationalThemeGenerator.ThemeVariant.DARK, complexity_level
-	)
+	var base_theme: Theme
+	
+	if use_material3:
+		# Use Material 3 theme generator for modern visual polish
+		var m3_generator = Material3Generator.new()
+		base_theme = m3_generator.generate_material3_theme("default")
+		
+		# Apply Material 3 adaptive color based on brain region
+		var adaptive_color = m3_generator.generate_adaptive_color(region_name)
+		_apply_m3_region_colors(base_theme, region_name, adaptive_color)
+	else:
+		# Import EducationalThemeGenerator for base theme generation
+		var EducationalThemeGen = preload("res://src/ui/themes/EducationalThemeGenerator.gd")
+		base_theme = EducationalThemeGen.generate_educational_theme(
+			EducationalThemeGen.ThemeVariant.DARK, complexity_level
+		)
 	
 	# Apply region-specific modifications
 	_apply_region_specific_colors(base_theme, region_name)
@@ -137,6 +151,38 @@ static func _add_region_metadata(theme: Theme, region_name: String, complexity_l
 	theme.set_meta("brain_region", region_name)
 	theme.set_meta("region_complexity", complexity_level)
 	theme.set_meta("region_theme_version", "1.0")
+
+static func _apply_m3_region_colors(theme: Theme, _region_name: String, adaptive_color: Color) -> void:
+	"""Apply Material 3 adaptive colors based on brain region"""
+	
+	# Generate tonal palette from adaptive color
+	var tonal_palette = M3Tokens.generate_tonal_palette(adaptive_color)
+	
+	# Apply to primary interactive elements
+	var primary_button = theme.get_stylebox("normal", "Button") as StyleBoxFlat
+	if primary_button:
+		primary_button.bg_color = tonal_palette["40"]  # Primary container
+		theme.set_stylebox("normal", "Button", primary_button)
+	
+	# Apply to surfaces
+	var panel = theme.get_stylebox("panel", "Panel") as StyleBoxFlat
+	if panel:
+		panel.bg_color = tonal_palette["10"]  # Surface container
+		panel.border_color = tonal_palette["50"]  # Outline variant
+		theme.set_stylebox("panel", "Panel", panel)
+	
+	# Update text colors for contrast
+	theme.set_color("font_color", "Label", tonal_palette["90"])  # On surface
+	theme.set_color("font_color", "Button", tonal_palette["10"])  # On primary
+	
+	# Apply to selection and highlights
+	theme.set_color("selection_color", "RichTextLabel", tonal_palette["80"])
+	theme.set_color("caret_color", "LineEdit", tonal_palette["60"])
+	
+	# Store M3 metadata
+	theme.set_meta("material3_enabled", true)
+	theme.set_meta("m3_adaptive_color", adaptive_color)
+	theme.set_meta("m3_tonal_palette", tonal_palette)
 
 # === STRUCTURE-SPECIFIC PALETTE GENERATION ===
 
@@ -520,7 +566,7 @@ static func _extract_theme_colors(theme: Theme) -> Array:
 	
 	return colors
 
-static func _extract_typography_samples(theme: Theme) -> Array:
+static func _extract_typography_samples(_theme: Theme) -> Array:
 	"""Extract typography samples from theme"""
 	return [
 		{"text": "Large Heading", "size": 24, "weight": "bold"},
