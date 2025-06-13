@@ -101,8 +101,9 @@ func _update_display() -> void:
 	text += "[b]FPS:[/b] %d (avg: %d)\n" % [int(metrics.fps), int(metrics.avg_fps)]
 	text += _get_fps_color_tag(metrics.avg_fps)
 	
-	# Model Info
-	text += "\n[b]Current LOD:[/b] %s\n" % current_lod
+	# Model Info with visual indicator
+	var lod_indicator = _get_lod_indicator(current_lod)
+	text += "\n[b]Current LOD:[/b] %s %s\n" % [current_lod, lod_indicator]
 	if model_stats.has("vertex_count"):
 		text += "[b]Vertices:[/b] %s\n" % _format_number(model_stats.vertex_count)
 	
@@ -130,6 +131,18 @@ func _get_fps_color_tag(fps: float) -> String:
 		return "[color=orange]Acceptable[/color]"
 	else:
 		return "[color=red]Poor - Needs Optimization[/color]"
+
+func _get_lod_indicator(lod_name: String) -> String:
+	"""Get visual indicator for LOD level"""
+	match lod_name:
+		"LOW":
+			return "[color=green]▣[/color] (Performance)"
+		"MEDIUM":
+			return "[color=yellow]▣▣[/color] (Balanced)"
+		"HIGH":
+			return "[color=red]▣▣▣[/color] (Quality)"
+		_:
+			return ""
 
 func _format_number(num: int) -> String:
 	"""Format large numbers with commas"""

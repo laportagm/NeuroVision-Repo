@@ -68,7 +68,7 @@ func _ready() -> void:
 	add_child(_gpu_detector)
 	
 	# Detect GPU and set initial quality
-	var gpu_info = _gpu_detector.detect_gpu()
+	var _gpu_info = _gpu_detector.detect_gpu()  # Prefixed with _ to indicate intentionally unused
 	_current_quality_level = _gpu_detector.get_recommended_quality()
 	print("[ModelLoader] Initial quality level: " + PerformanceMonitor.QualityLevel.keys()[_current_quality_level])
 	
@@ -456,8 +456,43 @@ func _find_model_path(model_name: String, lod_level: int) -> String:
 	"""Find the path to a model file"""
 	print("[ModelLoader] Looking for model: %s at LOD level: %d" % [model_name, lod_level])
 	
-	# First, try exact LOD match in processed directory
 	var lod_suffix = LOD_SUFFIXES.get(lod_level, "")
+	
+	# === NEW: Check model-specific subdirectory first ===
+	# Try different folder naming conventions
+	var folder_variations = [
+		model_name + "_LOD",  # e.g., Internal-Structures_LOD
+		model_name.replace("-", "_") + "_LOD",  # e.g., Internal_Structures_LOD
+		model_name.replace("_", "-") + "_LOD",
+		model_name.replace(" ", "_") + "_LOD",
+		model_name.replace(" ", "-") + "_LOD"
+	]
+	
+	for folder_name in folder_variations:
+		var subfolder_path = PROCESSED_PATH + folder_name + "/"
+		
+		# Check if subfolder exists by trying to load a file from it
+		# Try with full model name + suffix
+		var path = subfolder_path + model_name + lod_suffix + ".glb"
+		if ResourceLoader.exists(path):
+			print("[ModelLoader] Found in subdirectory: " + path)
+			return path
+		
+		# Try with just LOD suffix name (e.g., "low.glb", "high.glb")
+		if lod_suffix != "":
+			path = subfolder_path + lod_suffix.substr(1) + ".glb"  # Remove the underscore
+			if ResourceLoader.exists(path):
+				print("[ModelLoader] Found simplified name in subdirectory: " + path)
+				return path
+		
+		# Try LOD fallbacks in subdirectory
+		for suffix in LOD_FALLBACKS[lod_level]:
+			path = subfolder_path + model_name + suffix + ".glb"
+			if ResourceLoader.exists(path):
+				print("[ModelLoader] Found fallback in subdirectory: " + path)
+				return path
+	
+	# === ORIGINAL: Check flat processed directory ===
 	var processed_path = PROCESSED_PATH + model_name + lod_suffix + ".glb"
 	if ResourceLoader.exists(processed_path):
 		print("[ModelLoader] Found processed LOD variant: " + processed_path)
@@ -477,13 +512,13 @@ func _find_model_path(model_name: String, lod_level: int) -> String:
 				print("[ModelLoader] Found processed model: " + path)
 				return path
 	
-	# Fallback to raw models (original quality)
+	# === FALLBACK: Try raw models ===
 	var raw_path = RAW_PATH + model_name + ".glb"
 	if ResourceLoader.exists(raw_path):
 		print("[ModelLoader] WARNING: No LOD variant found, using raw model: " + raw_path)
 		return raw_path
 	
-	# Try with different naming conventions
+	# Try with different naming conventions in raw
 	var variations = [
 		model_name.replace(" ", "_"),
 		model_name.replace("_", " "),
@@ -498,6 +533,7 @@ func _find_model_path(model_name: String, lod_level: int) -> String:
 		if ResourceLoader.exists(raw_path):
 			return raw_path
 	
+	print("[ModelLoader] ERROR: Could not find model: " + model_name)
 	return ""
 
 func _load_resource(path: String) -> Resource:

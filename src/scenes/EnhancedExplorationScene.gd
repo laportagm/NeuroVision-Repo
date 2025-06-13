@@ -578,11 +578,15 @@ func _on_internal_structures_loaded(model_instance: Node3D) -> void:
 	# Map mesh instances to structure IDs
 	for child in model_instance.get_children():
 		if child is MeshInstance3D:
-			var mesh_name = child.name
-			print("[EnhancedExplorationScene] Found mesh: ", mesh_name)
+			var mesh_name = child.name.strip_edges()  # Remove any leading/trailing whitespace
+			print("[EnhancedExplorationScene] Found mesh: '", mesh_name, "' (length: ", mesh_name.length(), ")")
 			
 			# Check if this mesh name is in our mapping
 			var found_mapping = false
+			
+			# Debug: print available mappings for this mesh
+			print("[EnhancedExplorationScene] Looking for mapping for mesh: '", mesh_name, "'")
+			print("[EnhancedExplorationScene] Available mappings: ", structure_mapping.keys())
 			
 			# Try exact match first
 			if structure_mapping.has(mesh_name):

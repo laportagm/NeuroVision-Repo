@@ -17,6 +17,7 @@ extends EditorScript
 # === CONSTANTS ===
 const SOURCE_DIR: String = "res://assets/3d_models/raw/"
 const OUTPUT_DIR: String = "res://assets/3d_models/processed/"
+const USE_SUBDIRECTORIES: bool = true  # Create model-specific folders for LODs
 
 # Target polygon counts for each LOD
 const LOD_TARGETS: Dictionary = {
@@ -92,7 +93,15 @@ func _optimize_model(model_path: String) -> void:
 		
 		var optimized = _create_optimized_variant(resource, target_triangles, texture_scale)
 		if optimized:
-			var output_path = OUTPUT_DIR + model_name + lod_suffix + ".glb"
+			var output_path: String
+			if USE_SUBDIRECTORIES:
+				# Create subdirectory for this model
+				var subdirectory = OUTPUT_DIR + model_name.replace("-", "_") + "_LOD/"
+				_ensure_directory_exists(subdirectory)
+				output_path = subdirectory + model_name + lod_suffix + ".glb"
+			else:
+				output_path = OUTPUT_DIR + model_name + lod_suffix + ".glb"
+			
 			_save_optimized_model(optimized, output_path)
 			
 			# Analyze result
@@ -351,10 +360,14 @@ func _find_brain_models() -> Array:
 
 func _ensure_output_directory() -> void:
 	"""Ensure output directory exists"""
+	_ensure_directory_exists(OUTPUT_DIR)
+
+func _ensure_directory_exists(path: String) -> void:
+	"""Ensure any directory exists"""
 	var dir = DirAccess.open("res://")
-	if not dir.dir_exists(OUTPUT_DIR):
-		dir.make_dir_recursive(OUTPUT_DIR)
-		print("Created output directory: " + OUTPUT_DIR)
+	if not dir.dir_exists(path):
+		dir.make_dir_recursive(path)
+		print("Created directory: " + path)
 
 func _print_summary() -> void:
 	"""Print optimization summary"""

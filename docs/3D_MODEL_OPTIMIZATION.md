@@ -64,6 +64,22 @@ If the automated tools don't work perfectly, you can manually create LODs:
 
 ## File Structure
 
+The system supports two organizational structures:
+
+### Option 1: Subdirectory Structure (Recommended)
+```
+assets/
+└── 3d_models/
+    ├── raw/                    # Original high-res models
+    │   └── Internal-Structures.glb
+    └── processed/              # Optimized LOD variants
+        └── Internal_Structures_LOD/    # Model-specific folder
+            ├── Internal-Structures_low.glb
+            ├── Internal-Structures_high.glb
+            └── Internal-Structures p.glb   # Optional variants
+```
+
+### Option 2: Flat Structure (Legacy)
 ```
 assets/
 └── 3d_models/
@@ -74,6 +90,8 @@ assets/
         ├── Internal-Structures_medium.glb
         └── Internal-Structures_high.glb
 ```
+
+The ModelLoader automatically searches both structures, prioritizing subdirectories.
 
 ## GPU Detection System
 
