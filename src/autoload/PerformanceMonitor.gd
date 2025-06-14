@@ -125,10 +125,16 @@ func _setup_timers() -> void:
 func _initialize_quality_settings() -> void:
 	"""Initialize quality based on hardware detection"""
 	var renderer = RenderingServer.get_video_adapter_name().to_lower()
+	var vendor = RenderingServer.get_video_adapter_vendor().to_lower()
 	
-	# Detect hardware and set initial quality
-	if "intel" in renderer and ("uhd" in renderer or "hd" in renderer):
+	print("[Performance] GPU Detection - Renderer: %s, Vendor: %s" % [renderer, vendor])
+	
+	# Prioritize Intel detection for Intel UHD 620 optimization
+	if "intel" in vendor or "intel" in renderer:
 		_current_quality = QualityLevel.LOW
+		print("[Performance] Detected Intel graphics (UHD 620 optimization), starting with LOW quality")
+	elif ("uhd" in renderer or "hd graphics" in renderer or "iris" in renderer):
+		_current_quality = QualityLevel.LOW  
 		print("[Performance] Detected integrated graphics, starting with LOW quality")
 	elif "nvidia" in renderer or "amd" in renderer or "radeon" in renderer:
 		_current_quality = QualityLevel.HIGH
@@ -321,6 +327,21 @@ func _register_global_shader_parameters() -> void:
 	print("[Performance]   - texture_lod_bias (float)")
 	print("[Performance]   - glow_enabled (bool)")
 	print("[Performance]   - ssr_enabled (bool)")
+
+func report_custom_metric(metric_name: String, value: float) -> void:
+	"""Report a custom metric from external systems"""
+	if not _is_monitoring:
+		return
+		
+	# Store custom metric in performance data
+	if not _performance_data.has("custom_metrics"):
+		_performance_data["custom_metrics"] = {}
+		
+	_performance_data["custom_metrics"][metric_name] = value
+	
+	# Log significant metrics
+	if "efficiency" in metric_name.to_lower():
+		print("[Performance] Custom metric - %s: %.2f" % [metric_name, value])
 
 func _safe_set_shader_param(_param_name: String, _value: Variant) -> void:
 	"""Safely set a global shader parameter, handling missing parameters gracefully"""

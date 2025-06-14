@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhxmf7y8xqvnt"]
 
-[ext_resource type="Script" path="res://src/debug/HighlightSystemTest.gd" id="1_q8xvk"]
+[ext_resource type="Script" uid="uid://dt0rkkus4mdpc" path="res://src/debug/HighlightSystemTest.gd" id="1_q8xvk"]
 
 [sub_resource type="Environment" id="Environment_1n8yh"]
 background_mode = 1

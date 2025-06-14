@@ -28,6 +28,11 @@ var _current_theme: String = DEFAULT_THEME
 var _loaded_themes: Dictionary = {}
 var _transition_tween: Tween = null
 
+# Performance-based shader management
+var _glass_shader_full: Shader = null
+var _glass_shader_lite: Shader = null
+var _current_shader_quality: String = "medium"
+
 # === PUBLIC VARIABLES ===
 var current_theme_resource: Theme = null
 var theme_transition_duration: float = TRANSITION_DURATION
@@ -36,13 +41,22 @@ var theme_transition_duration: float = TRANSITION_DURATION
 
 func _ready() -> void:
 	"""Initialize theme manager"""
-	print("[UIThemeManager] Initializing theme system")
+	print("[UIThemeManager] Initializing NeuroVision theme system")
+	_preload_shaders()
 	_preload_themes()
 	_load_saved_theme()
+	
+	# Connect to ThemeEffectsManager for glass morphism integration
+	if has_node("/root/ThemeEffectsManager"):
+		_setup_effects_integration()
 	
 	# Connect to settings manager if available
 	if SettingsManager:
 		SettingsManager.setting_changed.connect(_on_setting_changed)
+	
+	# Connect to performance monitor for quality-based shader switching
+	if PerformanceMonitor:
+		PerformanceMonitor.quality_level_changed.connect(_on_quality_level_changed)
 
 func set_theme(theme_name: String, animated: bool = true) -> void:
 	"""Change the current theme"""
@@ -221,12 +235,101 @@ func _apply_theme_immediate(theme: Theme, theme_name: String) -> void:
 
 
 func _apply_theme_to_tree(node: Node, theme: Theme) -> void:
-	"""Recursively apply theme to all Control nodes"""
+	"""Recursively apply theme to all Control nodes while preserving scene-specific overrides"""
 	if node is Control:
-		node.theme = theme
+		# Only apply theme if the control doesn't have a scene-specific theme override
+		# This preserves editor styling while applying runtime themes appropriately
+		if not node.theme or node.theme == current_theme_resource:
+			node.theme = theme
+		else:
+			# For controls with existing custom themes, merge with the global theme
+			# by setting it as a fallback while preserving local overrides
+			var existing_theme = node.theme
+			if existing_theme != theme:
+				# Create a composite theme that respects both global and local styling
+				_apply_composite_theme(node, theme, existing_theme)
 		
 	for child in node.get_children():
 		_apply_theme_to_tree(child, theme)
+
+func _apply_composite_theme(control: Control, global_theme: Theme, local_theme: Theme) -> void:
+	"""Apply a composite theme that preserves local overrides while using global fallbacks"""
+	if not control or not global_theme:
+		return
+	
+	# Create a merged theme that respects local customizations
+	var composite_theme = local_theme.duplicate(true) if local_theme else Theme.new()
+	
+	# For each theme property type, use local override if it exists, otherwise use global
+	var node_types = ["Button", "Panel", "PanelContainer", "Label", "LineEdit", "TextEdit", "OptionButton", "CheckBox", "SpinBox", "ProgressBar", "ScrollContainer", "Tree", "ItemList"]
+	
+	for node_type in node_types:
+		# Merge styleboxes - preserve local overrides, add global as fallback
+		_merge_theme_property(composite_theme, "stylebox", node_type, global_theme, local_theme)
+		
+		# Merge colors - preserve local overrides, add global as fallback  
+		_merge_theme_property(composite_theme, "color", node_type, global_theme, local_theme)
+		
+		# Merge fonts - preserve local overrides, add global as fallback
+		_merge_theme_property(composite_theme, "font", node_type, global_theme, local_theme)
+		
+		# Merge constants - preserve local overrides, add global as fallback
+		_merge_theme_property(composite_theme, "constant", node_type, global_theme, local_theme)
+	
+	# Apply the composite theme to the control
+	control.theme = composite_theme
+
+func _merge_theme_property(target_theme: Theme, property_type: String, node_type: String, global_theme: Theme, local_theme: Theme) -> void:
+	"""Merge a specific theme property type, preserving local overrides"""
+	if not target_theme or not global_theme:
+		return
+	
+	var property_list: Array = []
+	
+	# Get property names based on type
+	match property_type:
+		"stylebox":
+			property_list = ["normal", "hover", "pressed", "focus", "disabled", "panel", "background", "fg", "bg"]
+		"color":
+			property_list = ["font_color", "font_hover_color", "font_pressed_color", "font_disabled_color", "background_color", "selection_color"]
+		"font":
+			property_list = ["font"]
+		"constant":
+			property_list = ["margin_left", "margin_right", "margin_top", "margin_bottom", "separation", "line_spacing"]
+	
+	# Apply global theme properties if not overridden locally
+	for property_name in property_list:
+		var has_local_override = local_theme and _theme_has_property(local_theme, property_type, property_name, node_type)
+		var has_global_property = _theme_has_property(global_theme, property_type, property_name, node_type)
+		
+		# If there's no local override but global has the property, use global
+		if not has_local_override and has_global_property:
+			match property_type:
+				"stylebox":
+					target_theme.set_stylebox(property_name, node_type, global_theme.get_stylebox(property_name, node_type))
+				"color":
+					target_theme.set_color(property_name, node_type, global_theme.get_color(property_name, node_type))
+				"font":
+					target_theme.set_font(property_name, node_type, global_theme.get_font(property_name, node_type))
+				"constant":
+					target_theme.set_constant(property_name, node_type, global_theme.get_constant(property_name, node_type))
+
+func _theme_has_property(theme: Theme, property_type: String, property_name: String, node_type: String) -> bool:
+	"""Check if a theme has a specific property"""
+	if not theme:
+		return false
+		
+	match property_type:
+		"stylebox":
+			return theme.has_stylebox(property_name, node_type)
+		"color":
+			return theme.has_color(property_name, node_type)
+		"font":
+			return theme.has_font(property_name, node_type)
+		"constant":
+			return theme.has_constant(property_name, node_type)
+	
+	return false
 
 func _on_setting_changed(setting_name: String, value: Variant) -> void:
 	"""Handle settings changes"""
@@ -518,6 +621,57 @@ func reset_to_default_theme() -> void:
 		SettingsManager.set_setting("ui_theme", DEFAULT_THEME)
 		SettingsManager.set_setting("theme_preferences_updated", 0)
 
+# === PERFORMANCE-BASED SHADER MANAGEMENT ===
+
+func apply_quality_based_shaders(quality_level: String) -> void:
+	"""Apply appropriate shaders based on quality level from PerformanceMonitor"""
+	print("[UIThemeManager] Applying quality-based shaders: " + quality_level)
+	
+	_current_shader_quality = quality_level
+	
+	# Determine which shader to use based on quality
+	var target_shader: Shader = null
+	match quality_level.to_lower():
+		"low", "0":
+			target_shader = _glass_shader_lite
+			print("[UIThemeManager] Using LITE glass morphism shader for low-end hardware")
+		"medium", "1":
+			target_shader = _glass_shader_lite  # Use lite for medium as well for better compatibility
+			print("[UIThemeManager] Using LITE glass morphism shader for medium quality")
+		"high", "2", "ultra", "3":
+			target_shader = _glass_shader_full
+			print("[UIThemeManager] Using FULL glass morphism shader for high quality")
+		_:
+			target_shader = _glass_shader_lite  # Default to lite for unknown quality
+			print("[UIThemeManager] Unknown quality level, defaulting to LITE shader")
+	
+	if not target_shader:
+		push_warning("[UIThemeManager] Target shader not loaded, skipping shader update")
+		return
+	
+	# Apply shader to all UI panels in the 'ui_panels' group
+	_apply_shader_to_ui_panels(target_shader)
+	
+	# Update any shader materials that might be cached
+	_update_cached_shader_materials(target_shader)
+
+func get_current_shader_quality() -> String:
+	"""Get the currently active shader quality level"""
+	return _current_shader_quality
+
+func force_shader_quality(quality_level: String) -> void:
+	"""Force a specific shader quality level regardless of performance"""
+	print("[UIThemeManager] Forcing shader quality to: " + quality_level)
+	apply_quality_based_shaders(quality_level)
+	
+	# Save the forced setting
+	if SettingsManager:
+		SettingsManager.set_setting("forced_shader_quality", quality_level)
+
+func is_lite_shader_active() -> bool:
+	"""Check if the lite shader is currently active"""
+	return _current_shader_quality in ["low", "medium", "0", "1"]
+
 # === ENHANCED TRANSITION SYSTEM ===
 
 func _animate_theme_transition(new_theme: Theme, theme_name: String) -> void:
@@ -641,3 +795,240 @@ func _count_active_effects() -> int:
 		count += effects_data.get("total", 0)
 	
 	return count
+
+# === PERFORMANCE-BASED SHADER PRIVATE METHODS ===
+
+func _preload_shaders() -> void:
+	"""Preload both shader variants for performance switching"""
+	print("[UIThemeManager] Preloading glass morphism shaders")
+	
+	# Load full quality shader
+	var full_shader_path = "res://src/ui/effects/shaders/glass_morphism_ui.gdshader"
+	if ResourceLoader.exists(full_shader_path):
+		_glass_shader_full = load(full_shader_path)
+		print("[UIThemeManager] Loaded full quality glass shader")
+	else:
+		push_warning("[UIThemeManager] Full quality glass shader not found: " + full_shader_path)
+	
+	# Load lite shader
+	var lite_shader_path = "res://src/ui/effects/shaders/glass_morphism_ui_lite.gdshader"
+	if ResourceLoader.exists(lite_shader_path):
+		_glass_shader_lite = load(lite_shader_path)
+		print("[UIThemeManager] Loaded lite quality glass shader")
+	else:
+		push_warning("[UIThemeManager] Lite quality glass shader not found: " + lite_shader_path)
+	
+	# Set initial quality based on saved settings or default to medium
+	var initial_quality = "medium"
+	if SettingsManager:
+		initial_quality = SettingsManager.get_setting("forced_shader_quality", "medium")
+	
+	_current_shader_quality = initial_quality
+
+func _apply_shader_to_ui_panels(shader: Shader) -> void:
+	"""Apply shader to all nodes in the 'ui_panels' group"""
+	if not shader:
+		push_warning("[UIThemeManager] Cannot apply null shader to UI panels")
+		return
+	
+	var ui_panels = get_tree().get_nodes_in_group("ui_panels")
+	var panels_updated = 0
+	
+	for panel in ui_panels:
+		if panel is Control:
+			_apply_shader_to_control(panel, shader)
+			panels_updated += 1
+	
+	print("[UIThemeManager] Applied shader to " + str(panels_updated) + " UI panels")
+
+func _apply_shader_to_control(control: Control, shader: Shader) -> void:
+	"""Apply shader to a specific control node"""
+	if not control or not shader:
+		return
+	
+	# Create or update shader material
+	var shader_material = ShaderMaterial.new()
+	shader_material.shader = shader
+	
+	# Set default shader parameters for the lite shader with validation
+	if shader == _glass_shader_lite:
+		_set_shader_parameter_safely(shader_material, "glass_opacity", 0.25)
+		_set_shader_parameter_safely(shader_material, "tint_color", Color(0.8, 0.9, 1.0, 0.15))
+		_set_shader_parameter_safely(shader_material, "gradient_strength", 0.3)
+		_set_shader_parameter_safely(shader_material, "enable_subtle_noise", true)
+	elif shader == _glass_shader_full:
+		# Set default parameters for full shader with validation
+		_set_shader_parameter_safely(shader_material, "blur_amount", 4.0)  # Reduced from 8.0 for better performance
+		_set_shader_parameter_safely(shader_material, "glass_opacity", 0.3)
+		_set_shader_parameter_safely(shader_material, "tint_color", Color(1.0, 1.0, 1.0, 0.1))
+		_set_shader_parameter_safely(shader_material, "noise_amount", 0.02)
+		_set_shader_parameter_safely(shader_material, "saturation_boost", 1.2)
+		_set_shader_parameter_safely(shader_material, "brightness", 1.1)
+		_set_shader_parameter_safely(shader_material, "enable_chromatic_aberration", false)
+		_set_shader_parameter_safely(shader_material, "blur_quality", 1)  # Use low quality for better performance
+	
+	# Apply to the control's material
+	control.material = shader_material
+
+func _set_shader_parameter_safely(material: ShaderMaterial, param_name: String, value: Variant) -> void:
+	"""Safely set shader parameter only if it exists in the shader"""
+	if not material or not material.shader:
+		return
+	
+	# Get the shader's param list and check if parameter exists
+	var shader_params = material.shader.get_shader_uniform_list()
+	var param_exists = false
+	
+	for param_info in shader_params:
+		if param_info.name == param_name:
+			param_exists = true
+			break
+	
+	if param_exists:
+		material.set_shader_parameter(param_name, value)
+	else:
+		# Log but don't error - this is expected for different shader variants
+		print("[UIThemeManager] Shader parameter '%s' not found in current shader variant" % param_name)
+
+func _update_cached_shader_materials(shader: Shader) -> void:
+	"""Update any cached shader materials that might exist"""
+	if not shader:
+		return
+	
+	# This method can be extended to update any cached materials
+	# For now, we'll just log that materials were updated
+	print("[UIThemeManager] Updated cached shader materials to use: " + ("LITE" if shader == _glass_shader_lite else "FULL"))
+
+func _on_quality_level_changed(new_level: int) -> void:
+	"""Handle quality level changes from PerformanceMonitor"""
+	var quality_names = ["low", "medium", "high", "ultra"]
+	if new_level >= 0 and new_level < quality_names.size():
+		var quality_name = quality_names[new_level]
+		print("[UIThemeManager] Performance quality changed to: " + quality_name)
+		apply_quality_based_shaders(quality_name)
+	else:
+		push_warning("[UIThemeManager] Invalid quality level received: " + str(new_level))
+
+# === NEUROVISION THEME EFFECTS INTEGRATION ===
+
+func _setup_effects_integration() -> void:
+	"""Setup integration with ThemeEffectsManager for NeuroVision visual effects"""
+	var effects_manager = get_node("/root/ThemeEffectsManager")
+	
+	if not effects_manager:
+		push_warning("[UIThemeManager] ThemeEffectsManager not found")
+		return
+	
+	print("[UIThemeManager] Setting up NeuroVision effects integration")
+	
+	# Configure glass morphism quality based on current performance
+	var quality_level = 2  # Default to medium
+	if PerformanceMonitor and PerformanceMonitor.has_method("get_current_quality_level"):
+		quality_level = PerformanceMonitor.get_current_quality_level()
+	
+	effects_manager.set_glass_quality(quality_level)
+	
+	# Configure NeuroVision specific effects
+	var neurovision_config = {
+		"glass_opacity": 0.85,
+		"tint_color": M3DesignTokens.M3_COLORS["primary"],
+		"blur_amount": 12.0,
+		"enable_chromatic_aberration": quality_level > 2,
+		"transition_duration": theme_transition_duration
+	}
+	
+	effects_manager.configure_transition(neurovision_config)
+	
+	print("[UIThemeManager] NeuroVision effects configured for quality level: %d" % quality_level)
+
+## Apply NeuroVision glass morphism to UI panels
+func apply_neurovision_glass_effect(control: Control, structure_type: String = "panel") -> void:
+	"""Apply NeuroVision-themed glass morphism effect"""
+	var effects_manager = get_node("/root/ThemeEffectsManager")
+	if not effects_manager:
+		push_warning("[UIThemeManager] ThemeEffectsManager not available")
+		return
+	
+	# Determine intensity based on structure type
+	var intensity = 0.85
+	match structure_type:
+		"navigation":
+			intensity = 0.9
+		"modal":
+			intensity = 0.95
+		"panel":
+			intensity = 0.85
+		"button":
+			intensity = 0.7
+	
+	effects_manager.apply_glass_morphism(control, intensity)
+
+## Create NeuroVision-themed transition between themes
+func apply_neurovision_theme_transition(from_theme: String, to_theme: String) -> void:
+	"""Apply NeuroVision-specific theme transition effect"""
+	var effects_manager = get_node("/root/ThemeEffectsManager")
+	if not effects_manager:
+		_set_theme_immediately(to_theme)
+		return
+	
+	var from_theme_resource = _get_theme_resource(from_theme)
+	var to_theme_resource = _get_theme_resource(to_theme)
+	
+	if from_theme_resource and to_theme_resource:
+		effects_manager.animate_theme_transition(
+			from_theme_resource, 
+			to_theme_resource, 
+			theme_transition_duration,
+			1  # Ripple transition for neural network aesthetic
+		)
+	else:
+		_set_theme_immediately(to_theme)
+
+## Apply brain structure highlight effects
+func apply_brain_structure_highlight(control: Control, structure_name: String) -> void:
+	"""Apply NeuroVision brain structure specific highlighting"""
+	var effects_manager = get_node("/root/ThemeEffectsManager")
+	if not effects_manager:
+		return
+	
+	# Get structure-specific color
+	var structure_color = Color.CYAN  # Default
+	if M3DesignTokens.BRAIN_STRUCTURE_COLORS.has(structure_name):
+		structure_color = M3DesignTokens.BRAIN_STRUCTURE_COLORS[structure_name]
+	
+	# Apply hover glow with structure color
+	effects_manager.apply_hover_glow(control, structure_color, 0.8)
+	
+	# Create selection particles at control center
+	var center_pos = control.global_position + control.size / 2
+	effects_manager.create_selection_particles(center_pos, {
+		"color": structure_color,
+		"particle_count": 20,
+		"lifetime": 1.5
+	})
+
+## Update effects quality based on performance
+func update_effects_quality(quality_level: int) -> void:
+	"""Update visual effects quality based on performance level"""
+	var effects_manager = get_node("/root/ThemeEffectsManager")
+	if not effects_manager:
+		return
+	
+	effects_manager.set_glass_quality(quality_level)
+	
+	# Update shader quality as well
+	var quality_names = ["low", "medium", "high", "ultra"]
+	if quality_level >= 0 and quality_level < quality_names.size():
+		apply_quality_based_shaders(quality_names[quality_level])
+	
+	print("[UIThemeManager] Updated NeuroVision effects quality to level: %d" % quality_level)
+
+# === WRAPPER FUNCTIONS ===
+
+func _set_theme_immediately(theme_name: String) -> void:
+	"""Wrapper function to set theme immediately without animation"""
+	set_theme(theme_name, false)
+
+func _get_theme_resource(theme_name: String) -> Theme:
+	"""Wrapper function to get theme resource by name"""
+	return _get_theme(theme_name)

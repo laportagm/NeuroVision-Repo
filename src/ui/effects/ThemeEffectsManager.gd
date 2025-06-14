@@ -1,4 +1,3 @@
-class_name ThemeEffectsManager
 extends Node
 
 ## Theme Effects Manager for NeuroVision
@@ -315,8 +314,8 @@ func _configure_particles(particles: CPUParticles2D, config: Dictionary) -> void
 			particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
 			particles.emission_sphere_radius = 5.0
 		"box":
-			particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_BOX
-			particles.emission_box_extents = Vector2(10, 10)
+			particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+			particles.emission_rect_extents = Vector2(10, 10)
 		"point":
 			particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_POINT
 	

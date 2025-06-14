@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b3kwj5xvqn7hm"]
 
-[ext_resource type="Script" path="res://src/ui/components/ThemePreviewPanel.gd" id="1_0xywp"]
+[ext_resource type="Script" uid="uid://rpm6flis3t4w" path="res://src/ui/components/ThemePreviewPanel.gd" id="1_0xywp"]
 
 [node name="ThemePreviewPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(800, 600)
@@ -17,8 +17,8 @@ layout_mode = 2
 
 [node name="Title" type="Label" parent="VBoxContainer/Header/HBoxContainer"]
 layout_mode = 2
-text = "Theme Preview"
 theme_override_font_sizes/font_size = 18
+text = "Theme Preview"
 
 [node name="HSpacer" type="Control" parent="VBoxContainer/Header/HBoxContainer"]
 layout_mode = 2
@@ -36,9 +36,9 @@ size_flags_vertical = 3
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/PreviewContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-columns = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
+columns = 2
 
 [node name="ControlsContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

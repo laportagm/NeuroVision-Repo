@@ -1,7 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://btest123"]
 
-[ext_resource type="PackedScene" uid="uid://dx7nqm4jvtxcd" path="res://src/scenes/ExplorationScene.tscn" id="1_test"]
+[sub_resource type="Resource" id="Resource_nb5ki"]
+metadata/__load_path__ = "res://src/scenes/ExplorationScene.tscn"
 
 [node name="TestExplorationDirect" type="Node"]
 
-[node name="ExplorationScene" parent="." instance=ExtResource("1_test")]
+[node name="ExplorationScene" parent="."]

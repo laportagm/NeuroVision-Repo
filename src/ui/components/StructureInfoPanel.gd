@@ -39,9 +39,8 @@ func _ready() -> void:
 	modulate.a = 0.0
 	print("[InfoPanel] Panel initialized. Offsets: ", offset_left, ", ", offset_right, " Visible: ", visible)
 	
-	# Apply enhanced theme if available
-	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
-		UIThemeManager.apply_enhanced_styling_immediately()
+	# Use scene-defined styling - themes are managed globally by UIThemeManager
+	# Removed aggressive theme override to preserve editor appearance
 	
 	# Add slide-in animation
 	modulate.a = 0

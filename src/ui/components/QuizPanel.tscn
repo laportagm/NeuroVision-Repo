@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://quiz_panel_scene"]
+[gd_scene load_steps=2 format=3 uid="uid://d36g71s0hqarl"]
 
-[ext_resource type="Script" path="res://src/ui/components/QuizPanel.gd" id="1_quiz"]
+[ext_resource type="Script" uid="uid://ckwadq4l5qhg5" path="res://src/ui/components/QuizPanel.gd" id="1_quiz"]
 
 [node name="QuizPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(500, 600)
@@ -16,10 +16,7 @@ offset_bottom = 300.0
 script = ExtResource("1_quiz")
 
 [node name="VBox" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+layout_mode = 2
 theme_override_constants/separation = 15
 
 [node name="Header" type="HBoxContainer" parent="VBox"]
@@ -36,10 +33,9 @@ layout_mode = 2
 text = "X"
 
 [node name="ProgressBar" type="ProgressBar" parent="VBox/Header"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 20)
-max_value = 100.0
 show_percentage = false
 
 [node name="ProgressLabel" type="Label" parent="VBox/Header"]
@@ -52,9 +48,9 @@ size_flags_vertical = 3
 theme_override_constants/separation = 20
 
 [node name="QuestionLabel" type="RichTextLabel" parent="VBox/QuestionContainer"]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 0
-custom_minimum_size = Vector2(0, 100)
 bbcode_enabled = true
 fit_content = true
 
@@ -65,8 +61,8 @@ theme_override_constants/separation = 10
 
 [node name="FeedbackPanel" type="Panel" parent="VBox"]
 visible = false
-layout_mode = 2
 custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
 
 [node name="FeedbackLabel" type="RichTextLabel" parent="VBox/FeedbackPanel"]
 layout_mode = 1
@@ -77,13 +73,15 @@ offset_left = 10.0
 offset_top = 10.0
 offset_right = -10.0
 offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
 bbcode_enabled = true
 fit_content = true
 
 [node name="ButtonContainer" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 20
+alignment = 1
 
 [node name="SkipButton" type="Button" parent="VBox/ButtonContainer"]
 layout_mode = 2

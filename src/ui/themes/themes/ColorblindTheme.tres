@@ -1,4 +1,103 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" format=3 uid="uid://c8n5m7q2p3x4z"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.006, 0.451, 0.698, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 24.0
+content_margin_top = 8.0
+content_margin_right = 24.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
+bg_color = Color(0.106, 0.551, 0.798, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 24.0
+content_margin_top = 8.0
+content_margin_right = 24.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3"]
+bg_color = Color(0, 0.351, 0.598, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 24.0
+content_margin_top = 8.0
+content_margin_right = 24.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4"]
+bg_color = Color(0.973, 0.98, 0.988, 0.38)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 24.0
+content_margin_top = 8.0
+content_margin_right = 24.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5"]
+bg_color = Color(0.082, 0.102, 0.168, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.392, 0.459, 0.543, 1)
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
 
 [resource]
-resource_name = "ColorblindTheme"
+resource_name = "NeuroVision Colorblind Safe Theme"
+
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(0.389, 0.389, 0.389, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/styles/disabled = SubResource("StyleBoxFlat_4")
+Button/styles/hover = SubResource("StyleBoxFlat_2")
+Button/styles/normal = SubResource("StyleBoxFlat_1")
+Button/styles/pressed = SubResource("StyleBoxFlat_3")
+
+Panel/styles/panel = SubResource("StyleBoxFlat_5")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_5")
+
+Label/colors/font_color = Color(0.973, 0.98, 0.988, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.25)
+
+RichTextLabel/colors/default_color = Color(0.973, 0.98, 0.988, 1)
+RichTextLabel/colors/selection_color = Color(0.006, 0.451, 0.698, 1)
+
+EducationalPanel/colors/structure_label_color = Color(0.973, 0.98, 0.988, 1)
+EducationalPanel/colors/clinical_note_color = Color(0.011, 0.620, 0.451, 1)
+EducationalPanel/colors/learning_objective_color = Color(0.871, 0.561, 0.020, 1)
+EducationalPanel/colors/assessment_feedback_color = Color(0.011, 0.620, 0.451, 1)
+
+BrainStructure/colors/hippocampus_color = Color(0.006, 0.451, 0.698, 1)
+BrainStructure/colors/amygdala_color = Color(0.871, 0.561, 0.020, 1)
+BrainStructure/colors/cortex_color = Color(0.011, 0.620, 0.451, 1)
+BrainStructure/colors/thalamus_color = Color(0.337, 0.706, 0.914, 1)
+BrainStructure/colors/cerebellum_color = Color(0.925, 0.886, 0.200, 1)
+BrainStructure/colors/brainstem_color = Color(0.800, 0.471, 0.737, 1)
+BrainStructure/colors/corpus_callosum_color = Color(0.941, 0.894, 0.259, 1)
+BrainStructure/colors/frontal_lobe_color = Color(0.006, 0.451, 0.698, 1)
+BrainStructure/colors/temporal_lobe_color = Color(0.871, 0.561, 0.020, 1)
+BrainStructure/colors/parietal_lobe_color = Color(0.011, 0.620, 0.451, 1)
+BrainStructure/colors/occipital_lobe_color = Color(0.337, 0.706, 0.914, 1)
+BrainStructure/colors/basal_ganglia_color = Color(0.800, 0.471, 0.737, 1)
+BrainStructure/colors/limbic_system_color = Color(0.941, 0.894, 0.259, 1)
+
+Control/colors/background = Color(0.039, 0.055, 0.106, 1)

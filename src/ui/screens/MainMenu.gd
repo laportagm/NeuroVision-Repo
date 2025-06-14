@@ -167,10 +167,9 @@ func _style_button_tertiary(button: Button) -> void:
 
 func _setup_ui() -> void:
 	"""Setup UI appearance and structure"""
-	# Apply enhanced theme styling if available
-	if UIThemeManager and UIThemeManager.has_method("apply_enhanced_styling_immediately"):
-		print("[MainMenu] Applying enhanced theme styling")
-		UIThemeManager.apply_enhanced_styling_immediately()
+	# Use scene-defined styling - themes are managed globally by UIThemeManager
+	# Removed aggressive theme override to preserve editor appearance
+	print("[MainMenu] Using global theme management")
 
 func _connect_signals() -> void:
 	"""Connect button signals"""

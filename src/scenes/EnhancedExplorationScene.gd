@@ -87,6 +87,7 @@ func _ready() -> void:
 	_create_axis_indicator()
 	_connect_signals()
 	_setup_help_text()
+	_add_panels_to_ui_group()
 	show_loading("Initializing NeuroVision...")
 
 func _physics_process(delta: float) -> void:
@@ -1048,6 +1049,9 @@ func _setup_quiz_panel() -> void:
 	_quiz_panel = QuizPanelScene.instantiate()
 	$UI.add_child(_quiz_panel)
 	
+	# Add quiz panel to UI group for shader management
+	_quiz_panel.add_to_group("ui_panels")
+	
 	# Connect quiz signals
 	_quiz_panel.answer_submitted.connect(_on_quiz_answer_submitted)
 	_quiz_panel.next_question_requested.connect(_on_quiz_next_question)
@@ -1123,3 +1127,30 @@ func _on_assessment_completed(_assessment_id: String, score_data: Dictionary) ->
 	"""Handle assessment completion"""
 	_quiz_panel.show_results(score_data)
 	update_status("Assessment completed: %.1f%%" % score_data.percentage)
+
+func _add_panels_to_ui_group() -> void:
+	"""Add UI panels to the 'ui_panels' group for performance-based shader management"""
+	print("[EnhancedExplorationScene] Adding UI panels to 'ui_panels' group for shader management")
+	
+	# Add main UI panels to the group
+	var panels_to_add = [
+		top_bar,
+		left_panel,
+		bottom_panel,
+		help_overlay,
+		info_panel
+	]
+	
+	for panel in panels_to_add:
+		if panel and is_instance_valid(panel):
+			panel.add_to_group("ui_panels")
+			print("[EnhancedExplorationScene] Added panel to ui_panels group: " + panel.name)
+		else:
+			push_warning("[EnhancedExplorationScene] Panel is null or invalid, skipping")
+	
+	# Also add quiz panel when it's created
+	if _quiz_panel:
+		_quiz_panel.add_to_group("ui_panels")
+		print("[EnhancedExplorationScene] Added quiz panel to ui_panels group")
+	
+	print("[EnhancedExplorationScene] UI panels group setup completed")

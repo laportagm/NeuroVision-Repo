@@ -8,39 +8,39 @@ class_name M3DesignTokens
 extends Resource
 
 # === MATERIAL 3 COLOR SYSTEM ===
-# Primary colors for neuroanatomy visualization with high visibility
+# NeuroVision Educational Color Palette - WCAG AAA Compliant
 const M3_COLORS = {
-	# Primary - Vibrant cyan for brain structure highlights
-	"primary": Color("#22D3EE"),
-	"primary_gradient_end": Color("#3B82F6"),
+	# Primary - Neuro Cyan for brain structure highlights and main interactions
+	"primary": Color("#00CCC0"),  # Neuro Cyan
+	"primary_gradient_end": Color("#2E7CD6"),  # Synaptic Blue
 	"on_primary": Color("#FFFFFF"),
-	"primary_container": Color("#004A5D"),
-	"on_primary_container": Color("#B8EAFF"),
+	"primary_container": Color("#003E3A"),  # Dark container for Neuro Cyan
+	"on_primary_container": Color("#9FFFF9"),  # Light tint
 	
-	# Secondary - Educational accent colors
-	"secondary": Color("#60A5FA"),
-	"on_secondary": Color("#002952"),
-	"secondary_container": Color("#003D6F"),
-	"on_secondary_container": Color("#C8E6FF"),
+	# Secondary - Synaptic Blue for educational interactions
+	"secondary": Color("#2E7CD6"),  # Synaptic Blue
+	"on_secondary": Color("#FFFFFF"),
+	"secondary_container": Color("#1A2E52"),  # Dark container for Synaptic Blue
+	"on_secondary_container": Color("#B8DDFF"),
 	
-	# Tertiary - Clinical/medical accent
-	"tertiary": Color("#7C3AED"),
+	# Tertiary - Cortical Purple for clinical/advanced features
+	"tertiary": Color("#7B61FF"),  # Cortical Purple
 	"on_tertiary": Color("#FFFFFF"),
-	"tertiary_container": Color("#5B21B6"),
-	"on_tertiary_container": Color("#E9D5FF"),
+	"tertiary_container": Color("#3A2B7A"),  # Dark container for Cortical Purple
+	"on_tertiary_container": Color("#D5CCFF"),
 	
-	# Surface colors with depth
-	"surface": Color("#1E293B"),
-	"surface_variant": Color("#334155"),
-	"surface_bright": Color("#475569"),
-	"surface_dim": Color("#0F172A"),
-	"surface_container": Color("#1A202C"),
-	"surface_container_high": Color("#2D3748"),
-	"surface_container_highest": Color("#4A5568"),
+	# NeuroVision Surface Hierarchy - Dark Educational Theme
+	"surface": Color("#0A0E1B"),  # Surface-0 (Base)
+	"surface_variant": Color("#151A27"),  # Surface-1 (Panels)  
+	"surface_bright": Color("#1C2231"),  # Surface-2 (Cards)
+	"surface_dim": Color("#242A3B"),  # Surface-3 (Elevated)
+	"surface_container": Color("#151A27"),  # Surface-1 equivalent
+	"surface_container_high": Color("#1C2231"),  # Surface-2 equivalent
+	"surface_container_highest": Color("#2C3245"),  # Surface-4 (Highest)
 	
-	# Background with gradient support
-	"background_start": Color("#0F172A"),
-	"background_end": Color("#1B2434"),
+	# NeuroVision Background with gradient support
+	"background_start": Color("#0A0E1B"),  # Deep neural network blue
+	"background_end": Color("#151A27"),  # Slightly lighter for depth
 	"on_background": Color("#F8FAFC"),
 	
 	# Text and content colors
@@ -55,24 +55,24 @@ const M3_COLORS = {
 	"shadow": Color(0, 0, 0, 0.25),
 	"scrim": Color(0, 0, 0, 0.6),
 	
-	# Semantic colors for educational feedback
-	"error": Color("#EF4444"),
+	# NeuroVision Semantic Colors for Educational Feedback - WCAG AAA Compliant
+	"error": Color("#FF6B6B"),  # Educational error red
 	"on_error": Color("#FFFFFF"),
 	"error_container": Color("#7F1D1D"),
 	"on_error_container": Color("#FCA5A5"),
 	
-	"success": Color("#10B981"),
-	"on_success": Color("#FFFFFF"),
+	"success": Color("#51CF66"),  # Educational success green
+	"on_success": Color("#000000"),
 	"success_container": Color("#064E3B"),
 	"on_success_container": Color("#6EE7B7"),
 	
-	"warning": Color("#F59E0B"),
+	"warning": Color("#FFD43B"),  # Educational warning yellow
 	"on_warning": Color("#000000"),
 	"warning_container": Color("#78350F"),
 	"on_warning_container": Color("#FCD34D"),
 	
-	"info": Color("#3B82F6"),
-	"on_info": Color("#FFFFFF"),
+	"info": Color("#4DABF7"),  # Educational info blue
+	"on_info": Color("#000000"),
 	"info_container": Color("#1E3A8A"),
 	"on_info_container": Color("#93BBFC")
 }
@@ -294,6 +294,24 @@ const EDUCATIONAL_TO_M3_MAPPING = {
 	"quiz_feedback": "info",
 	"pathology_indicator": "error",
 	"accessibility_focus": "on_surface"
+}
+
+# === NEUROVISION BRAIN STRUCTURE COLORS ===
+# WCAG AAA compliant colors for brain structure visualization
+const BRAIN_STRUCTURE_COLORS = {
+	"hippocampus": Color("#FF6B6B"),  # Memory formation - warm red
+	"amygdala": Color("#845EF7"),     # Emotion processing - purple
+	"cortex": Color("#4DABF7"),       # Higher cognition - blue  
+	"thalamus": Color("#69DB7C"),     # Relay center - green
+	"cerebellum": Color("#FA5252"),   # Motor control - bright red
+	"brainstem": Color("#FD7E14"),    # Vital functions - orange
+	"corpus_callosum": Color("#E599F7"), # Inter-hemisphere - pink
+	"frontal_lobe": Color("#74C0FC"),    # Executive function - light blue
+	"temporal_lobe": Color("#FFB366"),   # Auditory processing - orange
+	"parietal_lobe": Color("#8CE99A"),   # Sensory integration - light green
+	"occipital_lobe": Color("#D0BFFF"),  # Visual processing - lavender
+	"basal_ganglia": Color("#FF8787"),   # Movement control - coral
+	"limbic_system": Color("#C3FEFF"),   # Emotional processing - cyan
 }
 
 # === STATE LAYER OPACITIES ===

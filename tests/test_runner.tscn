@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://d1s13w5fswecp"]
 
-[ext_resource type="Script" path="res://automated_interaction_test.gd" id="1"]
+[sub_resource type="Resource" id="Resource_d3nm5"]
+metadata/__load_path__ = "res://automated_interaction_test.gd"
 
 [node name="TestRunner" type="Node"]
-script = ExtResource("1")
+script = SubResource("Resource_d3nm5")

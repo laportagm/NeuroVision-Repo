@@ -644,6 +644,11 @@ func _clean_model_name(model_name: String) -> String:
 
 func _get_recommended_lod() -> int:
 	"""Get recommended LOD based on current quality settings"""
+	
+	# Intel UHD 620 optimization - force lowest LOD
+	if IntelOptimizer and IntelOptimizer.is_intel_gpu_detected():
+		return LODLevel.LOW
+	
 	match _current_quality_level:
 		PerformanceMonitor.QualityLevel.LOW:
 			return LODLevel.LOW
@@ -653,6 +658,17 @@ func _get_recommended_lod() -> int:
 			return LODLevel.HIGH
 		_:
 			return LODLevel.MEDIUM
+
+func force_lod_level(lod_level: int) -> void:
+	"""Force a specific LOD level for all models (Intel UHD 620 optimization)"""
+	print("[ModelLoader] Forcing LOD level %d for Intel UHD 620 optimization" % lod_level)
+	
+	# Update all loaded models immediately
+	for model_name in _loaded_models:
+		change_model_lod(model_name, lod_level)
+	
+	# Override quality level to match forced LOD
+	_current_quality_level = PerformanceMonitor.QualityLevel.LOW
 
 func _on_quality_level_changed(new_level: int) -> void:
 	"""Handle quality level changes from PerformanceMonitor"""

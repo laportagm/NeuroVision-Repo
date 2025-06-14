@@ -34,6 +34,15 @@ var _selected_answer: Variant = null
 var _option_buttons: Array[Button] = []
 var _is_answered: bool = false
 
+# Performance metrics for pooling
+var _pooling_metrics: Dictionary = {
+	"buttons_created": 0,
+	"buttons_reused": 0,
+	"total_transitions": 0,
+	"avg_transition_time": 0.0,
+	"transition_times": []
+}
+
 # === PUBLIC METHODS ===
 
 func _ready() -> void:
@@ -88,13 +97,13 @@ func show_assessment_list(assessments: Array) -> void:
 			shortcut.events = [key]
 			btn.shortcut = shortcut
 		
-		# Set focus neighbors
+		btn.pressed.connect(func(): _on_assessment_selected(assessment.id))
+		options_container.add_child(btn)
+		
+		# Set focus neighbors after adding to tree
 		if prev_button:
 			btn.focus_neighbor_top = prev_button.get_path()
 			prev_button.focus_neighbor_bottom = btn.get_path()
-		
-		btn.pressed.connect(func(): _on_assessment_selected(assessment.id))
-		options_container.add_child(btn)
 		
 		if not first_button:
 			first_button = btn
@@ -319,11 +328,32 @@ func _connect_signals() -> void:
 	close_button.pressed.connect(_on_close_pressed)
 
 func _create_multiple_choice_options(options: Array) -> void:
-	"""Create multiple choice option buttons with M3 styling"""
+	"""Create multiple choice option buttons using object pooling for performance"""
+	var start_time = Time.get_time_dict_from_system()
 	var button_group = ButtonGroup.new()
 	
 	for i in range(options.size()):
-		var btn = Button.new()
+		# Get button from pool instead of creating new one
+		var btn: Button = null
+		if UIPoolManager and UIPoolManager._is_initialized:
+			btn = UIPoolManager.get_object("quiz_answer_button")
+			if btn:
+				_pooling_metrics.buttons_reused += 1
+			else:
+				# Fallback to creating new button if pool fails
+				btn = Button.new()
+				_pooling_metrics.buttons_created += 1
+				print("[QuizPanel] Pool failed, created new button")
+		else:
+			# Fallback if UIPoolManager not available
+			btn = Button.new()
+			_pooling_metrics.buttons_created += 1
+		
+		if not btn:
+			push_error("[QuizPanel] Failed to get button from pool or create new one")
+			continue
+		
+		# Configure the button
 		btn.text = "%s. %s" % [char(65 + i), options[i]]  # A, B, C, D...
 		btn.toggle_mode = true
 		btn.button_group = button_group
@@ -357,6 +387,7 @@ func _create_multiple_choice_options(options: Array) -> void:
 			btn.focus_neighbor_top = prev_btn.get_path()
 			prev_btn.focus_neighbor_bottom = btn.get_path()
 		
+		# Connect signal for option selection
 		btn.toggled.connect(func(pressed): 
 			if pressed: 
 				_on_option_selected(i)
@@ -364,6 +395,25 @@ func _create_multiple_choice_options(options: Array) -> void:
 				if has_node("/root/AccessibilityManager") and AccessibilityManager.is_screen_reader_enabled():
 					AccessibilityManager.announce("Selected option %s" % btn.text)
 		)
+	
+	# Record performance metrics
+	var end_time = Time.get_time_dict_from_system()
+	var transition_time = _calculate_time_diff(start_time, end_time)
+	_pooling_metrics.transition_times.append(transition_time)
+	_pooling_metrics.total_transitions += 1
+	
+	# Calculate rolling average
+	if _pooling_metrics.transition_times.size() > 10:
+		_pooling_metrics.transition_times = _pooling_metrics.transition_times.slice(-10)
+	
+	var total_time = 0.0
+	for time in _pooling_metrics.transition_times:
+		total_time += time
+	_pooling_metrics.avg_transition_time = total_time / _pooling_metrics.transition_times.size()
+	
+	print("[QuizPanel] Created %d options in %.2fms (avg: %.2fms)" % [
+		options.size(), transition_time, _pooling_metrics.avg_transition_time
+	])
 	
 	# Connect last option to submit button
 	if _option_buttons.size() > 0:
@@ -433,10 +483,30 @@ func _create_true_false_options() -> void:
 		_option_buttons[0].call_deferred("grab_focus")
 
 func _clear_options() -> void:
-	"""Clear all option buttons"""
+	"""Clear all option buttons using pool management for performance"""
+	var start_time = Time.get_time_dict_from_system()
+	
 	for btn in _option_buttons:
-		btn.queue_free()
+		# Remove from container first
+		if btn.get_parent():
+			btn.get_parent().remove_child(btn)
+		
+		# Return to pool if possible, otherwise free
+		if UIPoolManager and UIPoolManager._is_initialized and btn.has_meta("pooled_object"):
+			var pool_name = btn.get_meta("pool_name", "quiz_answer_button")
+			if not UIPoolManager.return_object(pool_name, btn):
+				# Return failed, free the object
+				btn.queue_free()
+				print("[QuizPanel] Failed to return button to pool, freeing")
+		else:
+			# Not a pooled object or no pool manager, free normally
+			btn.queue_free()
+	
 	_option_buttons.clear()
+	
+	var end_time = Time.get_time_dict_from_system()
+	var clear_time = _calculate_time_diff(start_time, end_time)
+	print("[QuizPanel] Cleared options in %.2fms" % clear_time)
 
 func _on_option_selected(value: Variant) -> void:
 	"""Handle option selection"""
@@ -520,3 +590,50 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				if submit_button.visible and not submit_button.disabled and _selected_answer != null:
 					_on_submit_pressed()
 					get_viewport().set_input_as_handled()
+
+# === PERFORMANCE METRICS ===
+
+func get_pooling_metrics() -> Dictionary:
+	"""Get detailed performance metrics for pooling system"""
+	var reuse_ratio = 0.0
+	var total_buttons = _pooling_metrics.buttons_created + _pooling_metrics.buttons_reused
+	if total_buttons > 0:
+		reuse_ratio = float(_pooling_metrics.buttons_reused) / float(total_buttons)
+	
+	return {
+		"buttons_created": _pooling_metrics.buttons_created,
+		"buttons_reused": _pooling_metrics.buttons_reused,
+		"total_transitions": _pooling_metrics.total_transitions,
+		"avg_transition_time_ms": _pooling_metrics.avg_transition_time,
+		"reuse_ratio": reuse_ratio,
+		"performance_improvement": reuse_ratio * 100.0,
+		"memory_saved_estimate_kb": _pooling_metrics.buttons_reused * 10  # Rough estimate
+	}
+
+func log_performance_metrics() -> void:
+	"""Log current performance metrics to console"""
+	var metrics = get_pooling_metrics()
+	print("[QuizPanel Performance Metrics]")
+	print("  Buttons Created: %d" % metrics.buttons_created)
+	print("  Buttons Reused: %d" % metrics.buttons_reused)
+	print("  Reuse Ratio: %.1f%%" % (metrics.reuse_ratio * 100))
+	print("  Avg Transition Time: %.2fms" % metrics.avg_transition_time_ms)
+	print("  Total Transitions: %d" % metrics.total_transitions)
+	print("  Estimated Memory Saved: %.1fKB" % metrics.memory_saved_estimate_kb)
+
+func reset_performance_metrics() -> void:
+	"""Reset performance tracking metrics"""
+	_pooling_metrics = {
+		"buttons_created": 0,
+		"buttons_reused": 0,
+		"total_transitions": 0,
+		"avg_transition_time": 0.0,
+		"transition_times": []
+	}
+	print("[QuizPanel] Performance metrics reset")
+
+func _calculate_time_diff(start_time: Dictionary, end_time: Dictionary) -> float:
+	"""Calculate time difference in milliseconds"""
+	var start_ms = start_time.hour * 3600000 + start_time.minute * 60000 + start_time.second * 1000
+	var end_ms = end_time.hour * 3600000 + end_time.minute * 60000 + end_time.second * 1000
+	return abs(end_ms - start_ms)

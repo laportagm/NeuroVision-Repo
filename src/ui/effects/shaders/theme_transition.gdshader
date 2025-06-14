@@ -90,8 +90,8 @@ float spiral_transition(vec2 uv, float progress) {
     float angle = atan(center_dist.y, center_dist.x);
     float radius = length(center_dist);
     
-    float spiral_angle = angle + radius * spiral_rotations * TWO_PI;
-    float spiral_progress = fract(spiral_angle / TWO_PI + progress);
+    float spiral_angle = angle + radius * spiral_rotations * TAU;
+    float spiral_progress = fract(spiral_angle / TAU + progress);
     
     return smoothstep(0.0, 0.1, spiral_progress);
 }

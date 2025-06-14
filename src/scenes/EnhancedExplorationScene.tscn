@@ -167,9 +167,11 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
+offset_bottom = 80.0
 grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+metadata/_edit_group_ = true
 
 [node name="TopBarContent" type="HBoxContainer" parent="UI/MainUI/TopBar"]
 layout_mode = 2
@@ -255,6 +257,7 @@ offset_bottom = -49.0
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2")
+metadata/_edit_group_ = true
 
 [node name="StructureList" type="VBoxContainer" parent="UI/MainUI/LeftPanel"]
 layout_mode = 2
@@ -286,6 +289,7 @@ anchor_bottom = 1.0
 offset_top = -60.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3")
+metadata/_edit_group_ = true
 
 [node name="StatusBar" type="HBoxContainer" parent="UI/MainUI/BottomPanel"]
 layout_mode = 2
@@ -308,6 +312,7 @@ text = "FPS: 60 | Quality: HIGH"
 
 [node name="InfoPanel" parent="UI" instance=ExtResource("2_panel")]
 visible = false
+anchor_left = 0.971875
 
 [node name="Overlays" type="Control" parent="UI"]
 layout_mode = 3
@@ -361,6 +366,7 @@ offset_left = -200.0
 offset_top = -150.0
 offset_right = 200.0
 offset_bottom = 150.0
+metadata/_edit_group_ = true
 
 [node name="HelpContent" type="VBoxContainer" parent="UI/Overlays/HelpOverlay"]
 layout_mode = 2

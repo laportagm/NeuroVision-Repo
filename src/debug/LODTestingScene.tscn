@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cd7p1afr7lx2n"]
 
-[ext_resource type="Script" path="res://src/debug/LODTestingScene.gd" id="1_lod_test"]
+[ext_resource type="Script" uid="uid://0xhxie4if424" path="res://src/debug/LODTestingScene.gd" id="1_lod_test"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -28,52 +28,50 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="PerformancePanel" type="PanelContainer" parent="UI"]
+modulate = Color(1, 1, 1, 0.9)
 layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 300.0
 offset_bottom = 200.0
-modulate = Color(1, 1, 1, 0.9)
 
 [node name="VBox" type="VBoxContainer" parent="UI/PerformancePanel"]
 layout_mode = 2
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 280.0
-margin_bottom = 180.0
 
 [node name="Title" type="Label" parent="UI/PerformancePanel/VBox"]
 layout_mode = 2
-text = "Performance Metrics"
 theme_override_colors/font_color = Color(0, 0.8, 1, 1)
 theme_override_font_sizes/font_size = 20
+text = "Performance Metrics"
 
 [node name="FPSLabel" type="Label" parent="UI/PerformancePanel/VBox"]
 layout_mode = 2
-text = "FPS: --"
 theme_override_font_sizes/font_size = 18
+text = "FPS: --"
 
 [node name="LODLabel" type="Label" parent="UI/PerformancePanel/VBox"]
 layout_mode = 2
-text = "LOD: --"
 theme_override_font_sizes/font_size = 16
+text = "LOD: --"
 
 [node name="GPULabel" type="Label" parent="UI/PerformancePanel/VBox"]
 layout_mode = 2
-text = "GPU: Detecting..."
 theme_override_font_sizes/font_size = 14
+text = "GPU: Detecting..."
 
 [node name="VerticesLabel" type="Label" parent="UI/PerformancePanel/VBox"]
 layout_mode = 2
-text = "Vertices: --"
 theme_override_font_sizes/font_size = 14
+text = "Vertices: --"
 
 [node name="MemoryLabel" type="Label" parent="UI/PerformancePanel/VBox"]
 layout_mode = 2
-text = "Memory: --"
 theme_override_font_sizes/font_size = 14
+text = "Memory: --"
 
 [node name="StatusPanel" type="PanelContainer" parent="UI"]
 layout_mode = 1
@@ -96,6 +94,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ResultsPanel" type="PanelContainer" parent="UI"]
+modulate = Color(1, 1, 1, 0.9)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -105,7 +104,6 @@ offset_top = 10.0
 offset_right = -10.0
 offset_bottom = 500.0
 grow_horizontal = 0
-modulate = Color(1, 1, 1, 0.9)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="UI/ResultsPanel"]
 layout_mode = 2
