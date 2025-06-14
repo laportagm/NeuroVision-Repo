@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5x8j7kn2q4g3"]
+
+[ext_resource type="Script" path="res://tests/unit/test_color_system_unit_runner.gd" id="1_1xrwg"]
+
+[node name="TestColorSystemUnitRunner" type="Node"]
+script = ExtResource("1_1xrwg")

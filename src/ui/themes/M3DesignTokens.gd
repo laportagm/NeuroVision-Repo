@@ -74,7 +74,10 @@ const M3_COLORS = {
 	"info": Color("#4DABF7"),  # Educational info blue
 	"on_info": Color("#000000"),
 	"info_container": Color("#1E3A8A"),
-	"on_info_container": Color("#93BBFC")
+	"on_info_container": Color("#93BBFC"),
+	
+	# Special colors
+	"transparent": Color(0, 0, 0, 0)
 }
 
 # === MATERIAL 3 ELEVATION SYSTEM ===
@@ -312,6 +315,8 @@ const BRAIN_STRUCTURE_COLORS = {
 	"occipital_lobe": Color("#D0BFFF"),  # Visual processing - lavender
 	"basal_ganglia": Color("#FF8787"),   # Movement control - coral
 	"limbic_system": Color("#C3FEFF"),   # Emotional processing - cyan
+	"striatum": Color("#FF8787"),      # Part of basal ganglia - coral
+	"ventricles": Color("#87CEEB"),    # CSF spaces - sky blue
 }
 
 # === STATE LAYER OPACITIES ===
@@ -404,3 +409,152 @@ static func generate_tonal_palette(base_color: Color, _chroma: float = 48.0) -> 
 		tonal_color.v = lightness  # Adjust value/lightness
 		palette[str(step)] = tonal_color
 	return palette
+
+# === COLOR RESOLUTION API ===
+# New methods for centralized color system
+
+## Color cache for performance
+static var _color_cache: Dictionary = {}
+
+## Get a color by token name with caching
+static func get_color(token_name: String, theme_variant: String = "default") -> Color:
+	"""Get a color from the design system by token name"""
+	var cache_key = token_name + "_" + theme_variant
+	
+	# Check cache first
+	if _color_cache.has(cache_key):
+		return _color_cache[cache_key]
+	
+	# Check primary color tokens
+	if M3_COLORS.has(token_name):
+		_color_cache[cache_key] = M3_COLORS[token_name]
+		return M3_COLORS[token_name]
+	
+	# Check brain structure colors
+	if BRAIN_STRUCTURE_COLORS.has(token_name):
+		_color_cache[cache_key] = BRAIN_STRUCTURE_COLORS[token_name]
+		return BRAIN_STRUCTURE_COLORS[token_name]
+	
+	# Check if it's a brain structure with prefix
+	if token_name.begins_with("brain_"):
+		var structure = token_name.substr(6)
+		if BRAIN_STRUCTURE_COLORS.has(structure):
+			_color_cache[cache_key] = BRAIN_STRUCTURE_COLORS[structure]
+			return BRAIN_STRUCTURE_COLORS[structure]
+	
+	# Check educational mappings
+	if EDUCATIONAL_TO_M3_MAPPING.has(token_name):
+		var mapped_token = EDUCATIONAL_TO_M3_MAPPING[token_name]
+		return get_color(mapped_token, theme_variant)
+	
+	# Default fallback
+	push_warning("[M3DesignTokens] Unknown color token: " + token_name)
+	return M3_COLORS["on_surface"]  # Safe fallback
+
+## Get semantic color based on usage context
+static func get_semantic_color(role: String, variant: String = "default") -> Color:
+	"""Get a color based on semantic role (e.g., 'button_primary', 'text_disabled')"""
+	
+	# Handle component-specific semantics
+	match role:
+		"button_primary":
+			return M3_COLORS["primary"]
+		"button_secondary":
+			return M3_COLORS["secondary"]
+		"button_tertiary":
+			return M3_COLORS["tertiary"]
+		"button_disabled":
+			var col = M3_COLORS["on_surface"]
+			col.a = M3_OPACITY["disabled"]
+			return col
+		"text_primary":
+			return M3_COLORS["on_surface"]
+		"text_secondary":
+			var col = M3_COLORS["on_surface"]
+			col.a = 0.7
+			return col
+		"text_disabled":
+			var col = M3_COLORS["on_surface"]
+			col.a = M3_OPACITY["disabled"]
+			return col
+		"background_primary":
+			return M3_COLORS["surface"]
+		"background_elevated":
+			return M3_COLORS["surface_container"]
+		"border_default":
+			return M3_COLORS["outline"]
+		"border_focus":
+			return M3_COLORS["primary"]
+		"error_text":
+			return M3_COLORS["error"]
+		"success_text":
+			return M3_COLORS["success"]
+		_:
+			return get_color(role, variant)
+
+## Get color for specific UI element
+static func get_ui_color(element_type: String, state: String = "default") -> Color:
+	"""Get color for specific UI elements with state support"""
+	
+	var base_color: Color
+	
+	# Determine base color by element type
+	match element_type:
+		"panel":
+			base_color = M3_COLORS["surface"]
+		"card":
+			base_color = M3_COLORS["surface_container"]
+		"button":
+			base_color = M3_COLORS["primary"]
+		"input":
+			base_color = M3_COLORS["surface_variant"]
+		"label":
+			base_color = M3_COLORS["on_surface"]
+		_:
+			base_color = M3_COLORS["surface"]
+	
+	# Apply state modifications
+	match state:
+		"hover":
+			return get_state_layer(base_color, "hover")
+		"pressed":
+			return get_state_layer(base_color, "pressed")
+		"disabled":
+			base_color.a = M3_OPACITY["disabled"]
+			return base_color
+		"focus":
+			return get_state_layer(base_color, "focus")
+		_:
+			return base_color
+
+## Clear the color cache (useful when changing themes)
+static func clear_color_cache() -> void:
+	"""Clear the internal color cache"""
+	_color_cache.clear()
+
+## Get all available color tokens
+static func get_available_tokens() -> Array[String]:
+	"""Return all available color token names"""
+	var tokens: Array[String] = []
+	
+	# Add M3 color tokens
+	for token in M3_COLORS:
+		tokens.append(token)
+	
+	# Add brain structure tokens with prefix
+	for structure in BRAIN_STRUCTURE_COLORS:
+		tokens.append("brain_" + structure)
+	
+	# Add educational semantic tokens
+	for edu_token in EDUCATIONAL_TO_M3_MAPPING:
+		tokens.append(edu_token)
+	
+	return tokens
+
+## Validate if a token exists
+static func has_token(token_name: String) -> bool:
+	"""Check if a color token exists in the system"""
+	return M3_COLORS.has(token_name) or \
+		   BRAIN_STRUCTURE_COLORS.has(token_name) or \
+		   BRAIN_STRUCTURE_COLORS.has(token_name.substr(6) if token_name.begins_with("brain_") else "") or \
+		   EDUCATIONAL_TO_M3_MAPPING.has(token_name)

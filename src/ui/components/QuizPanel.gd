@@ -173,10 +173,10 @@ func show_feedback(result: Dictionary) -> void:
 	var feedback_text = ""
 	if result.is_correct:
 		feedback_text = "[color=green][b]Correct![/b][/color]\n\n"
-		feedback_panel.modulate = Color(0.3, 0.8, 0.3, 0.9)
+		feedback_panel.modulate = M3DesignTokens.get_color("success")
 	else:
 		feedback_text = "[color=red][b]Incorrect[/b][/color]\n\n"
-		feedback_panel.modulate = Color(0.8, 0.3, 0.3, 0.9)
+		feedback_panel.modulate = M3DesignTokens.get_color("error")
 		
 		# Show correct answer
 		if _current_question.type == "multiple_choice":
@@ -313,7 +313,7 @@ func _create_m3_feedback_style(is_correct: bool) -> StyleBox:
 func _create_m3_focus_style() -> StyleBox:
 	"""Create M3 focus indicator style for accessibility"""
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color.TRANSPARENT
+	style.bg_color = M3DesignTokens.get_color("transparent")
 	style.border_color = M3DesignTokens.M3_COLORS["primary"]
 	style.set_border_width_all(M3DesignTokens.M3_ACCESSIBILITY["focus_indicator_width"])
 	style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["small"])
@@ -552,19 +552,20 @@ func _calculate_grade(percentage: float) -> String:
 
 func _get_grade_color(grade: String) -> String:
 	"""Get color for grade display"""
+	# Use M3 semantic colors for grades
 	match grade:
 		"A":
-			return "#00ff00"
+			return M3DesignTokens.get_color("success").to_html()
 		"B":
-			return "#88ff00"
+			return M3DesignTokens.get_color("tertiary").to_html()
 		"C":
-			return "#ffff00"
+			return M3DesignTokens.get_color("warning").to_html()
 		"D":
-			return "#ff8800"
+			return M3DesignTokens.get_color("warning_variant").to_html()
 		"F":
-			return "#ff0000"
+			return M3DesignTokens.get_color("error").to_html()
 		_:
-			return "#ffffff"
+			return M3DesignTokens.get_color("on_surface").to_html()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	"""Handle keyboard input for accessibility"""

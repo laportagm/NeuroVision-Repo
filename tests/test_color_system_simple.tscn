@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7x8j7kn2q4g3"]
+
+[ext_resource type="Script" path="res://tests/test_color_system_simple.gd" id="1_1xrwg"]
+
+[node name="TestColorSystemSimple" type="Node"]
+script = ExtResource("1_1xrwg")

@@ -1,133 +1,103 @@
-[gd_resource type="Theme" format=3 uid="uid://c34s6ov2h1r3f"]
+[gd_resource type="Theme" load_steps=8 format=3]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-bg_color = Color(0, 0.8, 0.753, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 24.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22wg4"]
+content_margin_left = 16.0
 content_margin_top = 8.0
-content_margin_right = 24.0
+content_margin_right = 16.0
 content_margin_bottom = 8.0
+bg_color = Color(0.0823529, 0.101961, 0.152941, 0.38)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
-bg_color = Color(0, 0.88, 0.828, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 24.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_te1uj"]
+content_margin_left = 16.0
 content_margin_top = 8.0
-content_margin_right = 24.0
+content_margin_right = 16.0
 content_margin_bottom = 8.0
+bg_color = Color(0, 0.243137, 0.227451, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3"]
-bg_color = Color(0, 0.72, 0.678, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 24.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f4dk5"]
+content_margin_left = 16.0
 content_margin_top = 8.0
-content_margin_right = 24.0
+content_margin_right = 16.0
 content_margin_bottom = 8.0
+bg_color = Color(0, 0.8, 0.752941, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4"]
-bg_color = Color(0.973, 0.98, 0.988, 0.38)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 24.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2tt1"]
+content_margin_left = 16.0
 content_margin_top = 8.0
-content_margin_right = 24.0
+content_margin_right = 16.0
 content_margin_bottom = 8.0
+bg_color = Color(0, 0.8, 0.752941, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5"]
-bg_color = Color(0.082, 0.102, 0.168, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pf7ew"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.0823529, 0.101961, 0.152941, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.392, 0.459, 0.543, 1)
+border_color = Color(0, 0.8, 0.752941, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c8l56"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.0823529, 0.101961, 0.152941, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.392157, 0.454902, 0.545098, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubirb"]
 content_margin_left = 16.0
 content_margin_top = 16.0
 content_margin_right = 16.0
 content_margin_bottom = 16.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6"]
-bg_color = Color(0.173, 0.204, 0.235, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0.8, 0.753, 1)
-content_margin_left = 24.0
-content_margin_top = 24.0
-content_margin_right = 24.0
-content_margin_bottom = 24.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7"]
-bg_color = Color(0.082, 0.102, 0.168, 1)
+bg_color = Color(0.0392157, 0.054902, 0.105882, 0.95)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.18, 0.486, 0.839, 1)
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 4
 
 [resource]
-resource_name = "NeuroVision Dark Theme"
-
-Button/colors/font_color = Color(1, 1, 1, 1)
-Button/colors/font_disabled_color = Color(0.389, 0.389, 0.389, 1)
-Button/colors/font_hover_color = Color(1, 1, 1, 1)
-Button/colors/font_pressed_color = Color(1, 1, 1, 1)
-Button/styles/disabled = SubResource("StyleBoxFlat_4")
-Button/styles/hover = SubResource("StyleBoxFlat_2")
-Button/styles/normal = SubResource("StyleBoxFlat_1")
-Button/styles/pressed = SubResource("StyleBoxFlat_3")
-
-Panel/styles/panel = SubResource("StyleBoxFlat_5")
-PanelContainer/styles/panel = SubResource("StyleBoxFlat_5")
-
-Label/colors/font_color = Color(0.973, 0.98, 0.988, 1)
+Button/font_sizes/font_size = 16
+Button/styles/disabled = SubResource("StyleBoxFlat_22wg4")
+Button/styles/hover = SubResource("StyleBoxFlat_te1uj")
+Button/styles/normal = SubResource("StyleBoxFlat_f4dk5")
+Button/styles/pressed = SubResource("StyleBoxFlat_h2tt1")
+Label/colors/font_color = Color(0.972549, 0.980392, 0.988235, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0.25)
-
-RichTextLabel/colors/default_color = Color(0.973, 0.98, 0.988, 1)
-RichTextLabel/colors/selection_color = Color(0, 0.8, 0.753, 1)
-
-EducationalPanel/colors/structure_label_color = Color(0.973, 0.98, 0.988, 1)
-EducationalPanel/colors/clinical_note_color = Color(0.482, 0.38, 1, 1)
-EducationalPanel/colors/learning_objective_color = Color(0.18, 0.486, 0.839, 1)
-EducationalPanel/colors/assessment_feedback_color = Color(0.318, 0.812, 0.4, 1)
-EducationalPanel/styles/info_panel = SubResource("StyleBoxFlat_6")
-EducationalPanel/styles/quiz_panel = SubResource("StyleBoxFlat_7")
-
-BrainStructure/colors/hippocampus_color = Color(1, 0.42, 0.42, 1)
-BrainStructure/colors/amygdala_color = Color(0.518, 0.369, 0.969, 1)
-BrainStructure/colors/cortex_color = Color(0.294, 0.671, 0.969, 1)
-BrainStructure/colors/thalamus_color = Color(0.412, 0.859, 0.486, 1)
-BrainStructure/colors/cerebellum_color = Color(0.98, 0.322, 0.322, 1)
-BrainStructure/colors/brainstem_color = Color(0.992, 0.494, 0.078, 1)
-BrainStructure/colors/corpus_callosum_color = Color(0.898, 0.6, 0.969, 1)
-BrainStructure/colors/frontal_lobe_color = Color(0.455, 0.753, 0.988, 1)
-BrainStructure/colors/temporal_lobe_color = Color(1, 0.7, 0.4, 1)
-BrainStructure/colors/parietal_lobe_color = Color(0.549, 0.914, 0.604, 1)
-BrainStructure/colors/occipital_lobe_color = Color(0.816, 0.749, 1, 1)
-BrainStructure/colors/basal_ganglia_color = Color(1, 0.529, 0.529, 1)
-BrainStructure/colors/limbic_system_color = Color(0.765, 1, 1, 1)
-
-Control/colors/background = Color(0.039, 0.055, 0.106, 1)
+Label/font_sizes/font_size = 16
+LineEdit/styles/focus = SubResource("StyleBoxFlat_pf7ew")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_c8l56")
+Panel/styles/panel = SubResource("StyleBoxFlat_ubirb")

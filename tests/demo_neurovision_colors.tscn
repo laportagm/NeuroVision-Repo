@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5dr3w7kp4q8m"]
+
+[ext_resource type="Script" path="res://tests/demo_neurovision_colors.gd" id="1_0xrwg"]
+
+[node name="DemoNeuroVisionColors" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_0xrwg")

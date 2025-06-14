@@ -175,6 +175,10 @@ func _apply_m3_theme_to_ui() -> void:
 	"""Apply comprehensive Material 3 theme to all UI components"""
 	print("[EnhancedExplorationScene] Applying M3 theme to all UI components")
 	
+	# Apply comprehensive NeuroVision theme to entire UI hierarchy
+	var NeuroVisionTheme = preload("res://src/ui/themes/apply_neurovision_theme.gd")
+	NeuroVisionTheme.apply_neurovision_theme_to_scene($UI)
+	
 	# Apply M3 to top bar with proper header styling
 	if top_bar:
 		M3ComponentApplicator.apply_m3_panel_styling(top_bar, M3ComponentApplicator.PanelVariant.SURFACE_CONTAINER)
@@ -271,7 +275,7 @@ func _apply_m3_to_view_controls() -> void:
 	"""Apply M3 styling to view controls dropdown"""
 	if view_presets:
 		# Apply M3 filled variant button styling to dropdown
-		M3ComponentApplicator.apply_m3_to_component(view_presets)
+		M3ComponentApplicator.apply_m3_button_styling(view_presets, M3ComponentApplicator.ButtonVariant.SECONDARY)
 		view_presets.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
 		view_presets.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["body_medium"]["size"])
 		
@@ -371,7 +375,7 @@ func _create_axis_indicator() -> void:
 	if materials.x:
 		x_instance.material_override = materials.x
 	else:
-		x_instance.material_override = _create_axis_material(Color.RED)
+		x_instance.material_override = _create_axis_material(M3DesignTokens.get_color("error"))
 	axis_indicator.add_child(x_instance)
 	
 	# Create Y axis (green)
@@ -383,7 +387,7 @@ func _create_axis_indicator() -> void:
 	if materials.y:
 		y_instance.material_override = materials.y
 	else:
-		y_instance.material_override = _create_axis_material(Color.GREEN)
+		y_instance.material_override = _create_axis_material(M3DesignTokens.get_color("success"))
 	axis_indicator.add_child(y_instance)
 	
 	# Create Z axis (blue)
@@ -395,7 +399,7 @@ func _create_axis_indicator() -> void:
 	if materials.z:
 		z_instance.material_override = materials.z
 	else:
-		z_instance.material_override = _create_axis_material(Color.BLUE)
+		z_instance.material_override = _create_axis_material(M3DesignTokens.get_color("tertiary"))
 	axis_indicator.add_child(z_instance)
 
 func _create_axis_material(color: Color) -> StandardMaterial3D:
@@ -466,7 +470,7 @@ func _populate_structure_list(structures: Array) -> void:
 		
 		# Create custom style for list items
 		var style_normal = StyleBoxFlat.new()
-		style_normal.bg_color = Color.TRANSPARENT
+		style_normal.bg_color = M3DesignTokens.get_color("transparent")
 		style_normal.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["medium"])
 		style_normal.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 		
@@ -636,7 +640,7 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 	
 	# Highlight button with M3 colors
 	for id in _structure_buttons:
-		_structure_buttons[id].modulate = Color.WHITE
+		_structure_buttons[id].modulate = M3DesignTokens.get_color("on_surface")
 	if _structure_buttons.has(_current_structure_id):
 		_structure_buttons[_current_structure_id].modulate = M3DesignTokens.M3_COLORS["primary"]
 	
@@ -658,7 +662,7 @@ func _on_selection_cleared() -> void:
 	
 	# Clear button highlights
 	for id in _structure_buttons:
-		_structure_buttons[id].modulate = Color.WHITE
+		_structure_buttons[id].modulate = M3DesignTokens.get_color("on_surface")
 
 func _load_brain_models() -> void:
 	"""Load the brain models"""

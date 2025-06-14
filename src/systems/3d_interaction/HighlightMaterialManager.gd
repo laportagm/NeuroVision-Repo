@@ -24,15 +24,8 @@ const HOVER_TRANSITION: float = 0.15
 const PULSE_SPEED: float = 1.0
 const CACHE_SIZE: int = 20
 
-# State colors
-const STATE_COLORS: Dictionary = {
-	HighlightState.IDLE: Color(0.8, 0.8, 0.8, 1.0),
-	HighlightState.HOVERING: Color(0.3, 0.6, 1.0, 1.0),
-	HighlightState.SELECTED: Color(0.2, 0.8, 0.4, 1.0),
-	HighlightState.MULTI_SELECTED: Color(0.8, 0.3, 0.8, 1.0),
-	HighlightState.FOCUSED: Color(1.0, 0.6, 0.2, 1.0),
-	HighlightState.DISABLED: Color(0.5, 0.5, 0.5, 0.5)
-}
+# State colors using M3DesignTokens
+var STATE_COLORS: Dictionary = {}
 
 # State rim intensities
 const STATE_INTENSITIES: Dictionary = {
@@ -63,6 +56,9 @@ class MaterialState:
 
 func _ready() -> void:
 	print("[HighlightManager] Initializing material system")
+	
+	# Initialize state colors from M3DesignTokens
+	_initialize_state_colors()
 	
 	# Check if running in headless mode
 	var is_headless = OS.has_feature("headless") or DisplayServer.get_name() == "headless"
@@ -128,6 +124,17 @@ func is_transitioning(mesh: MeshInstance3D) -> bool:
 	return mesh in _transition_tweens and _transition_tweens[mesh].is_running()
 
 # === PRIVATE METHODS ===
+
+func _initialize_state_colors() -> void:
+	"""Initialize state colors from M3DesignTokens"""
+	STATE_COLORS = {
+		HighlightState.IDLE: M3DesignTokens.get_color("surface_variant"),
+		HighlightState.HOVERING: M3DesignTokens.get_color("primary"),
+		HighlightState.SELECTED: M3DesignTokens.get_color("tertiary"),
+		HighlightState.MULTI_SELECTED: M3DesignTokens.get_color("secondary"),
+		HighlightState.FOCUSED: M3DesignTokens.get_color("primary_container"),
+		HighlightState.DISABLED: M3DesignTokens.get_color("on_surface_variant").darkened(0.5)
+	}
 
 func _load_shaders() -> void:
 	"""Load shader resources"""

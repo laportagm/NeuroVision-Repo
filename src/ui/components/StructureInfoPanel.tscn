@@ -28,7 +28,7 @@ shadow_size = 32
 [node name="StructureInfoPanel" type="PanelContainer"]
 material = SubResource("ShaderMaterial_1")
 anchors_preset = -1
-anchor_left = 1.0
+anchor_left = 0.971875
 anchor_right = 0.971875
 anchor_bottom = 0.931944
 offset_left = -215.0

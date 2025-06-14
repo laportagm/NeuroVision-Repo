@@ -14,10 +14,10 @@ const PANEL_MARGIN: int = 30
 @export var auto_hide: bool = false
 @export var auto_hide_delay: float = 30.0  # Increased to 30 seconds for testing
 @export_group("Appearance")
-@export var panel_color: Color = Color(0.1, 0.1, 0.15, 0.95)
-@export var header_color: Color = Color(0.2, 0.2, 0.25, 1.0)
-@export var text_color: Color = Color.WHITE
-@export var accent_color: Color = Color.CYAN
+@export var panel_color: Color = M3DesignTokens.get_ui_color("panel", "default")
+@export var header_color: Color = M3DesignTokens.get_color("surface_container")
+@export var text_color: Color = M3DesignTokens.get_color("on_surface")
+@export var accent_color: Color = M3DesignTokens.get_color("primary")
 
 # === PRIVATE VARIABLES ===
 @onready var _header: PanelContainer = $VBoxContainer/Header
