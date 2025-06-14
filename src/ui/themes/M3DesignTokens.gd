@@ -8,73 +8,74 @@ class_name M3DesignTokens
 extends Resource
 
 # === MATERIAL 3 COLOR SYSTEM ===
-# NeuroVision Educational Color Palette - WCAG AAA Compliant
+# NeuroVision Professional Medical Color Palette - WCAG AAA Compliant
+# Updated for professional medical education with enhanced accessibility
 const M3_COLORS = {
-	# Primary - Neuro Cyan for brain structure highlights and main interactions
-	"primary": Color("#00CCC0"),  # Neuro Cyan
-	"primary_gradient_end": Color("#2E7CD6"),  # Synaptic Blue
-	"on_primary": Color("#FFFFFF"),
-	"primary_container": Color("#003E3A"),  # Dark container for Neuro Cyan
-	"on_primary_container": Color("#9FFFF9"),  # Light tint
+	# Professional Medical Accent - GitHub Dark Theme Inspired
+	"primary": Color("#58a6ff"),  # Professional accent blue (WCAG AAA 7:1 contrast)
+	"primary_gradient_end": Color("#58a6ff"),  # Consistent professional blue
+	"on_primary": Color("#000000"),  # Black text on light blue (optimal contrast)
+	"primary_container": Color("#0d1117"),  # Dark background container
+	"on_primary_container": Color("#c9d1d9"),  # Light text on dark container
 	
 	# Secondary - Synaptic Blue for educational interactions
-	"secondary": Color("#2E7CD6"),  # Synaptic Blue
-	"on_secondary": Color("#FFFFFF"),
-	"secondary_container": Color("#1A2E52"),  # Dark container for Synaptic Blue
-	"on_secondary_container": Color("#B8DDFF"),
+	"secondary": Color("#58a6ff"),  # Professional accent consistency
+	"on_secondary": Color("#000000"),
+	"secondary_container": Color("#161b22"),  # UI panel surface
+	"on_secondary_container": Color("#c9d1d9"),
 	
-	# Tertiary - Cortical Purple for clinical/advanced features
-	"tertiary": Color("#7B61FF"),  # Cortical Purple
-	"on_tertiary": Color("#FFFFFF"),
-	"tertiary_container": Color("#3A2B7A"),  # Dark container for Cortical Purple
-	"on_tertiary_container": Color("#D5CCFF"),
+	# Tertiary - Professional highlight for clinical features
+	"tertiary": Color("#58a6ff"),  # Consistent professional accent
+	"on_tertiary": Color("#000000"),
+	"tertiary_container": Color("#161b22"),  # UI panel surface
+	"on_tertiary_container": Color("#c9d1d9"),
 	
-	# NeuroVision Surface Hierarchy - Dark Educational Theme
-	"surface": Color("#0A0E1B"),  # Surface-0 (Base)
-	"surface_variant": Color("#151A27"),  # Surface-1 (Panels)  
-	"surface_bright": Color("#1C2231"),  # Surface-2 (Cards)
-	"surface_dim": Color("#242A3B"),  # Surface-3 (Elevated)
-	"surface_container": Color("#151A27"),  # Surface-1 equivalent
-	"surface_container_high": Color("#1C2231"),  # Surface-2 equivalent
-	"surface_container_highest": Color("#2C3245"),  # Surface-4 (Highest)
+	# Professional Medical Surface Hierarchy - Medical Grade Dark Theme
+	"surface": Color("#0d1117"),  # Main background (medical grade dark)
+	"surface_variant": Color("#161b22"),  # UI panel surface (professional)  
+	"surface_bright": Color("#161b22"),  # UI panel surface (consistent)
+	"surface_dim": Color("#0d1117"),  # Main background variant
+	"surface_container": Color("#161b22"),  # UI panel surface
+	"surface_container_high": Color("#161b22"),  # UI panel surface
+	"surface_container_highest": Color("#161b22"),  # UI panel surface
 	
-	# NeuroVision Background with gradient support
-	"background_start": Color("#0A0E1B"),  # Deep neural network blue
-	"background_end": Color("#151A27"),  # Slightly lighter for depth
-	"on_background": Color("#F8FAFC"),
+	# Professional Medical Background
+	"background_start": Color("#0d1117"),  # Main background (reduced eye strain)
+	"background_end": Color("#0d1117"),  # Consistent background
+	"on_background": Color("#c9d1d9"),  # Primary text (7:1 contrast ratio)
 	
-	# Text and content colors
-	"on_surface": Color("#F8FAFC"),
-	"on_surface_variant": Color("#CBD5E1"),
-	"inverse_surface": Color("#F8FAFC"),
-	"inverse_on_surface": Color("#1E293B"),
+	# Professional Medical Text Colors (WCAG AAA Compliant)
+	"on_surface": Color("#c9d1d9"),  # Primary text (7:1 contrast on #0d1117)
+	"on_surface_variant": Color("#c9d1d9"),  # Consistent text color
+	"inverse_surface": Color("#c9d1d9"),
+	"inverse_on_surface": Color("#0d1117"),
 	
-	# System colors
-	"outline": Color("#475569"),
-	"outline_variant": Color("#64748B"),
-	"shadow": Color(0, 0, 0, 0.25),
-	"scrim": Color(0, 0, 0, 0.6),
+	# Professional System Colors
+	"outline": Color("#58a6ff"),  # Professional accent for borders
+	"outline_variant": Color("#58a6ff"),  # Consistent accent borders
+	"shadow": Color(0, 0, 0, 0.4),  # Enhanced shadow for glass morphism
+	"scrim": Color(0, 0, 0, 0.7),  # Darker scrim for better contrast
 	
-	# NeuroVision Semantic Colors for Educational Feedback - WCAG AAA Compliant
-	"error": Color("#FF6B6B"),  # Educational error red
-	"on_error": Color("#FFFFFF"),
-	"error_container": Color("#7F1D1D"),
-	"on_error_container": Color("#FCA5A5"),
+	# Professional Medical Semantic Colors - WCAG AAA Compliant on #0d1117 background
+	"error": Color("#ff7b72"),  # GitHub dark error red (7:1 contrast on #0d1117)
+	"on_error": Color("#000000"),
+	"error_container": Color("#161b22"),
+	"on_error_container": Color("#ff7b72"),
 	
-	"success": Color("#51CF66"),  # Educational success green
+	"success": Color("#56d364"),  # GitHub dark success green (7:1 contrast on #0d1117)
 	"on_success": Color("#000000"),
-	"success_container": Color("#064E3B"),
-	"on_success_container": Color("#6EE7B7"),
+	"success_container": Color("#161b22"),
+	"on_success_container": Color("#56d364"),
 	
-	"warning": Color("#FFD43B"),  # Educational warning yellow
+	"warning": Color("#f2cc60"),  # GitHub dark warning yellow (7:1 contrast on #0d1117)
 	"on_warning": Color("#000000"),
-	"warning_container": Color("#78350F"),
-	"on_warning_container": Color("#FCD34D"),
+	"warning_container": Color("#161b22"),
+	"on_warning_container": Color("#f2cc60"),
 	
-	"info": Color("#4DABF7"),  # Educational info blue
+	"info": Color("#58a6ff"),  # Professional accent blue (consistent branding)
 	"on_info": Color("#000000"),
-	"info_container": Color("#1E3A8A"),
-	"on_info_container": Color("#93BBFC"),
+	"info_container": Color("#161b22"),
+	"on_info_container": Color("#58a6ff"),
 	
 	# Special colors
 	"transparent": Color(0, 0, 0, 0)

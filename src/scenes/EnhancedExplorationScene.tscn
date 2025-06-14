@@ -6,16 +6,16 @@
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
-background_color = Color(0.16, 0.16, 0.16, 0.666667)
-ambient_light_color = Color(0.160784, 0.160784, 0.231373, 0)
-ambient_light_energy = 0.3
+background_color = Color(0.0549, 0.0667, 0.0902, 1)
+ambient_light_color = Color(0.3451, 0.651, 1, 0.15)
+ambient_light_energy = 0.4
 reflected_light_source = 2
 tonemap_mode = 2
-ssao_intensity = 0.8
-ssao_horizon = 0.17
+ssao_intensity = 0.6
+ssao_horizon = 0.15
 glow_enabled = true
-glow_strength = 1.2
-glow_bloom = 0.4
+glow_strength = 1.0
+glow_bloom = 0.3
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
 
@@ -46,42 +46,56 @@ albedo_color = Color(0.05, 0.05, 0.08, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
 shader = ExtResource("3_glass")
-shader_parameter/blur_amount = 5.0
-shader_parameter/tint_color = Color(0, 0, 0, 0.2)
+shader_parameter/blur_amount = 12.0
+shader_parameter/tint_color = Color(0.0549, 0.0667, 0.0902, 0.15)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-content_margin_left = 20.0
-content_margin_top = 15.0
-content_margin_right = 20.0
-content_margin_bottom = 15.0
-bg_color = Color(0, 0, 0, 0.5)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
-content_margin_left = 20.0
+content_margin_left = 24.0
 content_margin_top = 20.0
-content_margin_right = 20.0
+content_margin_right = 24.0
 content_margin_bottom = 20.0
-bg_color = Color(1, 1, 1, 0.05)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3"]
-content_margin_left = 20.0
-content_margin_top = 15.0
-content_margin_right = 20.0
-content_margin_bottom = 15.0
-bg_color = Color(0.1, 0.1, 0.12, 0.92)
+bg_color = Color(0.0549, 0.0667, 0.0902, 0.92)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.0235294)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
+border_color = Color(0.3451, 0.651, 1, 0.2)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
+content_margin_left = 24.0
+content_margin_top = 24.0
+content_margin_right = 24.0
+content_margin_bottom = 24.0
+bg_color = Color(0.0863, 0.1059, 0.1333, 0.92)
+border_width_left = 0
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3451, 0.651, 1, 0.15)
+corner_radius_top_left = 0
+corner_radius_top_right = 12
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3"]
+content_margin_left = 24.0
+content_margin_top = 20.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
+bg_color = Color(0.0863, 0.1059, 0.1333, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 0
+border_color = Color(0.3451, 0.651, 1, 0.15)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
 
 [node name="ExplorationScene" type="Node3D"]
 script = ExtResource("1_script")
@@ -172,6 +186,7 @@ grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1")
 metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="TopBarContent" type="HBoxContainer" parent="UI/MainUI/TopBar"]
 layout_mode = 2
@@ -179,7 +194,7 @@ theme_override_constants/separation = 30
 
 [node name="Logo" type="Label" parent="UI/MainUI/TopBar/TopBarContent"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.8, 0.9, 1)
+theme_override_colors/font_color = Color(0.3451, 0.651, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "NeuroVision"
 
@@ -192,7 +207,7 @@ layout_mode = 2
 metadata/_edit_group_ = true
 
 [node name="ViewLabel" type="Label" parent="UI/MainUI/TopBar/TopBarContent/ViewControls"]
-modulate = Color(0.8, 0.8, 0.8, 1)
+modulate = Color(0.7882, 0.8196, 0.8509, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
@@ -247,13 +262,13 @@ theme_override_font_sizes/font_size = 20
 text = "?"
 
 [node name="LeftPanel" type="PanelContainer" parent="UI/MainUI"]
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_bottom = 1.0
-offset_top = 110.0
-offset_right = 320.0
-offset_bottom = -49.0
+offset_top = 80.0
+offset_right = 280.0
+offset_bottom = -60.0
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2")
@@ -295,7 +310,7 @@ metadata/_edit_group_ = true
 layout_mode = 2
 
 [node name="StatusLabel" type="Label" parent="UI/MainUI/BottomPanel/StatusBar"]
-modulate = Color(0.8, 0.8, 0.8, 1)
+modulate = Color(0.7882, 0.8196, 0.8509, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Ready"
@@ -305,7 +320,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="PerformanceInfo" type="Label" parent="UI/MainUI/BottomPanel/StatusBar"]
-modulate = Color(0.8, 0.8, 0.8, 1)
+modulate = Color(0.7882, 0.8196, 0.8509, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "FPS: 60 | Quality: HIGH"
@@ -328,7 +343,7 @@ visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.8)
+color = Color(0.0549, 0.0667, 0.0902, 0.95)
 
 [node name="LoadingLabel" type="Label" parent="UI/Overlays/LoadingOverlay"]
 layout_mode = 2
