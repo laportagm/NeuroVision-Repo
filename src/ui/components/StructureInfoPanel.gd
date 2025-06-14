@@ -7,17 +7,20 @@ signal quiz_requested(structure_id: String)
 
 # === CONSTANTS ===
 const PANEL_WIDTH: int = 450
-const ANIMATION_DURATION: float = 0.3
 const PANEL_MARGIN: int = 30
+
+# Get animation duration from M3 design tokens
+static func _get_animation_duration() -> float:
+	return M3DesignTokens.M3_DURATION["medium2"] / 1000.0
 
 # === EXPORTS ===
 @export var auto_hide: bool = false
 @export var auto_hide_delay: float = 30.0  # Increased to 30 seconds for testing
 @export_group("Appearance")
-@export var panel_color: Color = M3DesignTokens.get_ui_color("panel", "default")
-@export var header_color: Color = M3DesignTokens.get_color("surface_container")
-@export var text_color: Color = M3DesignTokens.get_color("on_surface")
-@export var accent_color: Color = M3DesignTokens.get_color("primary")
+@export var panel_color: Color
+@export var header_color: Color
+@export var text_color: Color
+@export var accent_color: Color
 
 # === PRIVATE VARIABLES ===
 @onready var _header: PanelContainer = $VBoxContainer/Header
@@ -33,6 +36,16 @@ var _current_structure_id: String = ""
 # === PUBLIC METHODS ===
 
 func _ready() -> void:
+	# Initialize theme colors from M3DesignTokens if not set
+	if panel_color == Color():
+		panel_color = M3DesignTokens.get_ui_color("panel", "default")
+	if header_color == Color():
+		header_color = M3DesignTokens.get_color("surface_container")
+	if text_color == Color():
+		text_color = M3DesignTokens.get_color("on_surface")
+	if accent_color == Color():
+		accent_color = M3DesignTokens.get_color("primary")
+	
 	_setup_ui()
 	_setup_auto_hide()
 	visible = false
@@ -135,18 +148,19 @@ func show_panel() -> void:
 	var target_offset_right = -PANEL_MARGIN
 	print("[InfoPanel] Animating offsets from (", offset_left, ", ", offset_right, ") to (", target_offset_left, ", ", target_offset_right, ")")
 	
-	# Animate with glass morphism effect
+	# Animate with glass morphism effect using M3 timing
+	var anim_duration = _get_animation_duration()
 	_tween.set_parallel(true)
-	_tween.tween_property(self, "modulate:a", 1.0, ANIMATION_DURATION * 0.8)
-	_tween.tween_property(self, "offset_left", target_offset_left, ANIMATION_DURATION)
-	_tween.tween_property(self, "offset_right", target_offset_right, ANIMATION_DURATION)
-	_tween.tween_property(self, "scale", Vector2(1.0, 1.0), ANIMATION_DURATION * 0.9)
+	_tween.tween_property(self, "modulate:a", 1.0, anim_duration * 0.8)
+	_tween.tween_property(self, "offset_left", target_offset_left, anim_duration)
+	_tween.tween_property(self, "offset_right", target_offset_right, anim_duration)
+	_tween.tween_property(self, "scale", Vector2(1.0, 1.0), anim_duration * 0.9)
 	_tween.set_parallel(false)
 	
 	# Subtle blur amount animation if shader is available
 	if material and material.shader:
 		_tween.set_parallel(true)
-		_tween.tween_property(material, "shader_parameter/blur_amount", 4.0, ANIMATION_DURATION * 1.2).from(8.0)
+		_tween.tween_property(material, "shader_parameter/blur_amount", 4.0, anim_duration * 1.2).from(8.0)
 		_tween.set_parallel(false)
 	
 	# Add callback to check final state
@@ -170,15 +184,17 @@ func hide_panel() -> void:
 	_tween.set_ease(Tween.EASE_IN)
 	_tween.set_trans(Tween.TRANS_BACK)
 	_tween.set_parallel(true)
-	_tween.tween_property(self, "modulate:a", 0.0, ANIMATION_DURATION * 0.8)
-	_tween.tween_property(self, "scale", Vector2(0.95, 0.95), ANIMATION_DURATION * 0.9)
+	
+	var anim_duration = _get_animation_duration()
+	_tween.tween_property(self, "modulate:a", 0.0, anim_duration * 0.8)
+	_tween.tween_property(self, "scale", Vector2(0.95, 0.95), anim_duration * 0.9)
 	# Animate back to off-screen position
-	_tween.tween_property(self, "offset_left", -PANEL_WIDTH + 50, ANIMATION_DURATION)
-	_tween.tween_property(self, "offset_right", 50, ANIMATION_DURATION)
+	_tween.tween_property(self, "offset_left", -PANEL_WIDTH + 50, anim_duration)
+	_tween.tween_property(self, "offset_right", 50, anim_duration)
 	
 	# Blur amount animation if shader is available
 	if material and material.shader:
-		_tween.tween_property(material, "shader_parameter/blur_amount", 8.0, ANIMATION_DURATION * 0.8)
+		_tween.tween_property(material, "shader_parameter/blur_amount", 8.0, anim_duration * 0.8)
 	
 	_tween.set_parallel(false)
 	_tween.tween_callback(func(): visible = false)
@@ -232,14 +248,14 @@ func _apply_theme() -> void:
 	# Apply M3 typography to title
 	if _title_label:
 		M3ComponentApplicator.apply_m3_text_styling(_title_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
-		_title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+		_title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
 	
 	# Style close button as M3 icon button
 	if _close_button:
 		_close_button.text = "✕"
 		_close_button.flat = true
 		M3ComponentApplicator.apply_m3_button_styling(_close_button, M3ComponentApplicator.ButtonVariant.ICON)
-		_close_button.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		_close_button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
 		_close_button.add_theme_font_size_override("font_size", 20)
 		
 		# Add hover effect
@@ -273,7 +289,7 @@ func _add_section(title: String, content: String) -> void:
 	var title_label = Label.new()
 	title_label.text = title
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
 	_info_content.add_child(title_label)
 	
 	# Section content with M3 typography
@@ -281,7 +297,7 @@ func _add_section(title: String, content: String) -> void:
 	content_label.text = content
 	content_label.fit_content = true
 	content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content_label.add_theme_color_override("default_color", M3DesignTokens.M3_COLORS["on_surface"])
+	content_label.add_theme_color_override("default_color", M3DesignTokens.get_color("on_surface"))
 	content_label.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
 	content_label.bbcode_enabled = true
 	content_label.custom_minimum_size.y = 60
@@ -295,14 +311,14 @@ func _add_connections_section(connections: Array) -> void:
 	var title_label = Label.new()
 	title_label.text = "Connections"
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
 	_info_content.add_child(title_label)
 	
 	for connection in connections:
 		var item_label = Label.new()
 		item_label.text = "• " + str(connection)
 		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-		item_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		item_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
@@ -313,14 +329,14 @@ func _add_objectives_section(objectives: Array) -> void:
 	var title_label = Label.new()
 	title_label.text = "Learning Objectives"
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["secondary"])
+	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("secondary"))
 	_info_content.add_child(title_label)
 	
 	for i in range(objectives.size()):
 		var item_label = Label.new()
 		item_label.text = str(i + 1) + ". " + str(objectives[i])
 		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-		item_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		item_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
@@ -337,14 +353,14 @@ func _add_list_section(title: String, items: Array, bullet: String = "•") -> v
 	var title_label = Label.new()
 	title_label.text = title
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
 	_info_content.add_child(title_label)
 	
 	for item in items:
 		var item_label = Label.new()
 		item_label.text = bullet + " " + str(item)
 		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-		item_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		item_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
@@ -354,7 +370,7 @@ func _add_category_tag(category: String) -> void:
 	"""Add a category tag with M3 chip styling"""
 	var tag_container = PanelContainer.new()
 	var tag_style = StyleBoxFlat.new()
-	tag_style.bg_color = M3DesignTokens.M3_COLORS["primary_container"]
+	tag_style.bg_color = M3DesignTokens.get_color("primary_container")
 	tag_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["chip"])
 	tag_style.set_content_margin_all(M3DesignTokens.M3_SPACING["small"])
 	tag_container.add_theme_stylebox_override("panel", tag_style)
@@ -362,7 +378,7 @@ func _add_category_tag(category: String) -> void:
 	var tag_label = Label.new()
 	tag_label.text = category
 	M3ComponentApplicator.apply_m3_text_styling(tag_label, M3ComponentApplicator.TypographyScale.LABEL_MEDIUM)
-	tag_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_primary_container"])
+	tag_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_primary_container"))
 	tag_container.add_child(tag_label)
 	
 	_info_content.add_child(tag_container)

@@ -1,55 +1,81 @@
-# Execute Cleanup
+# Command: /execute-cleanup
+# Purpose: Execute cleanup operations for NeuroVision based on scan results
+# Arguments:
+#   - $CATEGORY: Cleanup category (safe, medium-risk, high-risk, all)
+#   - $BACKUP: Create backup before changes (true/false)
+#   - $TARGET_AREA: Specific area to clean (ui, 3d_models, tests, autoloads, all)
+#   - $DRY_RUN: Show what would be cleaned without doing it (true/false)
+# Example: /execute-cleanup CATEGORY="safe" BACKUP="true" TARGET_AREA="ui" DRY_RUN="false"
+---
 
-Execute cleanup operations based on previous scan results.
+You are a Godot project maintenance specialist with expertise in educational software cleanup.
 
-## Arguments
+TASK: Execute cleanup operations for NeuroVision brain anatomy app in category $CATEGORY.
 
-- `$1` (category): "safe", "medium-risk", "high-risk", "all" (default: "safe")
-- `$2` (backup): "true", "false" (default: "true")
+CONTEXT:
+- NeuroVision has complex dependencies between educational components
+- 14 autoload managers that may reference files dynamically
+- Material3 theme system with multiple variants
+- 3D models with LOD versions must be preserved
+- Assessment content linked to brain structures
+- Create backup: ${BACKUP:="true"}
+- Target area: ${TARGET_AREA:="all"}
+- Dry run mode: ${DRY_RUN:="false"}
 
-## Usage
+REQUIREMENTS:
+1. Based on $CATEGORY, perform cleanup:
+   - "safe": Only definitely unused files (empty, orphaned imports)
+   - "medium-risk": Deprecated components, old test files
+   - "high-risk": Potentially unused scenes, duplicate code
+   - "all": Complete cleanup across all categories
 
-```bash
-/execute-cleanup
-/execute-cleanup safe true
-/execute-cleanup medium-risk true
-/execute-cleanup all false
-```
+2. For $TARGET_AREA specifics:
+   - "ui": Clean src/ui/ components, themes, effects
+   - "3d_models": Optimize assets/3d_models/ (keep LODs)
+   - "tests": Remove outdated tests/
+   - "autoloads": Clean unused autoload references
+   - "all": Clean entire project
 
-## Prompt
+3. Cleanup operations:
+   - Remove unused .gd and .tscn files
+   - Delete orphaned .import files
+   - Clean dead code within scripts
+   - Remove commented-out blocks
+   - Consolidate duplicate functions
+   - Update stale documentation
+   - Remove unused theme resources
+   - Clean shader files without references
 
-Execute cleanup operations for category: $1
+4. Preservation rules:
+   - Keep all brain structure data JSONs
+   - Preserve assessment content
+   - Maintain all LOD model versions
+   - Keep accessibility-related code
+   - Preserve theme color schemes
 
-Create backup before changes: $2
+5. Safety verification:
+   - Check scene dependencies (.tscn references)
+   - Verify autoload usage patterns
+   - Scan for dynamic loading (load(), preload())
+   - Check signal connections
+   - Verify export variables usage
 
-Perform these cleanup actions:
-1. Remove definitely unused files
-2. Delete dead code
-3. Clean up imports
-4. Remove deprecated functions
-5. Update or remove outdated documentation
-6. Consolidate duplicate code
-7. Clean up unused assets
-8. Remove orphaned scene files
-9. Clean up autoload entries
+CONSTRAINTS:
+- Never remove educational content files
+- Preserve all accessibility features
+- Keep performance monitoring code
+- Maintain error recovery systems
+- Don't break theme variants
+- Preserve all brain model files
 
-For this Godot project, be especially careful with:
-- Scene files that might be referenced indirectly
-- Assets that might be loaded dynamically
-- Scripts that might be used via string references
-- Autoload scripts that might be accessed globally
+OUTPUT:
+- Detailed cleanup report:
+  - Files removed (count and paths)
+  - Code cleaned (lines removed)
+  - Space saved (MB)
+  - Potential risks identified
+- If DRY_RUN=true: Show what would be done
+- Backup location if created
+- Testing recommendations post-cleanup
 
-Start with the safest removals and work up to riskier ones based on the category selected.
-
-Safety guidelines:
-- Always verify asset dependencies before removal
-- Check for dynamic loading patterns in GDScript
-- Preserve any files that might be used in builds
-- Maintain version control history
-- Test functionality after cleanup
-
-Provide a detailed summary of all changes made including:
-- Files removed
-- Code cleaned up
-- Space saved
-- Potential impact on project
+SUCCESS CRITERIA: Project remains fully functional, space reclaimed, no educational features broken

@@ -10,8 +10,6 @@ signal category_selected(category: String)
 # === CONSTANTS ===
 const SIDEBAR_WIDTH: int = 320
 const ANIMATION_DURATION: float = 0.2
-const HOVER_COLOR: Color = Color(0.345098, 0.65098, 1, 0.1)
-const SELECTED_COLOR: Color = Color(0.345098, 0.65098, 1, 0.2)
 
 # === EXPORTS ===
 @export var auto_collapse: bool = false
@@ -93,24 +91,25 @@ func _setup_ui() -> void:
 	
 	# Main container
 	var main_vbox = VBoxContainer.new()
-	main_vbox.add_theme_constant_override("separation", 0)
+	main_vbox.add_theme_constant_override("separation", M3DesignTokens.M3_SPACING["none"])
 	add_child(main_vbox)
 	
 	# Header with toggle button
 	var header = HBoxContainer.new()
-	header.custom_minimum_size.y = 48
+	header.custom_minimum_size.y = M3DesignTokens.M3_SPACING["extra_large"] * 2
 	main_vbox.add_child(header)
 	
 	var title = Label.new()
 	title.text = "Brain Structures"
-	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["title_large"]["size"])
+	title.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface"))
 	header.add_child(title)
 	
 	header.add_spacer(false)
 	
 	_toggle_button.text = "◀"
 	_toggle_button.flat = true
-	_toggle_button.custom_minimum_size = Vector2(32, 32)
+	_toggle_button.custom_minimum_size = Vector2(M3DesignTokens.M3_SPACING["large"], M3DesignTokens.M3_SPACING["large"])
 	header.add_child(_toggle_button)
 	
 	# Add separator
@@ -119,7 +118,7 @@ func _setup_ui() -> void:
 	
 	# Search and filter section
 	if show_search:
-		_search_container.add_theme_constant_override("separation", 8)
+		_search_container.add_theme_constant_override("separation", M3DesignTokens.M3_SPACING["small"])
 		var search_margin = MarginContainer.new()
 		search_margin.add_theme_constant_override("margin_left", 16)
 		search_margin.add_theme_constant_override("margin_right", 16)
@@ -146,24 +145,22 @@ func _setup_ui() -> void:
 	_structure_list.custom_minimum_size.y = 400
 	main_vbox.add_child(_structure_list)
 	
-	_structure_container.add_theme_constant_override("separation", 2)
+	_structure_container.add_theme_constant_override("separation", M3DesignTokens.M3_SPACING["extra_small"])
 	_structure_list.add_child(_structure_container)
 
 func _apply_theme() -> void:
 	"""Apply professional theme styling"""
-	# Load and apply theme if it exists
-	var theme_path = "res://assets/themes/professional_theme.tres"
-	if ResourceLoader.exists(theme_path):
-		theme = load(theme_path)
+	# Apply M3 component styling
+	M3ComponentApplicator.apply_m3_panel_styling(self, M3ComponentApplicator.PanelVariant.SURFACE_CONTAINER)
 	
-	# Custom panel style
-	var panel_style = StyleBoxFlat.new()
-	panel_style.bg_color = Color(0.0862745, 0.105882, 0.133333, 1)
+	# Get proper surface color based on theme
+	var panel_style = get_theme_stylebox("panel", "PanelContainer").duplicate()
+	panel_style.bg_color = M3DesignTokens.get_color("surface_container_low")
 	panel_style.corner_radius_top_left = 0
 	panel_style.corner_radius_top_right = 8
 	panel_style.corner_radius_bottom_right = 8
 	panel_style.corner_radius_bottom_left = 0
-	panel_style.shadow_color = Color(0, 0, 0, 0.3)
+	panel_style.shadow_color = M3DesignTokens.get_color("shadow")
 	panel_style.shadow_size = 4
 	panel_style.shadow_offset = Vector2(2, 0)
 	add_theme_stylebox_override("panel", panel_style)
@@ -180,7 +177,7 @@ func _create_structure_item(id: String, name: String, category: String, icon_pat
 	button.text = name
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button.toggle_mode = true
-	button.add_theme_constant_override("h_separation", 12)
+	button.add_theme_constant_override("h_separation", M3DesignTokens.M3_SPACING["medium"])
 	button.flat = true
 	
 	# Add icon if available
@@ -189,33 +186,40 @@ func _create_structure_item(id: String, name: String, category: String, icon_pat
 		button.icon = icon
 		button.icon_max_width = icon_size
 	
-	# Glass panel style
+	# Apply M3 button styling
+	M3ComponentApplicator.apply_m3_button_styling(button, M3ComponentApplicator.ButtonVariant.TERTIARY)
+	
+	# Override with glass panel effect for normal state
 	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = Color(0.1, 0.1, 0.12, 0.6)
-	normal_style.corner_radius_top_left = 12
-	normal_style.corner_radius_top_right = 12
-	normal_style.corner_radius_bottom_right = 12
-	normal_style.corner_radius_bottom_left = 12
-	normal_style.border_width_left = 1
-	normal_style.border_width_top = 1
-	normal_style.border_width_right = 1
-	normal_style.border_width_bottom = 1
-	normal_style.border_color = Color(1, 1, 1, 0.05)
-	normal_style.content_margin_left = 16
-	normal_style.content_margin_right = 16
-	normal_style.content_margin_top = 12
-	normal_style.content_margin_bottom = 12
+	normal_style.bg_color = M3DesignTokens.get_color("surface_container")
+	normal_style.bg_color.a = 0.6  # Glass effect
+	normal_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["medium"])
+	normal_style.set_border_width_all(1)
+	normal_style.border_color = M3DesignTokens.get_color("outline_variant")
+	normal_style.border_color.a = 0.3
+	normal_style.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 	button.add_theme_stylebox_override("normal", normal_style)
 	
+	# Hover state with primary color
 	var hover_style = normal_style.duplicate()
-	hover_style.bg_color = Color(0.23, 0.51, 0.96, 0.15)
-	hover_style.border_color = Color(0.23, 0.51, 0.96, 0.3)
+	hover_style.bg_color = M3DesignTokens.get_color("primary")
+	hover_style.bg_color.a = 0.15
+	hover_style.border_color = M3DesignTokens.get_color("primary")
+	hover_style.border_color.a = 0.3
 	button.add_theme_stylebox_override("hover", hover_style)
 	
+	# Pressed/selected state
 	var pressed_style = normal_style.duplicate()
-	pressed_style.bg_color = Color(0.23, 0.51, 0.96, 0.25)
-	pressed_style.border_color = Color(0.23, 0.51, 0.96, 0.5)
+	pressed_style.bg_color = M3DesignTokens.get_color("primary")
+	pressed_style.bg_color.a = 0.25
+	pressed_style.border_color = M3DesignTokens.get_color("primary")
+	pressed_style.border_color.a = 0.5
 	button.add_theme_stylebox_override("pressed", pressed_style)
+	
+	# Set proper text colors
+	button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface"))
+	button.add_theme_color_override("font_hover_color", M3DesignTokens.get_color("primary"))
+	button.add_theme_color_override("font_pressed_color", M3DesignTokens.get_color("primary"))
 	
 	# Store metadata
 	button.set_meta("structure_id", id)

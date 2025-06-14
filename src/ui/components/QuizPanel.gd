@@ -11,7 +11,13 @@ signal assessment_selected(assessment_id: String)
 # === CONSTANTS ===
 const PANEL_WIDTH = 500
 const PANEL_HEIGHT = 600
-const FEEDBACK_DISPLAY_TIME = 2.0
+
+# Get timing values from M3 design tokens
+static func _get_feedback_display_time() -> float:
+	return M3DesignTokens.M3_DURATION["long2"] / 1000.0
+
+static func _get_transition_duration() -> float:
+	return M3DesignTokens.M3_DURATION["medium1"] / 1000.0
 
 # === NODES ===
 @onready var title_label: Label = $VBox/Header/TitleLabel
@@ -173,10 +179,12 @@ func show_feedback(result: Dictionary) -> void:
 	var feedback_text = ""
 	if result.is_correct:
 		feedback_text = "[color=green][b]Correct![/b][/color]\n\n"
-		feedback_panel.modulate = M3DesignTokens.get_color("success")
+		feedback_panel.add_theme_color_override("bg_color", M3DesignTokens.get_color("success_container"))
+		feedback_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_success_container"))
 	else:
 		feedback_text = "[color=red][b]Incorrect[/b][/color]\n\n"
-		feedback_panel.modulate = M3DesignTokens.get_color("error")
+		feedback_panel.add_theme_color_override("bg_color", M3DesignTokens.get_color("error_container"))
+		feedback_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_error_container"))
 		
 		# Show correct answer
 		if _current_question.type == "multiple_choice":
@@ -245,11 +253,11 @@ func _setup_ui() -> void:
 	# Style title label with M3 typography
 	if title_label:
 		M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
-		title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+		title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
 	
 	# Style question label
 	if question_label:
-		question_label.add_theme_color_override("default_color", M3DesignTokens.M3_COLORS["on_surface"])
+		question_label.add_theme_color_override("default_color", M3DesignTokens.get_color("on_surface"))
 		question_label.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
 	
 	# Style buttons with M3
@@ -285,11 +293,11 @@ func _apply_m3_progress_styling() -> void:
 		return
 	
 	var bg_style = StyleBoxFlat.new()
-	bg_style.bg_color = M3DesignTokens.M3_COLORS["surface_variant"]
+	bg_style.bg_color = M3DesignTokens.get_color("surface_variant")
 	bg_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["full"])
 	
 	var fill_style = StyleBoxFlat.new()
-	fill_style.bg_color = M3DesignTokens.M3_COLORS["primary"]
+	fill_style.bg_color = M3DesignTokens.get_color("primary")
 	fill_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["full"])
 	
 	progress_bar.add_theme_stylebox_override("background", bg_style)
@@ -303,9 +311,9 @@ func _create_m3_feedback_style(is_correct: bool) -> StyleBox:
 	"""Create M3 feedback panel style"""
 	var style = StyleBoxFlat.new()
 	if is_correct:
-		style.bg_color = M3DesignTokens.M3_COLORS["success_container"]
+		style.bg_color = M3DesignTokens.get_color("success_container")
 	else:
-		style.bg_color = M3DesignTokens.M3_COLORS["error_container"]
+		style.bg_color = M3DesignTokens.get_color("error_container")
 	style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["medium"])
 	style.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 	return style
@@ -314,7 +322,7 @@ func _create_m3_focus_style() -> StyleBox:
 	"""Create M3 focus indicator style for accessibility"""
 	var style = StyleBoxFlat.new()
 	style.bg_color = M3DesignTokens.get_color("transparent")
-	style.border_color = M3DesignTokens.M3_COLORS["primary"]
+	style.border_color = M3DesignTokens.get_color("primary")
 	style.set_border_width_all(M3DesignTokens.M3_ACCESSIBILITY["focus_indicator_width"])
 	style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["small"])
 	style.set_content_margin_all(M3DesignTokens.M3_SPACING["small"])
@@ -335,15 +343,21 @@ func _create_multiple_choice_options(options: Array) -> void:
 	for i in range(options.size()):
 		# Get button from pool instead of creating new one
 		var btn: Button = null
-		if UIPoolManager and UIPoolManager._is_initialized:
-			btn = UIPoolManager.get_object("quiz_answer_button")
-			if btn:
-				_pooling_metrics.buttons_reused += 1
+		# Use has_singleton to check if autoload exists before accessing
+		if Engine.has_singleton("UIPoolManager"):
+			var pool_manager = Engine.get_singleton("UIPoolManager")
+			if pool_manager and pool_manager._is_initialized:
+				btn = pool_manager.get_object("quiz_answer_button")
+				if btn:
+					_pooling_metrics.buttons_reused += 1
+				else:
+					# Fallback to creating new button if pool fails
+					btn = Button.new()
+					_pooling_metrics.buttons_created += 1
+					print("[QuizPanel] Pool failed, created new button")
 			else:
-				# Fallback to creating new button if pool fails
+				# Fallback if UIPoolManager not initialized
 				btn = Button.new()
-				_pooling_metrics.buttons_created += 1
-				print("[QuizPanel] Pool failed, created new button")
 		else:
 			# Fallback if UIPoolManager not available
 			btn = Button.new()
@@ -432,7 +446,7 @@ func _create_true_false_options() -> void:
 	for i in range(options.size()):
 		var btn = Button.new()
 		btn.text = options[i]
-		btn.add_theme_font_size_override("font_size", 16)
+		btn.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
 		btn.toggle_mode = true
 		btn.button_group = button_group
 		
@@ -492,12 +506,17 @@ func _clear_options() -> void:
 			btn.get_parent().remove_child(btn)
 		
 		# Return to pool if possible, otherwise free
-		if UIPoolManager and UIPoolManager._is_initialized and btn.has_meta("pooled_object"):
-			var pool_name = btn.get_meta("pool_name", "quiz_answer_button")
-			if not UIPoolManager.return_object(pool_name, btn):
-				# Return failed, free the object
+		if Engine.has_singleton("UIPoolManager") and btn.has_meta("pooled_object"):
+			var pool_manager = Engine.get_singleton("UIPoolManager")
+			if pool_manager and pool_manager._is_initialized:
+				var pool_name = btn.get_meta("pool_name", "quiz_answer_button")
+				if not pool_manager.return_object(pool_name, btn):
+					# Return failed, free the object
+					btn.queue_free()
+					print("[QuizPanel] Failed to return button to pool, freeing")
+			else:
+				# Pool manager not initialized, free normally
 				btn.queue_free()
-				print("[QuizPanel] Failed to return button to pool, freeing")
 		else:
 			# Not a pooled object or no pool manager, free normally
 			btn.queue_free()

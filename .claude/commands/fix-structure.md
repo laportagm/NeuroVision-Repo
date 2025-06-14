@@ -1,47 +1,82 @@
-# Fix Structure
+# Command: /fix-structure
+# Purpose: Fix structural issues in brain anatomy data, 3D models, or code architecture
+# Arguments:
+#   - $TARGET_TYPE: What to fix (brain_data, model_mapping, scene_hierarchy, code_architecture)
+#   - $SPECIFIC_ISSUE: The specific structural problem to fix
+#   - $SCOPE: Scope of fix (single_file, component, system_wide)
+#   - $VALIDATION: Validate fix (true/false, default: true)
+# Example: /fix-structure TARGET_TYPE="brain_data" SPECIFIC_ISSUE="hippocampus missing connections" SCOPE="single_file"
+---
 
-Fix identified structural issues in the project organization.
+You are an expert in neuroanatomy data structures and Godot project architecture.
 
-## Arguments
+TASK: Fix structural issue in $TARGET_TYPE: "$SPECIFIC_ISSUE" with $SCOPE scope.
 
-- `$1` (priority): "high", "medium", "low", "all" (default: "high")
-- `$2` (create_plan): "true", "false" (default: "true")
+CONTEXT:
+- NeuroVision requires precise structural relationships
+- Brain anatomy data must match 3D model hierarchy
+- Code architecture must support educational workflows
+- Validation needed: ${VALIDATION:="true"}
 
-## Usage
+REQUIREMENTS:
+Based on $TARGET_TYPE:
 
-```bash
-/fix-structure
-/fix-structure medium true
-/fix-structure all false
-/fix-structure high true
-```
+$IF{TARGET_TYPE=="brain_data"}
+1. Analyze brain structure data in content/brain_structures.json
+2. Identify structural inconsistencies:
+   - Missing anatomical connections
+   - Incorrect hierarchical relationships
+   - Mismatched IDs with 3D models
+   - Invalid region assignments
+3. Cross-reference with:
+   - Regional files in content/brain_regions/
+   - 3D model structure names
+   - Medical accuracy sources
+4. Fix structural relationships
+5. Validate anatomical accuracy
+$ELSEIF{TARGET_TYPE=="model_mapping"}
+1. Analyze 3D model node structure
+2. Check model-to-data mapping:
+   - Node names vs structure IDs
+   - Hierarchy matches anatomy
+   - Material assignments
+   - LOD consistency
+3. Fix naming inconsistencies
+4. Update model import settings
+5. Verify selection system compatibility
+$ELSEIF{TARGET_TYPE=="scene_hierarchy"}
+1. Analyze scene structure (.tscn files)
+2. Identify hierarchy issues:
+   - Incorrect parent-child relationships
+   - Missing required nodes
+   - Broken node references
+   - Signal connection problems
+3. Fix scene structure
+4. Update node paths in scripts
+5. Validate scene functionality
+$ELSEIF{TARGET_TYPE=="code_architecture"}
+1. Analyze code structure issues
+2. Fix architectural problems:
+   - Circular dependencies
+   - Incorrect inheritance
+   - Autoload dependencies
+   - Module boundaries
+3. Refactor to clean architecture
+4. Update dependent systems
+5. Verify system integrity
+$ENDIF
 
-## Prompt
+CONSTRAINTS:
+- Must preserve medical accuracy
+- Cannot break existing functionality
+- Must maintain backward compatibility
+- Must follow project conventions
+- Changes must be traceable
 
-Fix structural issues in the project with priority level: $1
+OUTPUT:
+- Fixed files with structural corrections
+- Validation report showing changes
+- Impact analysis on dependent systems
+- Migration guide if breaking changes
 
-Actions to take:
-1. Reorganize files and directories for better structure
-2. Fix naming inconsistencies
-3. Improve import/export patterns
-4. Separate concerns properly
-5. Update configuration files
-6. Fix circular dependencies
-7. Reorganize scene files and scripts
-8. Improve asset organization
-
-Create step-by-step plan: $2
-
-For this Godot project, focus on:
-- Proper scene and script organization
-- Consistent naming for scenes, scripts, and assets
-- Clear separation between game logic, UI, and systems
-- Proper autoload organization
-- Clean asset folder structure
-- Consistent coding patterns across GDScript files
-
-Focus on issues that will have the most positive impact on:
-- Code maintainability and developer experience
-- Game performance and loading times
-- Team collaboration and onboarding
-- Build and deployment efficiency
+SUCCESS CRITERIA: Structural issue resolved, validation passes, system remains stable

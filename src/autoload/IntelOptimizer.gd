@@ -148,9 +148,11 @@ func configure_memory_settings():
 	"""Configure memory settings for Intel shared memory"""
 	
 	# Aggressive UI object pooling
-	if UIPoolManager:
-		UIPoolManager.set_debug_mode(false)  # Reduce logging overhead
-		_optimizations_applied["pooling"] = "Optimized UI object pooling"
+	if Engine.has_singleton("UIPoolManager"):
+		var pool_manager = Engine.get_singleton("UIPoolManager")
+		if pool_manager:
+			pool_manager.set_debug_mode(false)  # Reduce logging overhead
+			_optimizations_applied["pooling"] = "Optimized UI object pooling"
 	
 	# Force garbage collection more frequently
 	var gc_timer = Timer.new()
@@ -236,8 +238,10 @@ func _apply_emergency_optimizations():
 func _reduce_memory_usage():
 	"""Reduce memory usage when approaching Intel limits"""
 	# Force UI pool cleanup
-	if UIPoolManager:
-		UIPoolManager.cleanup_pools()
+	if Engine.has_singleton("UIPoolManager"):
+		var pool_manager = Engine.get_singleton("UIPoolManager")
+		if pool_manager:
+			pool_manager.cleanup_pools()
 	
 	# Force garbage collection
 	_force_garbage_collection()

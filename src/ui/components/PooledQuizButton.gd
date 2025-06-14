@@ -51,10 +51,16 @@ func set_selected_state(selected: bool) -> void:
 	button_pressed = selected
 	
 	if selected:
-		# Apply selected styling
-		modulate = Color(1.2, 1.2, 1.0)  # Slight yellow tint
+		# Apply selected styling using M3 primary color
+		if M3DesignTokens:
+			modulate = M3DesignTokens.get_color("primary")
+		else:
+			modulate = Color(1.1, 1.1, 1.0)  # Fallback
 	else:
-		modulate = Color.WHITE
+		if M3DesignTokens:
+			modulate = M3DesignTokens.get_color("on_surface")
+		else:
+			modulate = Color.WHITE
 
 func get_option_index() -> int:
 	"""Get the option index for this button"""
@@ -73,7 +79,10 @@ func reset() -> void:
 	_option_index = -1
 	button_pressed = false
 	disabled = false
-	modulate = Color.WHITE
+	if M3DesignTokens:
+		modulate = M3DesignTokens.get_color("on_surface")
+	else:
+		modulate = Color.WHITE
 	
 	# Reset visual styles
 	if _original_style_normal:
@@ -114,13 +123,14 @@ func _on_button_pressed() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	"""Handle additional input for accessibility"""
-	super._gui_input(event)
+	# Button class doesn't have _gui_input to call, so we don't need super
 	
 	if event is InputEventKey and event.pressed:
 		match event.keycode:
 			KEY_SPACE, KEY_ENTER:
 				if has_focus():
 					_on_button_pressed()
+					accept_event()  # Prevent event from propagating
 
 # === UTILITY METHODS ===
 

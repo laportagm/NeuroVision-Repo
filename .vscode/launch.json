@@ -48,6 +48,37 @@
             "port": 6008,
             "address": "127.0.0.1",
             "scene": "main"
+        },
+        {
+            // Run with performance monitoring
+            "name": "📊 Run with Performance Monitor",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
+            "args": [
+                "--path",
+                "${workspaceFolder}",
+                "--print-fps",
+                "--verbose",
+                "--remote-debug",
+                "127.0.0.1:6008"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            // Test Enhanced Exploration Scene directly
+            "name": "🧠 Test Brain Viewer",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
+            "args": [
+                "--path",
+                "${workspaceFolder}",
+                "res://src/scenes/EnhancedExplorationScene.tscn"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

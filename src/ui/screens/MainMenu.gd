@@ -59,34 +59,34 @@ func _apply_material3_theme() -> void:
 	if color_rect:
 		# Create gradient from M3 design tokens
 		var gradient = Gradient.new()
-		gradient.add_point(0.0, M3DesignTokens.M3_COLORS["background_start"])
-		gradient.add_point(1.0, M3DesignTokens.M3_COLORS["background_end"])
+		gradient.add_point(0.0, M3DesignTokens.get_color("background_start"))
+		gradient.add_point(1.0, M3DesignTokens.get_color("background_end"))
 		
 		# Apply gradient (would need a shader or texture in real implementation)
-		color_rect.color = M3DesignTokens.M3_COLORS["background_start"]
+		color_rect.color = M3DesignTokens.get_color("background_start")
 	
 	# Apply M3 styling to top bar
 	if top_bar:
 		var style = StyleBoxFlat.new()
-		style.bg_color = M3DesignTokens.M3_COLORS["surface"]
+		style.bg_color = M3DesignTokens.get_color("surface")
 		style.bg_color.a = 0.95  # Slight transparency
 		style.set_corner_radius_all(0)
 		style.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 		
 		# Add subtle shadow
 		style.shadow_size = M3DesignTokens.M3_ELEVATION["navigation"]
-		style.shadow_color = M3DesignTokens.M3_COLORS["shadow"]
+		style.shadow_color = M3DesignTokens.get_color("shadow")
 		style.shadow_offset = Vector2(0, 2)
 		
 		top_bar.add_theme_stylebox_override("panel", style)
 	
 	# Apply M3 typography
 	if title_label:
-		title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+		title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
 		title_label.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["display_large"]["size"])
 	
 	if subtitle_label:
-		subtitle_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		subtitle_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
 		subtitle_label.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
 	
 	# Apply M3 button styling
@@ -101,28 +101,29 @@ func _style_button_primary(button: Button) -> void:
 		return
 	
 	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = M3DesignTokens.M3_COLORS["primary"]
+	normal_style.bg_color = M3DesignTokens.get_color("primary")
 	normal_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["button"])
 	normal_style.set_content_margin_all(M3DesignTokens.M3_SPACING["button_padding"])
 	
 	# Add elevation shadow
 	normal_style.shadow_size = M3DesignTokens.M3_ELEVATION["button"]
-	normal_style.shadow_color = M3DesignTokens.M3_COLORS["shadow"]
+	normal_style.shadow_color = M3DesignTokens.get_color("shadow")
 	normal_style.shadow_offset = Vector2(0, 2)
 	
 	button.add_theme_stylebox_override("normal", normal_style)
-	button.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_primary"])
+	button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_primary"))
 	button.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["label_large"]["size"])
 	
 	# Hover state
 	var hover_style = normal_style.duplicate()
-	hover_style.bg_color = hover_style.bg_color.lightened(0.1)
+	hover_style.bg_color = M3DesignTokens.get_color("primary_container")
 	hover_style.shadow_size = M3DesignTokens.M3_ELEVATION["level3"]
 	button.add_theme_stylebox_override("hover", hover_style)
 	
 	# Pressed state
 	var pressed_style = normal_style.duplicate()
-	pressed_style.bg_color = pressed_style.bg_color.darkened(0.1)
+	pressed_style.bg_color = M3DesignTokens.get_color("primary")
+	pressed_style.bg_color.a = 0.9  # Slightly transparent for pressed state
 	pressed_style.shadow_size = M3DesignTokens.M3_ELEVATION["level1"]
 	button.add_theme_stylebox_override("pressed", pressed_style)
 
@@ -132,17 +133,18 @@ func _style_button_secondary(button: Button) -> void:
 		return
 	
 	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = M3DesignTokens.M3_COLORS["secondary_container"]
+	normal_style.bg_color = M3DesignTokens.get_color("secondary_container")
 	normal_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["button"])
 	normal_style.set_content_margin_all(M3DesignTokens.M3_SPACING["button_padding"])
 	
 	button.add_theme_stylebox_override("normal", normal_style)
-	button.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_secondary_container"])
+	button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_secondary_container"))
 	button.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["label_large"]["size"])
 	
 	# Hover state
 	var hover_style = normal_style.duplicate()
-	hover_style.bg_color = hover_style.bg_color.lightened(0.08)
+	hover_style.bg_color = M3DesignTokens.get_color("secondary")
+	hover_style.bg_color.a = 0.15  # Subtle hover overlay
 	button.add_theme_stylebox_override("hover", hover_style)
 
 func _style_button_tertiary(button: Button) -> void:
@@ -151,17 +153,17 @@ func _style_button_tertiary(button: Button) -> void:
 		return
 	
 	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = Color.TRANSPARENT
+	normal_style.bg_color = M3DesignTokens.get_color("transparent")
 	normal_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["button"])
 	normal_style.set_content_margin_all(M3DesignTokens.M3_SPACING["button_padding"])
 	
 	button.add_theme_stylebox_override("normal", normal_style)
-	button.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+	button.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
 	button.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["label_large"]["size"])
 	
 	# Hover state with subtle background
 	var hover_style = normal_style.duplicate()
-	hover_style.bg_color = M3DesignTokens.M3_COLORS["primary"]
+	hover_style.bg_color = M3DesignTokens.get_color("primary")
 	hover_style.bg_color.a = M3DesignTokens.M3_OPACITY["hover"]
 	button.add_theme_stylebox_override("hover", hover_style)
 

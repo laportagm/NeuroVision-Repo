@@ -71,7 +71,7 @@ signal animation_completed(animation_type: String)
 @export var accessibility_hint: String = ""
 
 ## Focus ring color (uses M3 primary if empty)
-@export var focus_ring_color: Color = Color.TRANSPARENT
+@export var focus_ring_color: Color
 
 @export_group("Performance")
 ## Reduce animation quality for better performance
@@ -222,10 +222,15 @@ func _animate_hover_in() -> void:
 		_elevation_offset = Vector2(0, -hover_elevation)
 		_animation_tween.tween_property(self, "position", _original_position + _elevation_offset, 0.12)
 	
-	# Subtle brightness boost
-	var hover_modulate = _original_modulate
-	hover_modulate = hover_modulate.lightened(0.05)
-	_animation_tween.tween_property(self, "modulate", hover_modulate, 0.12)
+	# Use proper hover state layer instead of lightening
+	# This maintains color consistency across themes
+	if M3DesignTokens:
+		var hover_layer = M3DesignTokens.get_state_layer(_original_modulate, "hover")
+		var hover_modulate = _original_modulate
+		hover_modulate.a = hover_modulate.a * (1.0 - hover_layer.a) + hover_layer.a
+		_animation_tween.tween_property(self, "modulate", hover_modulate, 0.12)
+	else:
+		_animation_tween.tween_property(self, "modulate", _original_modulate, 0.12)
 
 func _animate_hover_out() -> void:
 	"""Return to original state from hover"""
@@ -325,7 +330,8 @@ func _create_ripple_effect() -> void:
 	# Create ripple circle
 	var ripple = ColorRect.new()
 	ripple.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ripple.color = Color(1, 1, 1, 0.3)  # Semi-transparent white
+	ripple.color = M3DesignTokens.get_color("on_surface")
+	ripple.color.a = 0.3  # Semi-transparent ripple
 	ripple.size = Vector2(20, 20)
 	ripple.position = click_position - ripple.size / 2
 	
@@ -396,8 +402,8 @@ func _create_focus_ring() -> void:
 	
 	# Use M3 primary color or custom focus color
 	var ring_color = focus_ring_color
-	if ring_color == Color.TRANSPARENT and M3DesignTokens:
-		ring_color = M3DesignTokens.M3_COLORS["primary"]
+	if ring_color == Color() and M3DesignTokens:
+		ring_color = M3DesignTokens.get_color("primary")
 	
 	_focus_ring.border_color = ring_color
 	_focus_ring.border_width = 3
@@ -411,11 +417,11 @@ func _create_focus_ring() -> void:
 	add_child(_focus_ring)
 	
 	# Animate focus ring appearance
-	_focus_ring.modulate = Color(1, 1, 1, 0)
+	_focus_ring.modulate = M3DesignTokens.get_color("transparent")
 	var focus_tween = create_tween()
 	focus_tween.set_trans(Tween.TRANS_CUBIC)
 	focus_tween.set_ease(Tween.EASE_OUT)
-	focus_tween.tween_property(_focus_ring, "modulate", Color.WHITE, 0.15)
+	focus_tween.tween_property(_focus_ring, "modulate", M3DesignTokens.get_color("on_surface"), 0.15)
 
 func _remove_focus_ring() -> void:
 	"""Remove focus ring with fade animation"""

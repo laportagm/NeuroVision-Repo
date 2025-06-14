@@ -35,6 +35,8 @@ LearningContentManager="*res://src/autoload/LearningContentManager.gd"
 StructureContentService="*res://src/systems/content_management/StructureContentService.gd"
 AssessmentService="*res://src/systems/assessment/AssessmentService.gd"
 HighlightMaterialManager="*res://src/systems/3d_interaction/HighlightMaterialManager.gd"
+OnboardingManager="*res://src/autoload/OnboardingManager.gd"
+LearningProgressManager="*res://src/autoload/LearningProgressManager.gd"
 
 [debug]
 
@@ -81,7 +83,7 @@ zoom_out={
 
 [rendering]
 
-textures/vram_compression/import_etc2_astc=true;
+textures/vram_compression/import_etc2_astc=true
 textures/default_filters/anisotropic_filtering_level=4
 anti_aliasing/quality/msaa_3d=1
 environment/screen_space_reflection/roughness_quality=2

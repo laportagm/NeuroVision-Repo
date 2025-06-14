@@ -64,7 +64,7 @@ var _camera_presets: Node = null
 var _annotation_system: Node = null
 var _brain_structures: Dictionary = {}  # structure_id -> MeshInstance3D
 var _mesh_to_structure_id: Dictionary = {}  # mesh_name -> structure_id
-var _quiz_panel: QuizPanel = null
+var _quiz_panel = null  # QuizPanel instance
 var _current_structure_id: String = ""
 var _structure_buttons: Dictionary = {}  # structure_id -> Button
 var _is_loading: bool = false
@@ -684,11 +684,11 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 		if content_service.has_method("get_structure_content"):
 			content = content_service.get_structure_content(structure_id)
 	
-	# Fallback to KnowledgeService if StructureContentService not available
-	if content.is_empty() and has_node("/root/KnowledgeService"):
-		var knowledge_service = get_node("/root/KnowledgeService")
-		if knowledge_service.has_method("get_structure"):
-			content = knowledge_service.get_structure(structure_id)
+	# Fallback to LearningContentManager if StructureContentService not available
+	if content.is_empty() and has_node("/root/LearningContentManager"):
+		var learning_content = get_node("/root/LearningContentManager")
+		if learning_content.has_method("get_content"):
+			content = learning_content.get_content(structure_id)
 	
 	if content.is_empty():
 		info_panel.display_structure_info({
@@ -1086,7 +1086,7 @@ func _frame_model(model: Node3D) -> void:
 	# Professional medical education optimization: Calculate optimal viewport usage
 	var viewport_size = get_viewport().get_visible_rect().size
 	var effective_viewport_height = viewport_size.y - 80 - 60  # Subtract top and bottom panels
-	var target_model_height = effective_viewport_height * 0.75  # Use 75% of available viewport
+	var _target_model_height = effective_viewport_height * 0.75  # Use 75% of available viewport
 	
 	# Optimize camera distance for professional medical viewing
 	var fov_rad = deg_to_rad(camera.fov)
@@ -1094,7 +1094,7 @@ func _frame_model(model: Node3D) -> void:
 	_camera_distance = clamp(_camera_distance, MIN_ZOOM, MAX_ZOOM)
 	
 	# Ensure model visibility on minimum resolution (1366x768)
-	var min_viewport_height = 768 - 80 - 60  # Minimum resolution minus panels
+	var _min_viewport_height = 768 - 80 - 60  # Minimum resolution minus panels
 	var safety_distance = (max_dimension * 0.8) / tan(fov_rad * 0.5) * 2.5
 	_camera_distance = max(_camera_distance, safety_distance)
 	
@@ -1263,8 +1263,8 @@ func _validate_accessibility_compliance() -> void:
 	
 	# Validate color contrast (would need actual contrast calculation in production)
 	# Professional medical theme should maintain 7:1 contrast ratio
-	var bg_color = M3DesignTokens.get_color("surface")
-	var text_color = M3DesignTokens.get_color("on_surface")
+	var _bg_color = M3DesignTokens.get_color("surface")
+	var _text_color = M3DesignTokens.get_color("on_surface")
 	
 	# Store accessibility violations for reporting
 	_performance_data.accessibility_violations = violations

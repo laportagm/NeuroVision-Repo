@@ -12,14 +12,23 @@ class_name ButtonMotionHandler
 extends Node
 
 # === CONSTANTS FROM M3 MOTION GUIDELINES ===
+# Using M3DesignTokens for consistent motion values
 const HOVER_SCALE_FACTOR = 1.02  # 2% scale increase on hover
-const HOVER_MODULATE_BOOST = 0.05
-const HOVER_DURATION = 0.12
 const PRESS_SCALE = Vector2(0.98, 0.98)
-const PRESS_DURATION = 0.08
-const FADE_IN_DURATION = 0.2
-const RIPPLE_DURATION = 0.6
 const RIPPLE_MAX_SCALE = 2.5
+
+# Get motion values from M3DesignTokens
+static func _get_hover_duration() -> float:
+	return M3DesignTokens.M3_DURATION["medium1"] / 1000.0
+
+static func _get_press_duration() -> float:
+	return M3DesignTokens.M3_DURATION["short2"] / 1000.0
+
+static func _get_fade_duration() -> float:
+	return M3DesignTokens.M3_DURATION["medium2"] / 1000.0
+
+static func _get_ripple_duration() -> float:
+	return M3DesignTokens.M3_DURATION["long1"] / 1000.0
 
 # === STATIC METHODS FOR EASY USE ===
 
@@ -61,15 +70,14 @@ static func animate_button_hover_in(button: Button) -> void:
 	var original_modulate = button.get_meta("original_modulate", button.modulate)
 	
 	# Subtle scale effect instead of position (works better with containers)
-	var hover_scale = original_scale * 1.02  # 2% larger
-	tween.tween_property(button, "scale", hover_scale, HOVER_DURATION)
+	var hover_scale = original_scale * HOVER_SCALE_FACTOR
+	tween.tween_property(button, "scale", hover_scale, _get_hover_duration())
 	
-	# Brightness boost
-	var hover_modulate = original_modulate
-	hover_modulate.r = min(1.0, hover_modulate.r + HOVER_MODULATE_BOOST)
-	hover_modulate.g = min(1.0, hover_modulate.g + HOVER_MODULATE_BOOST)
-	hover_modulate.b = min(1.0, hover_modulate.b + HOVER_MODULATE_BOOST)
-	tween.tween_property(button, "modulate", hover_modulate, HOVER_DURATION)
+	# Use M3 state layer for proper hover effect
+	var hover_color = M3DesignTokens.get_color("on_surface")
+	var hover_layer = M3DesignTokens.get_state_layer(hover_color, "hover")
+	var hover_modulate = original_modulate.blend(hover_layer)
+	tween.tween_property(button, "modulate", hover_modulate, _get_hover_duration())
 	
 	# Add state layer effect if Material 3 is active
 	if _is_material3_active():
@@ -90,8 +98,8 @@ static func animate_button_hover_out(button: Button) -> void:
 	var original_scale = button.get_meta("original_scale", button.scale)
 	var original_modulate = button.get_meta("original_modulate", button.modulate)
 	
-	tween.tween_property(button, "scale", original_scale, HOVER_DURATION)
-	tween.tween_property(button, "modulate", original_modulate, HOVER_DURATION)
+	tween.tween_property(button, "scale", original_scale, _get_hover_duration())
+	tween.tween_property(button, "modulate", original_modulate, _get_hover_duration())
 	
 	# Remove state layer effect
 	if _is_material3_active():
@@ -108,7 +116,7 @@ static func animate_button_press(button: Button) -> void:
 	tween.set_ease(Tween.EASE_OUT)
 	
 	# Scale down slightly for tactile feedback
-	tween.tween_property(button, "scale", PRESS_SCALE, PRESS_DURATION)
+	tween.tween_property(button, "scale", PRESS_SCALE, _get_press_duration())
 	
 	# Add press state layer
 	if _is_material3_active():
@@ -126,7 +134,7 @@ static func animate_button_release(button: Button) -> void:
 	
 	# Restore original scale
 	var original_scale = button.get_meta("original_scale", Vector2.ONE)
-	tween.tween_property(button, "scale", original_scale, PRESS_DURATION * 1.5)
+	tween.tween_property(button, "scale", original_scale, _get_press_duration() * 1.5)
 
 ## Animate scene fade in effect
 static func animate_scene_fade_in(canvas_layer: CanvasLayer) -> void:
@@ -146,14 +154,14 @@ static func animate_scene_fade_in(canvas_layer: CanvasLayer) -> void:
 		return
 	
 	# Start with transparent
-	target_control.modulate = Color(1, 1, 1, 0)
+	target_control.modulate = M3DesignTokens.get_color("transparent")
 	
 	var tween = target_control.create_tween()
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_ease(Tween.EASE_OUT)
 	
 	# Fade in
-	tween.tween_property(target_control, "modulate", Color.WHITE, FADE_IN_DURATION)
+	tween.tween_property(target_control, "modulate", Color.WHITE, _get_fade_duration())
 	
 	# Optional: Add stagger effect for child elements
 	_stagger_fade_in_children(canvas_layer, tween)
@@ -173,7 +181,12 @@ static func create_ripple_effect(button: Button, position: Vector2) -> void:
 	# Create ripple circle
 	var ripple = ColorRect.new()
 	ripple.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ripple.color = Color(1, 1, 1, 0.2)  # Semi-transparent white
+	
+	# Use M3 design tokens for ripple color
+	var ripple_color = M3DesignTokens.get_color("on_surface")
+	ripple_color.a = M3DesignTokens.M3_OPACITY["pressed"]
+	ripple.color = ripple_color
+	
 	ripple.size = Vector2(20, 20)
 	ripple.position = position - ripple.size / 2
 	
@@ -192,9 +205,9 @@ static func create_ripple_effect(button: Button, position: Vector2) -> void:
 	var final_size = button.size * RIPPLE_MAX_SCALE
 	var final_pos = position - final_size / 2
 	
-	tween.tween_property(ripple, "size", final_size, RIPPLE_DURATION)
-	tween.tween_property(ripple, "position", final_pos, RIPPLE_DURATION)
-	tween.tween_property(ripple, "modulate:a", 0.0, RIPPLE_DURATION)
+	tween.tween_property(ripple, "size", final_size, _get_ripple_duration())
+	tween.tween_property(ripple, "position", final_pos, _get_ripple_duration())
+	tween.tween_property(ripple, "modulate:a", 0.0, _get_ripple_duration())
 	
 	# Clean up after animation
 	tween.finished.connect(func(): ripple_container.queue_free())
@@ -206,7 +219,7 @@ static func animate_button_entrance(button: Button, delay: float = 0.0) -> void:
 		return
 	
 	# Start hidden
-	button.modulate = Color(1, 1, 1, 0)
+	button.modulate = M3DesignTokens.get_color("transparent")
 	button.scale = Vector2(0.8, 0.8)
 	
 	# Wait for delay if specified
@@ -274,18 +287,19 @@ static func _remove_state_layer_effect(_button: Button) -> void:
 
 static func _stagger_fade_in_children(container: Node, parent_tween: Tween) -> void:
 	"""Add staggered fade in effect for child elements"""
-	var delay_increment = 0.05
-	var current_delay = 0.1
+	var delay_increment = M3DesignTokens.M3_DURATION["short1"] / 1000.0
+	var current_delay = M3DesignTokens.M3_DURATION["short3"] / 1000.0
+	var fade_duration = M3DesignTokens.M3_DURATION["medium1"] / 1000.0
 	
 	for child in container.get_children():
 		if child is Control and child.visible:
 			# Start transparent
-			child.modulate = Color(1, 1, 1, 0)
+			child.modulate = M3DesignTokens.get_color("transparent")
 			
 			# Create delayed fade in
 			parent_tween.chain()
 			parent_tween.tween_interval(current_delay)
-			parent_tween.tween_property(child, "modulate", Color.WHITE, 0.2)
+			parent_tween.tween_property(child, "modulate", Color.WHITE, fade_duration)
 			
 			current_delay += delay_increment
 
@@ -295,9 +309,11 @@ static func animate_button_focus(button: Button) -> void:
 	if not button:
 		return
 	
-	# Create focus ring effect
+	# Create focus ring effect using M3 design tokens
 	var focus_ring = ReferenceRect.new()
-	focus_ring.border_color = Color(0.13, 0.89, 0.93, 0.8)  # M3 primary with transparency
+	var focus_color = M3DesignTokens.get_color("primary")
+	focus_color.a = 0.8
+	focus_ring.border_color = focus_color
 	focus_ring.border_width = 3
 	focus_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	focus_ring.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -313,11 +329,12 @@ static func animate_button_focus(button: Button) -> void:
 	button.set_meta("focus_ring", focus_ring)
 	
 	# Animate focus ring appearance
-	focus_ring.modulate = Color(1, 1, 1, 0)
+	focus_ring.modulate = M3DesignTokens.get_color("transparent")
 	var tween = focus_ring.create_tween()
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(focus_ring, "modulate", Color.WHITE, 0.15)
+	var focus_duration = M3DesignTokens.M3_DURATION["focus"] / 1000.0
+	tween.tween_property(focus_ring, "modulate", Color.WHITE, focus_duration)
 
 ## Remove focus animation
 static func animate_button_unfocus(button: Button) -> void:
@@ -330,6 +347,7 @@ static func animate_button_unfocus(button: Button) -> void:
 		var tween = focus_ring.create_tween()
 		tween.set_trans(Tween.TRANS_CUBIC)
 		tween.set_ease(Tween.EASE_OUT)
-		tween.tween_property(focus_ring, "modulate:a", 0.0, 0.15)
+		var unfocus_duration = M3DesignTokens.M3_DURATION["focus"] / 1000.0
+		tween.tween_property(focus_ring, "modulate:a", 0.0, unfocus_duration)
 		tween.finished.connect(func(): focus_ring.queue_free())
 		button.remove_meta("focus_ring")

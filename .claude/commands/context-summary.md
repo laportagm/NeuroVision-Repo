@@ -1,38 +1,109 @@
-# Context Summary
+# Command: /context-summary
+# Purpose: Generate focused context summary for NeuroVision components
+# Arguments:
+#   - $COMPONENT: Component path or name (e.g., "BrainInteractionController", "src/ui/components")
+#   - $DEPTH: Analysis depth (shallow, medium, deep)
+#   - $FOCUS: Specific focus area (educational, technical, integration, accessibility)
+#   - $OUTPUT_FORMAT: Format for output (text, markdown, json)
+# Example: /context-summary COMPONENT="src/systems/3d_interaction" DEPTH="deep" FOCUS="educational"
+---
 
-Generate focused context for specific components or areas of the project.
+You are a technical documentation specialist for educational brain anatomy software.
 
-## Arguments
+TASK: Generate context summary for $COMPONENT in NeuroVision with $DEPTH analysis.
 
-- `$1` (component): Specific file, directory, or component name (optional)
-- `$2` (depth): "shallow", "medium", "deep" (default: "medium")
+CONTEXT:
+- NeuroVision is an offline-first educational neuroanatomy app
+- Built with Godot 4.x targeting 30+ FPS on Intel UHD 620
+- 14 autoload managers handle core functionality
+- Material3 design with 5 theme variants
+- WCAG AAA accessibility compliance required
+- Focus area: ${FOCUS:="technical"}
+- Output format: ${OUTPUT_FORMAT:="markdown"}
 
-## Usage
+REQUIREMENTS:
+1. For $DEPTH level analysis:
+   - "shallow": Basic purpose and public interface
+   - "medium": + dependencies, key methods, integration
+   - "deep": + internal logic, edge cases, optimization
 
-```bash
-/context-summary
-/context-summary src/main_scene deep
-/context-summary scripts/player_controller.gd medium
-/context-summary assets shallow
-```
+2. Based on $FOCUS area:
+   - "educational": Learning objectives, student interaction, pedagogical design
+   - "technical": Architecture, performance, implementation details
+   - "integration": Autoload connections, signals, dependencies
+   - "accessibility": WCAG compliance, keyboard nav, screen reader
 
-## Prompt
+3. Component analysis structure:
+   ## Overview
+   - Primary purpose and responsibility
+   - Educational goals supported
+   - Target user (student/teacher)
+   
+   ## Architecture
+   - File locations (.gd, .tscn)
+   - Class hierarchy and inheritance
+   - Design patterns used
+   
+   ## Dependencies
+   - Required autoload managers
+   - External components used
+   - Resource dependencies
+   
+   ## Interface
+   - Public methods and properties
+   - Emitted signals
+   - Expected inputs/outputs
+   
+   ## Integration Points
+   - How other systems use this
+   - Signal connections
+   - Data flow patterns
+   
+   ## Educational Features
+   - Learning objectives supported
+   - Student interaction patterns
+   - Progress tracking integration
+   
+   ## Performance Profile
+   - Critical paths
+   - Optimization strategies
+   - Memory usage patterns
+   
+   ## Accessibility Implementation
+   - Keyboard navigation
+   - Screen reader support
+   - Visual accessibility
 
-Provide a detailed context summary for: $1
+4. If component not found:
+   - Suggest similar components
+   - Analyze parent directory
+   - Provide navigation hints
+
+5. Special handling for:
+   - Autoloads: Global responsibilities
+   - UI components: Theme integration
+   - 3D systems: Performance constraints
+   - Assessments: Educational effectiveness
+
+CONSTRAINTS:
+- Focus on actionable information
+- Highlight educational impact
+- Note performance considerations
+- Flag accessibility requirements
+- Identify improvement opportunities
+
+OUTPUT:
+Based on $OUTPUT_FORMAT:
+- "text": Plain text summary
+- "markdown": Formatted with headers and lists
+- "json": Structured data with sections
 
 Include:
-- Purpose and functionality
-- Dependencies and relationships
-- Key methods/functions/classes
-- Usage patterns
-- Integration points
-- Potential issues or improvements
+- Component purpose and scope
+- Key implementation details
+- Integration requirements
+- Educational effectiveness
+- Suggested improvements
+- Related components
 
-Analysis depth: $2
-
-If no component specified, analyze the most critical parts of the project focusing on:
-- Main game scenes and controllers
-- Core interaction systems
-- Accessibility implementations
-- Key configuration files
-- Essential asset dependencies
+SUCCESS CRITERIA: Developer can understand component's role, implement features, and maintain educational quality

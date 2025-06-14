@@ -646,8 +646,10 @@ func _get_recommended_lod() -> int:
 	"""Get recommended LOD based on current quality settings"""
 	
 	# Intel UHD 620 optimization - force lowest LOD
-	if IntelOptimizer and IntelOptimizer.is_intel_gpu_detected():
-		return LODLevel.LOW
+	if Engine.has_singleton("IntelOptimizer"):
+		var intel_optimizer = Engine.get_singleton("IntelOptimizer")
+		if intel_optimizer and intel_optimizer.is_intel_gpu_detected():
+			return LODLevel.LOW
 	
 	match _current_quality_level:
 		PerformanceMonitor.QualityLevel.LOW:

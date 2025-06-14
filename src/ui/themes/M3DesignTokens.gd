@@ -533,6 +533,125 @@ static func clear_color_cache() -> void:
 	"""Clear the internal color cache"""
 	_color_cache.clear()
 
+## Create M3-compliant StyleBoxFlat for buttons with proper state management
+static func create_button_style(variant: String = "primary", state: String = "normal") -> StyleBoxFlat:
+	"""Create a Material 3 compliant button style with proper state management"""
+	var style = StyleBoxFlat.new()
+	
+	# Get base colors based on variant
+	var bg_color: Color
+	var border_color: Color
+	
+	match variant:
+		"primary":
+			bg_color = get_color("primary")
+			border_color = get_color("primary")
+		"secondary":
+			bg_color = get_color("surface_container")
+			border_color = get_color("outline")
+		"tertiary":
+			bg_color = get_color("transparent")
+			border_color = get_color("transparent")
+		_:
+			bg_color = get_color("surface_container")
+			border_color = get_color("outline")
+	
+	# Apply state modifications
+	match state:
+		"hover":
+			if variant == "primary":
+				bg_color = Color(bg_color.r * 1.1, bg_color.g * 1.1, bg_color.b * 1.1, bg_color.a)
+			else:
+				var hover_layer = get_state_layer(bg_color, "hover")
+				bg_color = bg_color.blend(hover_layer)
+		"pressed":
+			if variant == "primary":
+				bg_color = Color(bg_color.r * 0.9, bg_color.g * 0.9, bg_color.b * 0.9, bg_color.a)
+			else:
+				var pressed_layer = get_state_layer(bg_color, "pressed")
+				bg_color = bg_color.blend(pressed_layer)
+		"focus":
+			border_color = get_color("primary")
+		"disabled":
+			bg_color.a = M3_OPACITY["disabled"]
+			border_color.a = M3_OPACITY["disabled"]
+	
+	# Configure style
+	style.bg_color = bg_color
+	style.border_color = border_color
+	style.set_corner_radius_all(M3_CORNER_RADIUS["button"])
+	style.set_border_width_all(1 if border_color != get_color("transparent") else 0)
+	style.set_content_margin_all(M3_SPACING["button_padding"])
+	
+	return style
+
+## Create M3-compliant StyleBoxFlat for panels with proper surface hierarchy
+static func create_panel_style(surface_level: String = "surface_container", elevated: bool = false) -> StyleBoxFlat:
+	"""Create a Material 3 compliant panel style with proper surface hierarchy"""
+	var style = StyleBoxFlat.new()
+	
+	# Get surface color based on hierarchy
+	var bg_color = get_color(surface_level)
+	var border_color = get_color("outline_variant")
+	border_color.a = 0.2  # Subtle border
+	
+	# Configure style
+	style.bg_color = bg_color
+	style.border_color = border_color
+	style.set_corner_radius_all(M3_CORNER_RADIUS["card"])
+	style.set_border_width_all(1)
+	style.set_content_margin_all(M3_SPACING["card_padding"])
+	
+	# Add elevation if requested
+	if elevated:
+		# Shadow simulation with additional background opacity
+		style.bg_color.a = min(1.0, style.bg_color.a + 0.05)
+	
+	return style
+
+## Apply M3 typography scaling to a label
+static func apply_typography(label: Label, scale: String = "body_medium") -> void:
+	"""Apply Material 3 typography scaling to a label"""
+	if not M3_TYPE_SCALE.has(scale):
+		push_warning("[M3DesignTokens] Unknown typography scale: " + scale)
+		scale = "body_medium"
+	
+	var type_data = M3_TYPE_SCALE[scale]
+	label.add_theme_font_size_override("font_size", type_data["size"])
+	
+	# Apply color
+	label.add_theme_color_override("font_color", get_color("on_surface"))
+
+## Create consistent M3 motion tween with proper easing
+static func create_motion_tween(node: Node, duration_key: String = "short4") -> Tween:
+	"""Create a Material 3 compliant motion tween"""
+	var tween = node.create_tween()
+	var duration = M3_DURATION[duration_key] / 1000.0  # Convert ms to seconds
+	
+	# Set M3 easing (simplified - would need proper curve in production)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	
+	return tween
+
+## Apply M3 ripple effect to any control
+static func apply_ripple_effect(control: Control, color: Color = Color.TRANSPARENT) -> void:
+	"""Apply Material 3 ripple effect to a control"""
+	if color == Color.TRANSPARENT:
+		color = get_color("on_surface")
+		color.a = 0.12  # Standard M3 ripple opacity
+	
+	# This would need a proper ripple shader in production
+	# For now, just apply a subtle highlight effect
+	var original_modulate = control.modulate
+	var tween = create_motion_tween(control, "short2")
+	
+	control.gui_input.connect(func(event):
+		if event is InputEventMouseButton and event.pressed:
+			control.modulate = original_modulate * 1.1
+			tween.tween_property(control, "modulate", original_modulate, 0.1)
+	)
+
 ## Get all available color tokens
 static func get_available_tokens() -> Array[String]:
 	"""Return all available color token names"""
