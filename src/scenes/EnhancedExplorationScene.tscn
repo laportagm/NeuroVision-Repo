@@ -14,7 +14,6 @@ tonemap_mode = 2
 ssao_intensity = 0.6
 ssao_horizon = 0.15
 glow_enabled = true
-glow_strength = 1.0
 glow_bloom = 0.3
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
@@ -62,8 +61,6 @@ border_width_bottom = 1
 border_color = Color(0.4, 0.45, 0.5, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
 content_margin_left = 24.0
@@ -71,15 +68,11 @@ content_margin_top = 24.0
 content_margin_right = 24.0
 content_margin_bottom = 24.0
 bg_color = Color(0.15, 0.175, 0.2, 1)
-border_width_left = 0
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.3, 0.6, 1, 1)
-corner_radius_top_left = 0
 corner_radius_top_right = 12
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3"]
 content_margin_left = 24.0
@@ -90,12 +83,9 @@ bg_color = Color(0.15, 0.175, 0.2, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
-border_width_bottom = 0
 border_color = Color(0.3, 0.6, 1, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
 
 [node name="ExplorationScene" type="Node3D"]
 script = ExtResource("1_script")
@@ -327,7 +317,6 @@ text = "FPS: 60 | Quality: HIGH"
 
 [node name="InfoPanel" parent="UI" instance=ExtResource("2_panel")]
 visible = false
-anchor_left = 0.971875
 
 [node name="Overlays" type="Control" parent="UI"]
 layout_mode = 3

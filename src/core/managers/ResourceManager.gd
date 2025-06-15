@@ -49,8 +49,8 @@ const ESSENTIAL_RESOURCES = {
 	"glass_panel_material": "res://src/ui/resources/materials/GlassPanelMaterial.tres",
 	"glass_panel_style": "res://src/ui/resources/styles/GlassPanelStyle.tres",
 	"sidebar_panel_style": "res://src/ui/resources/styles/SidebarPanelStyle.tres",
-	"bottom_panel_style": "res://src/ui/resources/styles/BottomPanelStyle.tres",
-	"base_educational_scene": "res://src/scenes/templates/BaseEducationalScene.tscn"
+	"bottom_panel_style": "res://src/ui/resources/styles/BottomPanelStyle.tres"
+	# Note: BaseEducationalScene.tscn removed as it doesn't exist yet
 }
 
 # === PRIVATE VARIABLES ===

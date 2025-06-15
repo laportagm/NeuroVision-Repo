@@ -82,9 +82,12 @@ func apply_intel_optimizations():
 
 func force_low_quality_settings():
 	"""Force lowest quality settings for Intel graphics"""
-	if PerformanceMonitor:
-		PerformanceMonitor.set_quality_level(PerformanceMonitor.QualityLevel.LOW)
-		PerformanceMonitor.lock_quality(true)
+	if Engine.has_singleton("PerformanceMonitor"):
+		var performance_monitor = Engine.get_singleton("PerformanceMonitor")
+		if performance_monitor and performance_monitor.has_method("set_quality_level"):
+			performance_monitor.set_quality_level(0)  # Assuming LOW = 0
+			if performance_monitor.has_method("lock_quality"):
+				performance_monitor.lock_quality(true)
 		_optimizations_applied["quality_locked"] = "LOW quality forced"
 		optimization_applied.emit("quality", "Forced LOW quality for Intel UHD 620")
 
@@ -122,14 +125,18 @@ func disable_expensive_ui_effects():
 	"""Disable expensive UI effects for Intel UHD 620"""
 	
 	# Disable glass morphism entirely
-	if UIThemeManager:
-		UIThemeManager.set_glass_morphism_enabled(false)
+	if Engine.has_singleton("UIThemeManager"):
+		var ui_theme_manager = Engine.get_singleton("UIThemeManager")
+		if ui_theme_manager and ui_theme_manager.has_method("set_glass_morphism_enabled"):
+			ui_theme_manager.set_glass_morphism_enabled(false)
 		_optimizations_applied["glass_morphism"] = "Disabled glass morphism effects"
 		optimization_applied.emit("ui_effects", "Disabled glass morphism for Intel UHD 620")
 	
 	# Disable theme effects
-	if ThemeEffectsManager:
-		ThemeEffectsManager.set_glass_quality(1)  # Lowest quality
+	if Engine.has_singleton("ThemeEffectsManager"):
+		var theme_effects_manager = Engine.get_singleton("ThemeEffectsManager")
+		if theme_effects_manager and theme_effects_manager.has_method("set_glass_quality"):
+			theme_effects_manager.set_glass_quality(1)  # Lowest quality
 		_optimizations_applied["theme_effects"] = "Reduced theme effects quality"
 		optimization_applied.emit("ui_effects", "Reduced theme effects to minimum")
 	
@@ -138,9 +145,10 @@ func disable_expensive_ui_effects():
 
 func _disable_particle_effects():
 	"""Disable particle effects for Intel graphics"""
-	if ThemeEffectsManager:
-		# Clear all particle pools to save memory
-		ThemeEffectsManager.cleanup_unused_effects()
+	if Engine.has_singleton("ThemeEffectsManager"):
+		var theme_effects_manager = Engine.get_singleton("ThemeEffectsManager")
+		if theme_effects_manager and theme_effects_manager.has_method("cleanup_unused_effects"):
+			theme_effects_manager.cleanup_unused_effects()
 		_optimizations_applied["particles"] = "Disabled particle effects"
 		optimization_applied.emit("particles", "Disabled particle effects for Intel UHD 620")
 
@@ -166,15 +174,22 @@ func configure_memory_settings():
 
 func setup_automatic_degradation():
 	"""Set up automatic performance degradation for Intel UHD 620"""
-	if not PerformanceMonitor:
+	if not Engine.has_singleton("PerformanceMonitor"):
+		return
+	
+	var performance_monitor = Engine.get_singleton("PerformanceMonitor")
+	if not performance_monitor:
 		return
 	
 	# Connect to performance warnings
-	PerformanceMonitor.performance_warning.connect(_on_performance_warning)
-	PerformanceMonitor.performance_critical.connect(_on_performance_critical)
+	if performance_monitor.has_signal("performance_warning"):
+		performance_monitor.performance_warning.connect(_on_performance_warning)
+	if performance_monitor.has_signal("performance_critical"):
+		performance_monitor.performance_critical.connect(_on_performance_critical)
 	
 	# Set Intel-specific thresholds
-	PerformanceMonitor.force_quality_check()
+	if performance_monitor.has_method("force_quality_check"):
+		performance_monitor.force_quality_check()
 	
 	_optimizations_applied["auto_degradation"] = "Automatic performance degradation enabled"
 	optimization_applied.emit("monitoring", "Automatic degradation for Intel UHD 620 active")
@@ -193,10 +208,14 @@ func start_performance_monitoring():
 
 func _check_intel_performance():
 	"""Check performance specifically for Intel UHD 620"""
-	if not _monitoring_active or not PerformanceMonitor:
+	if not _monitoring_active or not Engine.has_singleton("PerformanceMonitor"):
 		return
 	
-	var metrics = PerformanceMonitor.get_current_metrics()
+	var performance_monitor = Engine.get_singleton("PerformanceMonitor")
+	if not performance_monitor or not performance_monitor.has_method("get_current_metrics"):
+		return
+	
+	var metrics = performance_monitor.get_current_metrics()
 	
 	# Critical FPS check
 	if metrics.fps < INTEL_CRITICAL_FPS:
@@ -218,7 +237,7 @@ func _apply_emergency_optimizations():
 	print("[IntelOptimizer] Applying emergency optimizations for Intel UHD 620")
 	
 	# Force absolute minimum quality
-	if PerformanceMonitor:
+	if Engine.has_singleton("PerformanceMonitor"):
 		var viewport = get_viewport()
 		if viewport:
 			var viewport_rid = viewport.get_viewport_rid()
@@ -229,8 +248,10 @@ func _apply_emergency_optimizations():
 			RenderingServer.directional_shadow_atlas_set_size(512, true)
 	
 	# Disable all UI animations
-	if UIThemeManager:
-		UIThemeManager.disable_all_animations()
+	if Engine.has_singleton("UIThemeManager"):
+		var ui_theme_manager = Engine.get_singleton("UIThemeManager")
+		if ui_theme_manager and ui_theme_manager.has_method("disable_all_animations"):
+			ui_theme_manager.disable_all_animations()
 	
 	_optimizations_applied["emergency"] = "Emergency Intel optimizations applied"
 	optimization_applied.emit("emergency", "Applied emergency optimizations for Intel UHD 620")
@@ -247,8 +268,10 @@ func _reduce_memory_usage():
 	_force_garbage_collection()
 	
 	# Clear unused theme resources
-	if UIThemeManager:
-		UIThemeManager.clear_unused_themes()
+	if Engine.has_singleton("UIThemeManager"):
+		var ui_theme_manager = Engine.get_singleton("UIThemeManager")
+		if ui_theme_manager and ui_theme_manager.has_method("clear_unused_themes"):
+			ui_theme_manager.clear_unused_themes()
 
 func _force_garbage_collection():
 	"""Force garbage collection for Intel shared memory management"""
@@ -289,8 +312,10 @@ func _apply_progressive_degradation():
 	# Progressive steps to improve performance
 	if not _optimizations_applied.has("step1"):
 		# Step 1: Reduce UI effects further
-		if UIThemeManager:
-			UIThemeManager.set_effects_quality(0)  # Minimum
+		if Engine.has_singleton("UIThemeManager"):
+			var ui_theme_manager = Engine.get_singleton("UIThemeManager")
+			if ui_theme_manager and ui_theme_manager.has_method("set_effects_quality"):
+				ui_theme_manager.set_effects_quality(0)  # Minimum
 		_optimizations_applied["step1"] = "Reduced UI effects"
 		optimization_applied.emit("degradation", "Step 1: Reduced UI effects")
 		

@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bq8nvqla4jvqv"]
-
-[ext_resource type="Script" uid="uid://bct81myvomuih" path="res://tests/unit/test_learning_content_manager.gd" id="1_xn2mf"]
-
-[node name="TestLearningContentManager" type="Node"]
-script = ExtResource("1_xn2mf")

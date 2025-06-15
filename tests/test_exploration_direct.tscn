@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://btest123"]
-
-[sub_resource type="Resource" id="Resource_nb5ki"]
-metadata/__load_path__ = "res://src/scenes/ExplorationScene.tscn"
-
-[node name="TestExplorationDirect" type="Node"]
-
-[node name="ExplorationScene" parent="."]

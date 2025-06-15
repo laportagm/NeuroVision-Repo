@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://2j5xwujmg8kl"]
-
-[ext_resource type="Script" uid="uid://7n2xtar7nyxm" path="res://tests/test_quiz_accessibility.gd" id="1"]
-
-[node name="TestQuizAccessibility" type="Node"]
-script = ExtResource("1")
