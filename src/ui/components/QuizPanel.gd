@@ -406,8 +406,9 @@ func _create_multiple_choice_options(options: Array) -> void:
 			if pressed: 
 				_on_option_selected(i)
 				# Announce selection for accessibility
-				if has_node("/root/AccessibilityManager") and AccessibilityManager.is_screen_reader_enabled():
-					AccessibilityManager.announce("Selected option %s" % btn.text)
+				# TODO: Re-enable when AccessibilityManager is available
+				# if has_node("/root/AccessibilityManager") and AccessibilityManager.is_screen_reader_enabled():
+				#	AccessibilityManager.announce("Selected option %s" % btn.text)
 		)
 	
 	# Record performance metrics
@@ -483,8 +484,9 @@ func _create_true_false_options() -> void:
 			if pressed: 
 				_on_option_selected(i == 0)  # True = true, False = false
 				# Announce selection
-				if has_node("/root/AccessibilityManager") and AccessibilityManager.is_screen_reader_enabled():
-					AccessibilityManager.announce("Selected %s" % options[i])
+				# TODO: Re-enable when AccessibilityManager is available
+				# if has_node("/root/AccessibilityManager") and AccessibilityManager.is_screen_reader_enabled():
+				#	AccessibilityManager.announce("Selected %s" % options[i])
 		)
 	
 	# Connect last option to submit button and set initial focus

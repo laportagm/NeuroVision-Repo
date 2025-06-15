@@ -59,34 +59,34 @@ func _apply_material3_theme() -> void:
 	if color_rect:
 		# Create gradient from M3 design tokens
 		var gradient = Gradient.new()
-		gradient.add_point(0.0, M3DesignTokens.get_color("background_start"))
-		gradient.add_point(1.0, M3DesignTokens.get_color("background_end"))
+		gradient.add_point(0.0, UnifiedColorSystem.get_color("background_start"))
+		gradient.add_point(1.0, UnifiedColorSystem.get_color("background_end"))
 		
 		# Apply gradient (would need a shader or texture in real implementation)
-		color_rect.color = M3DesignTokens.get_color("background_start")
+		color_rect.color = UnifiedColorSystem.get_color("background_start")
 	
 	# Apply M3 styling to top bar
 	if top_bar:
 		var style = StyleBoxFlat.new()
-		style.bg_color = M3DesignTokens.get_color("surface")
+		style.bg_color = UnifiedColorSystem.get_color("surface")
 		style.bg_color.a = 0.95  # Slight transparency
 		style.set_corner_radius_all(0)
 		style.set_content_margin_all(M3DesignTokens.M3_SPACING["medium"])
 		
 		# Add subtle shadow
 		style.shadow_size = M3DesignTokens.M3_ELEVATION["navigation"]
-		style.shadow_color = M3DesignTokens.get_color("shadow")
+		style.shadow_color = UnifiedColorSystem.get_color("shadow")
 		style.shadow_offset = Vector2(0, 2)
 		
 		top_bar.add_theme_stylebox_override("panel", style)
 	
 	# Apply M3 typography
 	if title_label:
-		title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
+		title_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("primary"))
 		title_label.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["display_large"]["size"])
 	
 	if subtitle_label:
-		subtitle_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
+		subtitle_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_surface_variant"))
 		subtitle_label.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
 	
 	# Apply M3 button styling
@@ -101,28 +101,28 @@ func _style_button_primary(button: Button) -> void:
 		return
 	
 	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = M3DesignTokens.get_color("primary")
+	normal_style.bg_color = UnifiedColorSystem.get_color("primary")
 	normal_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["button"])
 	normal_style.set_content_margin_all(M3DesignTokens.M3_SPACING["button_padding"])
 	
 	# Add elevation shadow
 	normal_style.shadow_size = M3DesignTokens.M3_ELEVATION["button"]
-	normal_style.shadow_color = M3DesignTokens.get_color("shadow")
+	normal_style.shadow_color = UnifiedColorSystem.get_color("shadow")
 	normal_style.shadow_offset = Vector2(0, 2)
 	
 	button.add_theme_stylebox_override("normal", normal_style)
-	button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_primary"))
+	button.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_primary"))
 	button.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["label_large"]["size"])
 	
 	# Hover state
 	var hover_style = normal_style.duplicate()
-	hover_style.bg_color = M3DesignTokens.get_color("primary_container")
+	hover_style.bg_color = UnifiedColorSystem.get_color("primary_container")
 	hover_style.shadow_size = M3DesignTokens.M3_ELEVATION["level3"]
 	button.add_theme_stylebox_override("hover", hover_style)
 	
 	# Pressed state
 	var pressed_style = normal_style.duplicate()
-	pressed_style.bg_color = M3DesignTokens.get_color("primary")
+	pressed_style.bg_color = UnifiedColorSystem.get_color("primary")
 	pressed_style.bg_color.a = 0.9  # Slightly transparent for pressed state
 	pressed_style.shadow_size = M3DesignTokens.M3_ELEVATION["level1"]
 	button.add_theme_stylebox_override("pressed", pressed_style)
@@ -133,17 +133,17 @@ func _style_button_secondary(button: Button) -> void:
 		return
 	
 	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = M3DesignTokens.get_color("secondary_container")
+	normal_style.bg_color = UnifiedColorSystem.get_color("secondary_container")
 	normal_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["button"])
 	normal_style.set_content_margin_all(M3DesignTokens.M3_SPACING["button_padding"])
 	
 	button.add_theme_stylebox_override("normal", normal_style)
-	button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_secondary_container"))
+	button.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_secondary_container"))
 	button.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["label_large"]["size"])
 	
 	# Hover state
 	var hover_style = normal_style.duplicate()
-	hover_style.bg_color = M3DesignTokens.get_color("secondary")
+	hover_style.bg_color = UnifiedColorSystem.get_color("secondary")
 	hover_style.bg_color.a = 0.15  # Subtle hover overlay
 	button.add_theme_stylebox_override("hover", hover_style)
 
@@ -153,17 +153,17 @@ func _style_button_tertiary(button: Button) -> void:
 		return
 	
 	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = M3DesignTokens.get_color("transparent")
+	normal_style.bg_color = UnifiedColorSystem.get_color("transparent")
 	normal_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["button"])
 	normal_style.set_content_margin_all(M3DesignTokens.M3_SPACING["button_padding"])
 	
 	button.add_theme_stylebox_override("normal", normal_style)
-	button.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
+	button.add_theme_color_override("font_color", UnifiedColorSystem.get_color("primary"))
 	button.add_theme_font_size_override("font_size", M3DesignTokens.M3_TYPE_SCALE["label_large"]["size"])
 	
 	# Hover state with subtle background
 	var hover_style = normal_style.duplicate()
-	hover_style.bg_color = M3DesignTokens.get_color("primary")
+	hover_style.bg_color = UnifiedColorSystem.get_color("primary")
 	hover_style.bg_color.a = M3DesignTokens.M3_OPACITY["hover"]
 	button.add_theme_stylebox_override("hover", hover_style)
 
@@ -285,14 +285,14 @@ func _input(event: InputEvent) -> void:
 
 func _show_theme_info() -> void:
 	"""Display current theme information"""
-	var current = UIThemeManager.get_current_theme()
+	var current = UISystemManager.get_current_theme()
 	print("\n[MainMenu] === CURRENT THEME INFO ===")
 	print("  Name: %s" % current)
-	print("  Display: %s" % UIThemeManager.get_theme_display_name(current))
-	print("  Description: %s" % UIThemeManager.get_theme_description(current))
-	print("  Is Material 3: %s" % UIThemeManager.is_material3_active())
+	print("  Display: %s" % UISystemManager.get_theme_display_name(current))
+	print("  Description: %s" % UISystemManager.get_theme_description(current))
+	print("  Is Material 3: %s" % UISystemManager.is_material3_active())
 	
-	var current_theme_res = UIThemeManager.current_theme_resource
+	var current_theme_res = UISystemManager.current_theme_resource
 	if current_theme_res:
 		print("  Theme resource loaded: YES")
 		if current_theme_res.has_meta("wcag_aaa_validated"):
@@ -308,25 +308,25 @@ func _on_m3_test_pressed() -> void:
 	print("[MainMenu] Testing Material 3 theme")
 	
 	# Toggle between default and Material 3
-	if UIThemeManager.is_material3_active():
-		UIThemeManager.set_theme("dark")
+	if UISystemManager.is_material3_active():
+		UISystemManager.set_theme("dark")
 		print("[MainMenu] Switched to dark theme")
 	else:
-		UIThemeManager.set_theme("material3")
+		UISystemManager.set_theme("material3")
 		print("[MainMenu] Switched to Material 3 theme")
 		# Reapply M3 styling when switching
 		_apply_material3_theme()
 
 func _on_cycle_themes_pressed() -> void:
 	"""Cycle through all available themes"""
-	var themes = UIThemeManager.get_available_themes()
-	var current = UIThemeManager.get_current_theme()
+	var themes = UISystemManager.get_available_themes()
+	var current = UISystemManager.get_current_theme()
 	var current_index = themes.find(current)
 	var next_index = (current_index + 1) % themes.size()
 	
 	var next_theme = themes[next_index]
 	print("[MainMenu] Cycling to theme: %s" % next_theme)
-	UIThemeManager.set_theme(next_theme)
+	UISystemManager.set_theme(next_theme)
 	
 	# Reapply M3 styling if switching to material3
 	if next_theme == "material3":
@@ -338,15 +338,15 @@ func _run_m3_test() -> void:
 	
 	# Quick test of M3 theme generation
 	print("[MainMenu] Switching to Material 3...")
-	UIThemeManager.set_theme("material3")
+	UISystemManager.set_theme("material3")
 	_apply_material3_theme()
 	await get_tree().create_timer(0.5).timeout
 	
-	if UIThemeManager.is_material3_active():
+	if UISystemManager.is_material3_active():
 		print("[MainMenu] ✓ Material 3 activated successfully!")
 		
 		# Log some theme details
-		var theme_res = UIThemeManager.current_theme_resource
+		var theme_res = UISystemManager.current_theme_resource
 		if theme_res and theme_res.has_meta("wcag_aaa_validated"):
 			print("[MainMenu] ✓ WCAG AAA validated: %s" % theme_res.get_meta("wcag_aaa_validated"))
 		if theme_res and theme_res.has_meta("m3_performance_level"):
@@ -360,7 +360,7 @@ func _run_m3_test() -> void:
 		# Switch back to default after test
 		await get_tree().create_timer(2.0).timeout
 		print("[MainMenu] Switching back to default theme...")
-		UIThemeManager.set_theme("dark")
+		UISystemManager.set_theme("dark")
 	else:
 		print("[MainMenu] ✗ Material 3 activation failed")
 	

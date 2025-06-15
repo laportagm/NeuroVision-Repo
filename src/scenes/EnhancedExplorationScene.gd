@@ -397,7 +397,7 @@ func _create_axis_indicator() -> void:
 	if materials.x:
 		x_instance.material_override = materials.x
 	else:
-		x_instance.material_override = _create_axis_material(M3DesignTokens.get_color("error"))
+		x_instance.material_override = _create_axis_material(UnifiedColorSystem.get_color("error"))
 	axis_indicator.add_child(x_instance)
 	
 	# Create Y axis (green)
@@ -409,7 +409,7 @@ func _create_axis_indicator() -> void:
 	if materials.y:
 		y_instance.material_override = materials.y
 	else:
-		y_instance.material_override = _create_axis_material(M3DesignTokens.get_color("success"))
+		y_instance.material_override = _create_axis_material(UnifiedColorSystem.get_color("success"))
 	axis_indicator.add_child(y_instance)
 	
 	# Create Z axis (blue)
@@ -421,7 +421,7 @@ func _create_axis_indicator() -> void:
 	if materials.z:
 		z_instance.material_override = materials.z
 	else:
-		z_instance.material_override = _create_axis_material(M3DesignTokens.get_color("tertiary"))
+		z_instance.material_override = _create_axis_material(UnifiedColorSystem.get_color("tertiary"))
 	axis_indicator.add_child(z_instance)
 
 func _create_axis_material(color: Color) -> StandardMaterial3D:
@@ -491,43 +491,43 @@ func _populate_structure_list(structures: Array) -> void:
 		button.custom_minimum_size = Vector2(248, 50)  # 280px panel - 32px margins = 248px width
 		
 		# Professional medical color scheme with WCAG AAA contrast
-		button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface"))
-		button.add_theme_color_override("font_hover_color", M3DesignTokens.get_color("primary"))
-		button.add_theme_color_override("font_pressed_color", M3DesignTokens.get_color("primary"))
-		button.add_theme_color_override("font_focus_color", M3DesignTokens.get_color("primary"))
+		button.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_surface"))
+		button.add_theme_color_override("font_hover_color", UnifiedColorSystem.get_color("primary"))
+		button.add_theme_color_override("font_pressed_color", UnifiedColorSystem.get_color("primary"))
+		button.add_theme_color_override("font_focus_color", UnifiedColorSystem.get_color("primary"))
 		button.add_theme_font_size_override("font_size", 16)  # Larger font for medical readability
 		
 		# Professional glass morphism styling for medical education
 		var style_normal = StyleBoxFlat.new()
-		style_normal.bg_color = Color.TRANSPARENT
+		style_normal.bg_color = UnifiedColorSystem.get_color("transparent")
 		style_normal.set_corner_radius_all(8)
 		style_normal.set_content_margin_all(16)
 		
 		var style_hover = StyleBoxFlat.new()
-		style_hover.bg_color = M3DesignTokens.get_color("primary")
+		style_hover.bg_color = UnifiedColorSystem.get_color("primary")
 		style_hover.bg_color.a = 0.08
 		style_hover.set_corner_radius_all(8)
 		style_hover.set_content_margin_all(16)
-		style_hover.border_color = M3DesignTokens.get_color("primary")
+		style_hover.border_color = UnifiedColorSystem.get_color("primary")
 		style_hover.border_color.a = 0.3
 		style_hover.set_border_width_all(1)
 		
 		var style_pressed = StyleBoxFlat.new()
-		style_pressed.bg_color = M3DesignTokens.get_color("primary")
+		style_pressed.bg_color = UnifiedColorSystem.get_color("primary")
 		style_pressed.bg_color.a = 0.12
 		style_pressed.set_corner_radius_all(8)
 		style_pressed.set_content_margin_all(16)
-		style_pressed.border_color = M3DesignTokens.get_color("primary")
+		style_pressed.border_color = UnifiedColorSystem.get_color("primary")
 		style_pressed.border_color.a = 0.5
 		style_pressed.set_border_width_all(2)
 		
 		# Focus indicator for accessibility (3:1 contrast minimum)
 		var style_focus = StyleBoxFlat.new()
-		style_focus.bg_color = M3DesignTokens.get_color("primary")
+		style_focus.bg_color = UnifiedColorSystem.get_color("primary")
 		style_focus.bg_color.a = 0.15
 		style_focus.set_corner_radius_all(8)
 		style_focus.set_content_margin_all(16)
-		style_focus.border_color = M3DesignTokens.get_color("primary")
+		style_focus.border_color = UnifiedColorSystem.get_color("primary")
 		style_focus.border_color.a = 0.8
 		style_focus.set_border_width_all(3)  # WCAG AAA focus indicator
 		
@@ -704,7 +704,7 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 	
 	# Highlight button with M3 colors
 	for id in _structure_buttons:
-		_structure_buttons[id].modulate = M3DesignTokens.get_color("on_surface")
+		_structure_buttons[id].modulate = UnifiedColorSystem.get_color("on_surface")
 	if _structure_buttons.has(_current_structure_id):
 		_structure_buttons[_current_structure_id].modulate = M3DesignTokens.M3_COLORS["primary"]
 	
@@ -726,7 +726,7 @@ func _on_selection_cleared() -> void:
 	
 	# Clear button highlights
 	for id in _structure_buttons:
-		_structure_buttons[id].modulate = M3DesignTokens.get_color("on_surface")
+		_structure_buttons[id].modulate = UnifiedColorSystem.get_color("on_surface")
 
 func _load_brain_models() -> void:
 	"""Load the brain models"""
@@ -1263,8 +1263,8 @@ func _validate_accessibility_compliance() -> void:
 	
 	# Validate color contrast (would need actual contrast calculation in production)
 	# Professional medical theme should maintain 7:1 contrast ratio
-	var _bg_color = M3DesignTokens.get_color("surface")
-	var _text_color = M3DesignTokens.get_color("on_surface")
+	var _bg_color = UnifiedColorSystem.get_color("surface")
+	var _text_color = UnifiedColorSystem.get_color("on_surface")
 	
 	# Store accessibility violations for reporting
 	_performance_data.accessibility_violations = violations

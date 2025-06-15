@@ -1,5 +1,8 @@
 extends Node
 
+# === PRELOADS ===
+const PerformanceMonitor = preload("res://src/autoload/PerformanceMonitor.gd")
+
 ## GPU Detection and Quality Auto-Configuration
 ##
 ## Detects GPU capabilities and sets appropriate quality defaults

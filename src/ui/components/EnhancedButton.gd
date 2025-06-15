@@ -330,7 +330,7 @@ func _create_ripple_effect() -> void:
 	# Create ripple circle
 	var ripple = ColorRect.new()
 	ripple.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ripple.color = M3DesignTokens.get_color("on_surface")
+	ripple.color = UnifiedColorSystem.get_color("on_surface")
 	ripple.color.a = 0.3  # Semi-transparent ripple
 	ripple.size = Vector2(20, 20)
 	ripple.position = click_position - ripple.size / 2
@@ -403,7 +403,7 @@ func _create_focus_ring() -> void:
 	# Use M3 primary color or custom focus color
 	var ring_color = focus_ring_color
 	if ring_color == Color() and M3DesignTokens:
-		ring_color = M3DesignTokens.get_color("primary")
+		ring_color = UnifiedColorSystem.get_color("primary")
 	
 	_focus_ring.border_color = ring_color
 	_focus_ring.border_width = 3
@@ -417,11 +417,11 @@ func _create_focus_ring() -> void:
 	add_child(_focus_ring)
 	
 	# Animate focus ring appearance
-	_focus_ring.modulate = M3DesignTokens.get_color("transparent")
+	_focus_ring.modulate = UnifiedColorSystem.get_color("transparent")
 	var focus_tween = create_tween()
 	focus_tween.set_trans(Tween.TRANS_CUBIC)
 	focus_tween.set_ease(Tween.EASE_OUT)
-	focus_tween.tween_property(_focus_ring, "modulate", M3DesignTokens.get_color("on_surface"), 0.15)
+	focus_tween.tween_property(_focus_ring, "modulate", UnifiedColorSystem.get_color("on_surface"), 0.15)
 
 func _remove_focus_ring() -> void:
 	"""Remove focus ring with fade animation"""

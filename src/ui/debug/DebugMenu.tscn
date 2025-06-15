@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b4nd6mpcp1i4o" path="res://src/ui/debug/DebugMenu.gd" id="1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-bg_color = Color(0.1, 0.1, 0.1, 0.95)
+bg_color = UnifiedColorSystem.get_color("surface_container")
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5

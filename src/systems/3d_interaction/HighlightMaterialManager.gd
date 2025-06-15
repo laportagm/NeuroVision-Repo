@@ -128,12 +128,12 @@ func is_transitioning(mesh: MeshInstance3D) -> bool:
 func _initialize_state_colors() -> void:
 	"""Initialize state colors from M3DesignTokens"""
 	STATE_COLORS = {
-		HighlightState.IDLE: M3DesignTokens.get_color("surface_variant"),
-		HighlightState.HOVERING: M3DesignTokens.get_color("primary"),
-		HighlightState.SELECTED: M3DesignTokens.get_color("tertiary"),
-		HighlightState.MULTI_SELECTED: M3DesignTokens.get_color("secondary"),
-		HighlightState.FOCUSED: M3DesignTokens.get_color("primary_container"),
-		HighlightState.DISABLED: M3DesignTokens.get_color("on_surface_variant").darkened(0.5)
+		HighlightState.IDLE: UnifiedColorSystem.get_color("surface_variant"),
+		HighlightState.HOVERING: UnifiedColorSystem.get_color("primary"),
+		HighlightState.SELECTED: UnifiedColorSystem.get_color("tertiary"),
+		HighlightState.MULTI_SELECTED: UnifiedColorSystem.get_color("secondary"),
+		HighlightState.FOCUSED: UnifiedColorSystem.get_color("primary_container"),
+		HighlightState.DISABLED: UnifiedColorSystem.get_color("on_surface_variant").darkened(0.5)
 	}
 
 func _load_shaders() -> void:
@@ -166,7 +166,7 @@ func _initialize_material_pool() -> void:
 			# Use StandardMaterial3D as fallback for headless mode
 			var std_mat = StandardMaterial3D.new()
 			std_mat.emission_enabled = true
-			std_mat.emission = Color(0.3, 0.6, 1.0)
+			std_mat.emission = UnifiedColorSystem.get_color("primary")
 			std_mat.emission_energy = 0.5
 			std_mat.rim_enabled = true
 			std_mat.rim = 1.0
@@ -191,7 +191,7 @@ func _get_from_pool() -> Material:
 		if is_headless or not _rim_shader:
 			var std_mat = StandardMaterial3D.new()
 			std_mat.emission_enabled = true
-			std_mat.emission = Color(0.3, 0.6, 1.0)
+			std_mat.emission = UnifiedColorSystem.get_color("primary")
 			std_mat.emission_energy = 0.5
 			std_mat.rim_enabled = true
 			std_mat.rim = 1.0
@@ -210,10 +210,10 @@ func _return_to_pool(material: Material) -> void:
 		# Reset material to default state
 		if material is ShaderMaterial:
 			material.set_shader_parameter("rim_intensity", 0.0)
-			material.set_shader_parameter("rim_color", Color.WHITE)
+			material.set_shader_parameter("rim_color", UnifiedColorSystem.get_color("on_primary"))
 		elif material is StandardMaterial3D:
 			material.emission_energy = 0.0
-			material.albedo_color = Color.WHITE
+			material.albedo_color = UnifiedColorSystem.get_color("on_primary")
 		_material_pool.append(material)
 
 func _get_or_create_material_state(mesh: MeshInstance3D) -> MaterialState:

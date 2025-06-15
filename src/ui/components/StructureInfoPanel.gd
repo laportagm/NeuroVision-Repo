@@ -36,15 +36,15 @@ var _current_structure_id: String = ""
 # === PUBLIC METHODS ===
 
 func _ready() -> void:
-	# Initialize theme colors from M3DesignTokens if not set
+	# Initialize theme colors from UnifiedColorSystem if not set
 	if panel_color == Color():
-		panel_color = M3DesignTokens.get_ui_color("panel", "default")
+		panel_color = UnifiedColorSystem.get_color("surface_container")
 	if header_color == Color():
-		header_color = M3DesignTokens.get_color("surface_container")
+		header_color = UnifiedColorSystem.get_color("surface_container")
 	if text_color == Color():
-		text_color = M3DesignTokens.get_color("on_surface")
+		text_color = UnifiedColorSystem.get_color("on_surface")
 	if accent_color == Color():
-		accent_color = M3DesignTokens.get_color("primary")
+		accent_color = UnifiedColorSystem.get_color("primary")
 	
 	_setup_ui()
 	_setup_auto_hide()
@@ -248,14 +248,14 @@ func _apply_theme() -> void:
 	# Apply M3 typography to title
 	if _title_label:
 		M3ComponentApplicator.apply_m3_text_styling(_title_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
-		_title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
+		_title_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("primary"))
 	
 	# Style close button as M3 icon button
 	if _close_button:
 		_close_button.text = "✕"
 		_close_button.flat = true
 		M3ComponentApplicator.apply_m3_button_styling(_close_button, M3ComponentApplicator.ButtonVariant.ICON)
-		_close_button.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
+		_close_button.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_surface_variant"))
 		_close_button.add_theme_font_size_override("font_size", 20)
 		
 		# Add hover effect
@@ -289,7 +289,7 @@ func _add_section(title: String, content: String) -> void:
 	var title_label = Label.new()
 	title_label.text = title
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
+	title_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("primary"))
 	_info_content.add_child(title_label)
 	
 	# Section content with M3 typography
@@ -297,7 +297,7 @@ func _add_section(title: String, content: String) -> void:
 	content_label.text = content
 	content_label.fit_content = true
 	content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content_label.add_theme_color_override("default_color", M3DesignTokens.get_color("on_surface"))
+	content_label.add_theme_color_override("default_color", UnifiedColorSystem.get_color("on_surface"))
 	content_label.add_theme_font_size_override("normal_font_size", M3DesignTokens.M3_TYPE_SCALE["body_large"]["size"])
 	content_label.bbcode_enabled = true
 	content_label.custom_minimum_size.y = 60
@@ -311,14 +311,14 @@ func _add_connections_section(connections: Array) -> void:
 	var title_label = Label.new()
 	title_label.text = "Connections"
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
+	title_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("primary"))
 	_info_content.add_child(title_label)
 	
 	for connection in connections:
 		var item_label = Label.new()
 		item_label.text = "• " + str(connection)
 		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-		item_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
+		item_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_surface_variant"))
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
@@ -329,14 +329,14 @@ func _add_objectives_section(objectives: Array) -> void:
 	var title_label = Label.new()
 	title_label.text = "Learning Objectives"
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("secondary"))
+	title_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("secondary"))
 	_info_content.add_child(title_label)
 	
 	for i in range(objectives.size()):
 		var item_label = Label.new()
 		item_label.text = str(i + 1) + ". " + str(objectives[i])
 		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-		item_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
+		item_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_surface_variant"))
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
@@ -353,14 +353,14 @@ func _add_list_section(title: String, items: Array, bullet: String = "•") -> v
 	var title_label = Label.new()
 	title_label.text = title
 	M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-	title_label.add_theme_color_override("font_color", M3DesignTokens.get_color("primary"))
+	title_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("primary"))
 	_info_content.add_child(title_label)
 	
 	for item in items:
 		var item_label = Label.new()
 		item_label.text = bullet + " " + str(item)
 		M3ComponentApplicator.apply_m3_text_styling(item_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-		item_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_surface_variant"))
+		item_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_surface_variant"))
 		item_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_info_content.add_child(item_label)
 	
@@ -370,7 +370,7 @@ func _add_category_tag(category: String) -> void:
 	"""Add a category tag with M3 chip styling"""
 	var tag_container = PanelContainer.new()
 	var tag_style = StyleBoxFlat.new()
-	tag_style.bg_color = M3DesignTokens.get_color("primary_container")
+	tag_style.bg_color = UnifiedColorSystem.get_color("primary_container")
 	tag_style.set_corner_radius_all(M3DesignTokens.M3_CORNER_RADIUS["chip"])
 	tag_style.set_content_margin_all(M3DesignTokens.M3_SPACING["small"])
 	tag_container.add_theme_stylebox_override("panel", tag_style)
@@ -378,7 +378,7 @@ func _add_category_tag(category: String) -> void:
 	var tag_label = Label.new()
 	tag_label.text = category
 	M3ComponentApplicator.apply_m3_text_styling(tag_label, M3ComponentApplicator.TypographyScale.LABEL_MEDIUM)
-	tag_label.add_theme_color_override("font_color", M3DesignTokens.get_color("on_primary_container"))
+	tag_label.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_primary_container"))
 	tag_container.add_child(tag_label)
 	
 	_info_content.add_child(tag_container)

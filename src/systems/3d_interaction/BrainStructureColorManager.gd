@@ -50,7 +50,7 @@ func apply_single_structure_color(structure_id: String, mesh: MeshInstance3D) ->
 
 func get_structure_color(structure_id: String) -> Color:
 	"""Get the color for a specific brain structure"""
-	return M3DesignTokens.get_color(structure_id)
+	return UnifiedColorSystem.get_color(structure_id)
 
 func reset_to_default_colors(model_instance: Node3D) -> void:
 	"""Reset all meshes to their default brain structure colors"""
@@ -79,7 +79,7 @@ func _get_or_create_structure_material(structure_id: String) -> StandardMaterial
 	
 	# Create new material with structure color
 	var material = StandardMaterial3D.new()
-	var color = M3DesignTokens.get_color(structure_id)
+	var color = UnifiedColorSystem.get_color(structure_id)
 	
 	# Base color
 	material.albedo_color = color
@@ -219,5 +219,5 @@ func debug_apply_test_colors(model_instance: Node3D) -> void:
 	for i in range(meshes.size()):
 		var color_name = test_colors[i % test_colors.size()]
 		var material = StandardMaterial3D.new()
-		material.albedo_color = M3DesignTokens.get_color(color_name)
+		material.albedo_color = UnifiedColorSystem.get_color(color_name)
 		_apply_material_to_mesh(meshes[i], material)

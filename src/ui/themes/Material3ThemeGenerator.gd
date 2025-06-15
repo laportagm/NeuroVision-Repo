@@ -13,7 +13,7 @@ signal adaptive_color_generated(structure_name: String, color: Color)
 
 # === PROPERTIES ===
 var m3_tokens: M3DesignTokens
-var accessibility_manager: AccessibilityManager
+var accessibility_manager: M3AccessibilityValidator
 var performance_adapter: PerformanceThemeAdapter
 var educational_colors: EducationalColorSystem
 var accessibility_validator: M3AccessibilityValidator
@@ -32,6 +32,27 @@ func setup_dependencies() -> void:
 			performance_adapter = tree.root.get_node("PerformanceAdapter")
 
 # === MAIN THEME GENERATION ===
+
+## Generate a complete Material 3 theme (primary entry point)
+## Called by UISystemManager for theme switching
+func generate_theme(variant: String = "default") -> Theme:
+	"""Generate a complete Material 3 theme compatible with NeuroVision educational system"""
+	print("[Material3ThemeGenerator] Generating Material 3 theme, variant: %s" % variant)
+	
+	var theme = generate_material3_theme(variant)
+	
+	# Add educational brain structure colors integration
+	_integrate_brain_structure_colors(theme, variant)
+	
+	# Store variant metadata for theme switching
+	theme.set_meta("theme_variant", variant)
+	theme.set_meta("generator_version", "2.1")
+	theme.set_meta("educational_compatible", true)
+	theme.set_meta("m3_performance_level", _detect_performance_level())
+	
+	print("[Material3ThemeGenerator] ✅ Material 3 theme generated successfully")
+	return theme
+
 ## Generate a complete Material 3 theme
 func generate_material3_theme(variant: String = "default") -> Theme:
 	var theme = Theme.new()
@@ -551,3 +572,91 @@ func _fix_color_contrasts(theme: Theme) -> void:
 			theme.set_color("font_color", "Button", adjusted)
 			theme.set_color("font_hover_color", "Button", adjusted)
 			theme.set_color("font_pressed_color", "Button", adjusted)
+
+# === EDUCATIONAL SYSTEM INTEGRATION ===
+
+func _integrate_brain_structure_colors(theme: Theme, variant: String) -> void:
+	"""Integrate educational brain structure colors with theme variant"""
+	
+	# Get brain structure colors from M3DesignTokens
+	var brain_colors = M3DesignTokens.BRAIN_STRUCTURE_COLORS
+	if brain_colors.is_empty():
+		print("[Material3ThemeGenerator] Brain structure colors not available")
+		return
+	
+	# Apply variant-specific color adaptations
+	for structure_name in brain_colors:
+		var base_color = brain_colors[structure_name]
+		var adapted_color = _adapt_brain_color_for_variant(base_color, variant)
+		
+		# Store in theme for educational components
+		theme.set_color("brain_" + structure_name, "Educational", adapted_color)
+		
+		# Also create hover and selection variants
+		theme.set_color("brain_" + structure_name + "_hover", "Educational", adapted_color.lightened(0.2))
+		theme.set_color("brain_" + structure_name + "_selected", "Educational", adapted_color.lightened(0.4))
+	
+	print("[Material3ThemeGenerator] Integrated %d brain structure colors" % brain_colors.size())
+
+func _adapt_brain_color_for_variant(color: Color, variant: String) -> Color:
+	"""Adapt brain structure color for specific theme variant"""
+	
+	match variant:
+		"high_contrast":
+			# Increase saturation and brightness for high contrast
+			return Color.from_hsv(color.h, min(color.s + 0.3, 1.0), min(color.v + 0.2, 1.0))
+		
+		"colorblind_safe":
+			# Adjust colors to be more distinguishable for colorblind users
+			var safe_hues = [0.0, 0.15, 0.33, 0.5, 0.66, 0.83]  # Red, Orange, Green, Cyan, Blue, Magenta
+			var closest_hue = safe_hues[0]
+			var min_distance = abs(color.h - safe_hues[0])
+			
+			for hue in safe_hues:
+				var distance = abs(color.h - hue)
+				if distance < min_distance:
+					min_distance = distance
+					closest_hue = hue
+			
+			return Color.from_hsv(closest_hue, 0.8, 0.9)
+		
+		"minimal":
+			# Reduce saturation for minimal theme
+			return Color.from_hsv(color.h, color.s * 0.6, color.v * 0.8)
+		
+		"enhanced":
+			# Enhance vibrancy for enhanced theme
+			return Color.from_hsv(color.h, min(color.s + 0.1, 1.0), min(color.v + 0.1, 1.0))
+		
+		"educational":
+			# Optimize for educational clarity
+			return Color.from_hsv(color.h, 0.7, 0.85)
+		
+		_:
+			return color
+
+func _detect_performance_level() -> String:
+	"""Detect optimal performance level for M3 theme optimizations"""
+	
+	# Try to get performance level from CoreSystemManager
+	var tree = Engine.get_main_loop() as SceneTree
+	if tree and tree.root.has_node("CoreSystemManager"):
+		var core_manager = tree.root.get_node("CoreSystemManager")
+		if core_manager.has_method("get_performance_level"):
+			var level = core_manager.get_performance_level()
+			match level:
+				0: return "excellent"  # PerformanceLevel.EXCELLENT
+				1: return "good"       # PerformanceLevel.GOOD
+				2: return "acceptable" # PerformanceLevel.ACCEPTABLE
+				3: return "poor"       # PerformanceLevel.POOR
+	
+	# Fallback performance detection
+	var fps = Engine.get_frames_per_second()
+	if fps >= 60:
+		return "excellent"
+	elif fps >= 45:
+		return "good"
+	elif fps >= 30:
+		return "acceptable"
+	else:
+		return "poor"

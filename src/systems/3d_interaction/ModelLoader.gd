@@ -1,5 +1,8 @@
 extends Node
 
+# === PRELOADS ===
+const PerformanceMonitor = preload("res://src/autoload/PerformanceMonitor.gd")
+
 ## Handles loading and management of 3D brain models with LOD support
 
 signal model_loaded(model_name: String, model_instance: Node3D)

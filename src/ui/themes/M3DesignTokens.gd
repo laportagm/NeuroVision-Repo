@@ -626,7 +626,7 @@ static func apply_typography(label: Label, scale: String = "body_medium") -> voi
 static func create_motion_tween(node: Node, duration_key: String = "short4") -> Tween:
 	"""Create a Material 3 compliant motion tween"""
 	var tween = node.create_tween()
-	var duration = M3_DURATION[duration_key] / 1000.0  # Convert ms to seconds
+	var _duration = M3_DURATION[duration_key] / 1000.0  # Convert ms to seconds
 	
 	# Set M3 easing (simplified - would need proper curve in production)
 	tween.set_ease(Tween.EASE_OUT)

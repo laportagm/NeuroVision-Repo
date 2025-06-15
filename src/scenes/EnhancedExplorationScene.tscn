@@ -6,8 +6,8 @@
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
-background_color = Color(0.0549, 0.0667, 0.0902, 1)
-ambient_light_color = Color(0.3451, 0.651, 1, 0.15)
+background_color = Color(0.1, 0.125, 0.15, 1)
+ambient_light_color = Color(0.3, 0.6, 1, 1)
 ambient_light_energy = 0.4
 reflected_light_source = 2
 tonemap_mode = 2
@@ -20,11 +20,11 @@ glow_bloom = 0.3
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
-albedo_color = Color(0.8, 0.8, 0.85, 1)
+albedo_color = Color(0.8, 0.85, 0.9, 1)
 metallic = 0.2
 roughness = 0.1
 emission_enabled = true
-emission = Color(0.23, 0.51, 0.96, 1)
+emission = Color(0.3, 0.6, 1, 1)
 emission_energy_multiplier = 0.3
 rim_enabled = true
 
@@ -36,30 +36,30 @@ radial_segments = 32
 transparency = 1
 cull_mode = 2
 no_depth_test = true
-albedo_color = Color(0.1, 0.2, 0.3, 0.3)
+albedo_color = Color(0.2, 0.225, 0.25, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_1"]
 size = Vector2(20, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3"]
-albedo_color = Color(0.05, 0.05, 0.08, 1)
+albedo_color = Color(0.1, 0.125, 0.15, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
 shader = ExtResource("3_glass")
 shader_parameter/blur_amount = 12.0
-shader_parameter/tint_color = Color(0.0549, 0.0667, 0.0902, 0.15)
+shader_parameter/tint_color = Color(0.15, 0.175, 0.2, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
 content_margin_left = 24.0
 content_margin_top = 20.0
 content_margin_right = 24.0
 content_margin_bottom = 20.0
-bg_color = Color(0.0549, 0.0667, 0.0902, 0.92)
+bg_color = Color(0.15, 0.175, 0.2, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.3451, 0.651, 1, 0.2)
+border_color = Color(0.4, 0.45, 0.5, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 0
@@ -70,12 +70,12 @@ content_margin_left = 24.0
 content_margin_top = 24.0
 content_margin_right = 24.0
 content_margin_bottom = 24.0
-bg_color = Color(0.0863, 0.1059, 0.1333, 0.92)
+bg_color = Color(0.15, 0.175, 0.2, 1)
 border_width_left = 0
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.3451, 0.651, 1, 0.15)
+border_color = Color(0.3, 0.6, 1, 1)
 corner_radius_top_left = 0
 corner_radius_top_right = 12
 corner_radius_bottom_right = 0
@@ -86,12 +86,12 @@ content_margin_left = 24.0
 content_margin_top = 20.0
 content_margin_right = 24.0
 content_margin_bottom = 20.0
-bg_color = Color(0.0863, 0.1059, 0.1333, 0.92)
+bg_color = Color(0.15, 0.175, 0.2, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 0
-border_color = Color(0.3451, 0.651, 1, 0.15)
+border_color = Color(0.3, 0.6, 1, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 0
