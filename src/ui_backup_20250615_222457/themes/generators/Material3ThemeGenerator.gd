@@ -4,7 +4,7 @@
 ## This generator creates Material 3 compliant themes that work seamlessly with
 ## the existing educational infrastructure while providing modern visual polish.
 
-class_name Material3ThemeGenerator
+# class_name Material3ThemeGenerator # Disabled in backup to avoid conflicts
 extends RefCounted
 
 # === SIGNALS ===
@@ -12,15 +12,15 @@ signal m3_theme_generated(theme: Theme)
 signal adaptive_color_generated(structure_name: String, color: Color)
 
 # === PROPERTIES ===
-var M3Tokens = preload("res://src/ui/themes/core/M3DesignTokens.gd")
-var accessibility_manager = null  # M3AccessibilityValidator instance
+var m3_tokens: M3DesignTokens
+var accessibility_manager: M3AccessibilityValidator
 # var performance_adapter: PerformanceThemeAdapter # Removed - using M3PerformanceIntegration instead
 # var educational_colors: EducationalColorSystem # Removed - deprecated, using M3DesignTokens
-var accessibility_validator = null  # M3AccessibilityValidator instance
+var accessibility_validator: M3AccessibilityValidator
 
 # === INITIALIZATION ===
 func _init() -> void:
-	pass  # M3Tokens is loaded as a class reference, not instantiated
+	m3_tokens = preload("res://src/ui/themes/core/M3DesignTokens.gd").new()
 	
 func setup_dependencies() -> void:
 	# Connect to existing managers if available
@@ -85,7 +85,7 @@ func generate_material3_theme(variant: String = "default") -> Theme:
 
 # === COLOR SYSTEM APPLICATION ===
 func _apply_m3_colors(theme: Theme, variant: String) -> void:
-	var colors = M3Tokens.M3_COLORS
+	var colors = M3DesignTokens.M3_COLORS
 	
 	# Background colors with gradient support
 	theme.set_color("background", "Control", colors["background_start"])
@@ -130,7 +130,7 @@ func _apply_m3_colors(theme: Theme, variant: String) -> void:
 
 # === TYPOGRAPHY SYSTEM ===
 func _apply_m3_typography(theme: Theme) -> void:
-	var type_scale = M3Tokens.M3_TYPE_SCALE
+	var type_scale = M3DesignTokens.M3_TYPE_SCALE
 	
 	# Create fonts for different scales
 	var display_large = _create_font(type_scale["display_large"])
@@ -150,11 +150,11 @@ func _apply_m3_typography(theme: Theme) -> void:
 	theme.set_font_size("font_size", "Label", type_scale["body_large"]["size"])
 	
 	# Ensure minimum touch target size for buttons
-	theme.set_constant("minimum_size_y", "Button", M3Tokens.M3_ACCESSIBILITY["touch_target_size"])
+	theme.set_constant("minimum_size_y", "Button", M3DesignTokens.M3_ACCESSIBILITY["touch_target_size"])
 
 # === SPACING AND LAYOUT ===
 func _apply_m3_spacing(theme: Theme) -> void:
-	var spacing = M3Tokens.M3_SPACING
+	var spacing = M3DesignTokens.M3_SPACING
 	
 	# Container margins
 	theme.set_constant("margin_left", "MarginContainer", spacing["medium"])
@@ -194,9 +194,9 @@ func _apply_m3_components(theme: Theme) -> void:
 
 func _style_m3_button(theme: Theme) -> void:
 	var button_style = StyleBoxFlat.new()
-	var colors = M3Tokens.M3_COLORS
-	var corners = M3Tokens.M3_CORNER_RADIUS
-	var elevation = M3Tokens.M3_ELEVATION
+	var colors = M3DesignTokens.M3_COLORS
+	var corners = M3DesignTokens.M3_CORNER_RADIUS
+	var elevation = M3DesignTokens.M3_ELEVATION
 	
 	# Normal state
 	button_style.bg_color = colors["primary"]
@@ -206,7 +206,7 @@ func _style_m3_button(theme: Theme) -> void:
 	button_style.corner_radius_bottom_right = corners["button"]
 	
 	# Apply elevation shadow
-	var shadow = M3Tokens.get_elevation_shadow(elevation["button"])
+	var shadow = M3DesignTokens.get_elevation_shadow(elevation["button"])
 	button_style.shadow_color = shadow["color"]
 	button_style.shadow_size = int(shadow["blur"])
 	button_style.shadow_offset = shadow["offset"]
@@ -227,15 +227,15 @@ func _style_m3_button(theme: Theme) -> void:
 	# Disabled state
 	var disabled_style = button_style.duplicate()
 	disabled_style.bg_color = colors["on_surface"]
-	disabled_style.bg_color.a = M3Tokens.M3_OPACITY["disabled"]
+	disabled_style.bg_color.a = M3DesignTokens.M3_OPACITY["disabled"]
 	disabled_style.shadow_size = 0
 	theme.set_stylebox("disabled", "Button", disabled_style)
 
 func _style_m3_panel(theme: Theme) -> void:
 	var panel_style = StyleBoxFlat.new()
-	var colors = M3Tokens.M3_COLORS
-	var corners = M3Tokens.M3_CORNER_RADIUS
-	var elevation = M3Tokens.M3_ELEVATION
+	var colors = M3DesignTokens.M3_COLORS
+	var corners = M3DesignTokens.M3_CORNER_RADIUS
+	var elevation = M3DesignTokens.M3_ELEVATION
 	
 	# Surface container styling
 	panel_style.bg_color = colors["surface_container"]
@@ -245,7 +245,7 @@ func _style_m3_panel(theme: Theme) -> void:
 	panel_style.corner_radius_bottom_right = corners["card"]
 	
 	# Subtle elevation
-	var shadow = M3Tokens.get_elevation_shadow(elevation["card"])
+	var shadow = M3DesignTokens.get_elevation_shadow(elevation["card"])
 	panel_style.shadow_color = shadow["color"]
 	panel_style.shadow_size = int(shadow["blur"])
 	panel_style.shadow_offset = shadow["offset"]
@@ -262,8 +262,8 @@ func _style_m3_panel(theme: Theme) -> void:
 
 func _style_m3_input(theme: Theme) -> void:
 	var input_style = StyleBoxFlat.new()
-	var colors = M3Tokens.M3_COLORS
-	var corners = M3Tokens.M3_CORNER_RADIUS
+	var colors = M3DesignTokens.M3_COLORS
+	var corners = M3DesignTokens.M3_CORNER_RADIUS
 	
 	# Text field styling
 	input_style.bg_color = colors["surface_variant"]
@@ -291,22 +291,22 @@ func _style_m3_input(theme: Theme) -> void:
 	# Focus state with WCAG AAA compliant border width
 	var focus_style = input_style.duplicate()
 	focus_style.border_color = colors["primary"]
-	focus_style.border_width_left = M3Tokens.M3_ACCESSIBILITY["focus_indicator_width"]
-	focus_style.border_width_right = M3Tokens.M3_ACCESSIBILITY["focus_indicator_width"]
-	focus_style.border_width_top = M3Tokens.M3_ACCESSIBILITY["focus_indicator_width"]
-	focus_style.border_width_bottom = M3Tokens.M3_ACCESSIBILITY["focus_indicator_width"]
+	focus_style.border_width_left = M3DesignTokens.M3_ACCESSIBILITY["focus_indicator_width"]
+	focus_style.border_width_right = M3DesignTokens.M3_ACCESSIBILITY["focus_indicator_width"]
+	focus_style.border_width_top = M3DesignTokens.M3_ACCESSIBILITY["focus_indicator_width"]
+	focus_style.border_width_bottom = M3DesignTokens.M3_ACCESSIBILITY["focus_indicator_width"]
 	theme.set_stylebox("focus", "LineEdit", focus_style)
 	theme.set_stylebox("focus", "TextEdit", focus_style)
 
 func _style_m3_navigation(theme: Theme) -> void:
 	var nav_style = StyleBoxFlat.new()
-	var colors = M3Tokens.M3_COLORS
-	var corners = M3Tokens.M3_CORNER_RADIUS
-	var blur = M3Tokens.M3_BLUR
+	var colors = M3DesignTokens.M3_COLORS
+	var corners = M3DesignTokens.M3_CORNER_RADIUS
+	var blur = M3DesignTokens.M3_BLUR
 	
 	# Navigation rail/drawer styling with glass morphism
 	nav_style.bg_color = colors["surface"]
-	nav_style.bg_color.a = M3Tokens.M3_OPACITY["glass"]
+	nav_style.bg_color.a = M3DesignTokens.M3_OPACITY["glass"]
 	nav_style.corner_radius_top_left = corners["navigation"]
 	nav_style.corner_radius_top_right = corners["navigation"]
 	nav_style.corner_radius_bottom_left = corners["navigation"]
@@ -321,9 +321,9 @@ func _style_m3_navigation(theme: Theme) -> void:
 
 func _style_m3_tooltip(theme: Theme) -> void:
 	var tooltip_style = StyleBoxFlat.new()
-	var colors = M3Tokens.M3_COLORS
-	var corners = M3Tokens.M3_CORNER_RADIUS
-	var elevation = M3Tokens.M3_ELEVATION
+	var colors = M3DesignTokens.M3_COLORS
+	var corners = M3DesignTokens.M3_CORNER_RADIUS
+	var elevation = M3DesignTokens.M3_ELEVATION
 	
 	# Tooltip styling
 	tooltip_style.bg_color = colors["inverse_surface"]
@@ -333,7 +333,7 @@ func _style_m3_tooltip(theme: Theme) -> void:
 	tooltip_style.corner_radius_bottom_right = corners["small"]
 	
 	# Elevation for floating effect
-	var shadow = M3Tokens.get_elevation_shadow(elevation["tooltip"])
+	var shadow = M3DesignTokens.get_elevation_shadow(elevation["tooltip"])
 	tooltip_style.shadow_color = shadow["color"]
 	tooltip_style.shadow_size = int(shadow["blur"])
 	tooltip_style.shadow_offset = shadow["offset"]
@@ -349,21 +349,21 @@ func _style_m3_tooltip(theme: Theme) -> void:
 # === EFFECTS AND ANIMATIONS ===
 func _apply_m3_effects(theme: Theme) -> void:
 	# Store animation durations as theme constants
-	var durations = M3Tokens.M3_DURATION
+	var durations = M3DesignTokens.M3_DURATION
 	
 	theme.set_constant("transition_duration_short", "Effects", durations["short4"])
 	theme.set_constant("transition_duration_medium", "Effects", durations["medium2"])
 	theme.set_constant("transition_duration_long", "Effects", durations["long1"])
 	
 	# Glass morphism parameters
-	theme.set_constant("blur_amount", "Effects", M3Tokens.M3_BLUR["glass_morphism"])
-	theme.set_constant("glass_opacity", "Effects", int(M3Tokens.M3_OPACITY["glass"] * 100))
+	theme.set_constant("blur_amount", "Effects", M3DesignTokens.M3_BLUR["glass_morphism"])
+	theme.set_constant("glass_opacity", "Effects", int(M3DesignTokens.M3_OPACITY["glass"] * 100))
 
 # === EDUCATIONAL COMPATIBILITY ===
 func _ensure_educational_compatibility(theme: Theme) -> void:
 	# Map educational semantic colors to Material 3 equivalents
-	var mapping = M3Tokens.EDUCATIONAL_TO_M3_MAPPING
-	var colors = M3Tokens.M3_COLORS
+	var mapping = M3DesignTokens.EDUCATIONAL_TO_M3_MAPPING
+	var colors = M3DesignTokens.M3_COLORS
 	
 	for edu_key in mapping:
 		var m3_key = mapping[edu_key]
@@ -377,8 +377,8 @@ func _ensure_educational_compatibility(theme: Theme) -> void:
 
 # === ACCESSIBILITY OVERRIDES ===
 func _apply_accessibility_overrides(theme: Theme) -> void:
-	var a11y = M3Tokens.M3_ACCESSIBILITY
-	var colors = M3Tokens.M3_COLORS
+	var a11y = M3DesignTokens.M3_ACCESSIBILITY
+	var colors = M3DesignTokens.M3_COLORS
 	
 	# Increase contrast for all text
 	var high_contrast_text = Color.WHITE
@@ -435,7 +435,7 @@ func _reduce_shadow_quality(theme: Theme) -> void:
 
 func _reduce_animations(theme: Theme) -> void:
 	# Speed up all animations for lower-end devices
-	var reduction_factor = M3Tokens.M3_ACCESSIBILITY["animation_reduce_factor"]
+	var reduction_factor = M3DesignTokens.M3_ACCESSIBILITY["animation_reduce_factor"]
 	
 	theme.set_constant("transition_duration_short", "Effects", 
 		int(theme.get_constant("transition_duration_short", "Effects") * reduction_factor))
@@ -487,7 +487,7 @@ func generate_adaptive_color(structure_name: String, base_hue: float = -1.0) -> 
 	var color = Color.from_hsv(base_hue, 0.7, 0.9)
 	
 	# Apply Material 3 tonal adjustments
-	var tonal_palette = M3Tokens.generate_tonal_palette(color)
+	var tonal_palette = M3DesignTokens.generate_tonal_palette(color)
 	
 	adaptive_color_generated.emit(structure_name, tonal_palette["40"])
 	return tonal_palette["40"]
@@ -495,15 +495,15 @@ func generate_adaptive_color(structure_name: String, base_hue: float = -1.0) -> 
 ## Create a glass morphism effect style
 func create_glass_morphism_style(base_color: Color = Color.WHITE) -> StyleBoxFlat:
 	var style = StyleBoxFlat.new()
-	var colors = M3Tokens.M3_COLORS
+	var colors = M3DesignTokens.M3_COLORS
 	
 	style.bg_color = base_color
-	style.bg_color.a = M3Tokens.M3_OPACITY["glass"]
+	style.bg_color.a = M3DesignTokens.M3_OPACITY["glass"]
 	
-	style.corner_radius_top_left = M3Tokens.M3_CORNER_RADIUS["medium"]
-	style.corner_radius_top_right = M3Tokens.M3_CORNER_RADIUS["medium"]
-	style.corner_radius_bottom_left = M3Tokens.M3_CORNER_RADIUS["medium"]
-	style.corner_radius_bottom_right = M3Tokens.M3_CORNER_RADIUS["medium"]
+	style.corner_radius_top_left = M3DesignTokens.M3_CORNER_RADIUS["medium"]
+	style.corner_radius_top_right = M3DesignTokens.M3_CORNER_RADIUS["medium"]
+	style.corner_radius_bottom_left = M3DesignTokens.M3_CORNER_RADIUS["medium"]
+	style.corner_radius_bottom_right = M3DesignTokens.M3_CORNER_RADIUS["medium"]
 	
 	style.border_color = colors["outline_variant"]
 	style.border_color.a = 0.3
@@ -514,7 +514,7 @@ func create_glass_morphism_style(base_color: Color = Color.WHITE) -> StyleBoxFla
 	
 	# Note: Actual blur would require a custom shader
 	style.shadow_color = base_color.lightened(0.2)
-	style.shadow_size = M3Tokens.M3_BLUR["glass_morphism"]
+	style.shadow_size = M3DesignTokens.M3_BLUR["glass_morphism"]
 	
 	return style
 
@@ -552,7 +552,7 @@ func _fix_color_contrasts(theme: Theme) -> void:
 	"""Automatically adjust colors to meet WCAG AAA contrast requirements"""
 	
 	var Validator = preload("res://src/ui/themes/validation/M3AccessibilityValidator.gd")
-	var colors = M3Tokens.M3_COLORS
+	var colors = M3DesignTokens.M3_COLORS
 	
 	# Fix text on surface contrast
 	var on_surface = theme.get_color("font_color", "Label")
@@ -581,7 +581,7 @@ func _integrate_brain_structure_colors(theme: Theme, variant: String) -> void:
 	"""Integrate educational brain structure colors with theme variant"""
 	
 	# Get brain structure colors from M3DesignTokens
-	var brain_colors = M3Tokens.BRAIN_STRUCTURE_COLORS
+	var brain_colors = M3DesignTokens.BRAIN_STRUCTURE_COLORS
 	if brain_colors.is_empty():
 		print("[Material3ThemeGenerator] Brain structure colors not available")
 		return

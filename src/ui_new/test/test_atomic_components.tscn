@@ -1,0 +1,72 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/ui_new/components/atoms/buttons/TextButton.gd" id="1"]
+[ext_resource type="Script" path="res://src/ui_new/components/atoms/labels/ResponsiveLabel.gd" id="2"]
+[ext_resource type="Script" path="res://src/ui_new/components/atoms/inputs/TextInput.gd" id="3"]
+
+[node name="TestAtomicComponents" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -300.0
+offset_right = 200.0
+offset_bottom = 300.0
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Atomic Components Test"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ResponsiveLabel" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+script = ExtResource("2")
+text = "This is a responsive label that adapts to container size"
+typography_preset = 11
+responsive_mode = 1
+
+[node name="TextButton" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+script = ExtResource("1")
+text = "Click Me!"
+variant = 1
+
+[node name="TextInput" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+script = ExtResource("3")
+placeholder = "Enter some text..."
+label_text = "Username"
+helper_text = "Enter your username"
+show_character_count = true
+max_length = 20
+
+[node name="EmailInput" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+script = ExtResource("3")
+placeholder = "email@example.com"
+label_text = "Email Address"
+required = true
+input_type = 2
+
+[node name="PasswordInput" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+script = ExtResource("3")
+placeholder = "Enter password"
+label_text = "Password"
+required = true
+input_type = 1
+min_length = 8

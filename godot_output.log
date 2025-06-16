@@ -1,0 +1,157 @@
+WorkerThreadPool: 12 threads, 3 max low-priority.
+Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Devices:
+  #0: Apple Apple M2 Max (Apple8) - Supported, Integrated
+- Metal multiview supported:
+  max view count: 16
+  max instances: 4294967295
+Metal 3.2 - Forward+ - Using Device #0: Apple - Apple M2 Max (Apple8)
+Using "default" pen tablet driver...
+Shader 'CanvasSdfShaderRD' (group 0) SHA256: c775fc7b8439c5274c1c3ef47ddce7361cad2e32c7b14db2412685960a908309
+Shader 'SkeletonShaderRD' (group 0) SHA256: 58691c3035fd29bf49d25ada7b05f9cd035119742551152de7ee0ac6c311b452
+Shader 'SortShaderRD' (group 0) SHA256: c0f225fe65ce71c0efbb42d474e1557d1323c319d7ca13266e534aa4df08acfc
+Shader 'ParticlesShaderRD' (group 0) SHA256: 1b6b4dd7f4a04fc5e1db881906eb045f703886875e8ffdf8a849660e1977a3f2
+Shader 'ParticlesCopyShaderRD' (group 0) SHA256: 616f963f3ec2a1cdf69fa03250ee7cdc221c1ac31ba2c9eecdecdebe57103a74
+Shader 'CanvasShaderRD' (group 0) SHA256: ac07c4c33a092cf20ce4501b2f834d2bb5948ec43ce0daf2f979c6e42fd9247f
+Shader 'CanvasOcclusionShaderRD' (group 0) SHA256: 1ace5a94ef6b73ea982ba80d4545d33099b044a51f10b63816db60d52777f0ba
+Shader 'ClusterRenderShaderRD' (group 0) SHA256: 1ae916dab92bab171aaf64d4241d999b189413d8ef9b10d7670124e9928380f0
+Shader 'ClusterStoreShaderRD' (group 0) SHA256: d094fe02fae7cc443b74d2945ecc216d9f29114c528ce73ac6c39f4ee2c181ee
+Shader 'ClusterDebugShaderRD' (group 0) SHA256: afd1f7325b5553cabe122d7b8129f8664cbb40369d7db6f8d3e025a507067d23
+Shader 'SceneForwardClusteredShaderRD' (group 0) SHA256: e117f17f30e514271e0534c7ea38fe0ee7ef056de09480e39d4eee337cbd3324
+Shader 'SceneForwardClusteredShaderRD' (group 1) SHA256: 0266d7248b5653fe01997b64880a35cd20b126b6e89a26ea0eba45c3a8b77723
+Shader 'SceneForwardClusteredShaderRD' (group 2) SHA256: 71385a1f63c276f00c604ed2ed9df9ffefd670f3de14d2e0cb528a47035e5435
+Shader 'SceneForwardClusteredShaderRD' (group 3) SHA256: 52288b33483088111ead84d6f576a1a91199673200adf9f6fc850f701de7c2d6
+Shader 'BestFitNormalShaderRD' (group 0) SHA256: 858039aa0099dfbbe348283f077233e60a24361e44c78bbe286a0c99056bebad
+Shader 'ResolveShaderRD' (group 0) SHA256: 925147ad89390b103f9504b20a1114fcafe781965d12e542364dc645a8e3699f
+Shader 'TaaResolveShaderRD' (group 0) SHA256: de0f7c27348676ece4d78a34a2fbc589d62c1909e43bc1d295cb750479dbe750
+Shader 'Fsr2DepthClipPassShaderRD' (group 0) SHA256: 1d18071fef27d3e70f14a7bd47f9f303651dc89356741b1ccc5cd7b2ce245f7e
+Shader 'Fsr2ReconstructPreviousDepthPassShaderRD' (group 0) SHA256: 5cc5627a4273deb824d6e79e6dd6620dcbc7f6166607bf9be7b69ee314576a47
+Shader 'Fsr2LockPassShaderRD' (group 0) SHA256: 1ac448ec2645eedbce09b312ea9aa4b320b392f2533b376542cf9653e55057cb
+Shader 'Fsr2AccumulatePassShaderRD' (group 0) SHA256: 3b2c1d5c1bab4fede24e098a2ed447ca0b322e5b993dd0ecae03d8d3de2ab465
+Shader 'Fsr2RcasPassShaderRD' (group 0) SHA256: ad454817b4fc932f7946c0b7abeca3d6be8bf58be95a9eb76bc8f3eb4bc7f122
+Shader 'Fsr2ComputeLuminancePyramidPassShaderRD' (group 0) SHA256: c1520008dd6a308a2f97addcc486a592bfab469aefa9b826e2c9171384370736
+Shader 'Fsr2AutogenReactivePassShaderRD' (group 0) SHA256: 9f5a0b2cded928f6c91730b361e413bb5d2954a187c5b319a152e5bdbbd955d3
+Shader 'Fsr2TcrAutogenPassShaderRD' (group 0) SHA256: a8efd1754c7854b4e99272b383ec5f3e3241fec7f55fb40318e0ca60be9214bf
+Shader 'SsEffectsDownsampleShaderRD' (group 0) SHA256: 0c706c61d6f86846e6e9526c167d3c0f4f044db5b5652298336b4345901cf699
+Shader 'SsilShaderRD' (group 0) SHA256: 0d2fb0eb2a3f51c7556613966d7460e10ba819917b0a75869ad809403f75a8d9
+Shader 'SsilImportanceMapShaderRD' (group 0) SHA256: 10e36f8c8c087db8f425edceb6a507eaeb20040e61318fb7759af2947da05267
+Shader 'SsilBlurShaderRD' (group 0) SHA256: 467a76c53f24fcdbca6903cda615320e7f10194945f380197b158513c3e17548
+Shader 'SsilInterleaveShaderRD' (group 0) SHA256: 9ee260c908cdc2d8455add48ecc5b3dc835f1087dac47523e5c685cfb5d58320
+Shader 'SsaoShaderRD' (group 0) SHA256: 88827ce9eda9e3d2b7b83200456475c4b38b66adfad745ea6c4365359d66cb9c
+Shader 'SsaoImportanceMapShaderRD' (group 0) SHA256: 4f7627c70c06910e7bfa60fb89b1dd0db6a7ac99c5fe14a9bb5c27fb15013a57
+Shader 'SsaoBlurShaderRD' (group 0) SHA256: 34e6c8f9ec2b4903e90522c94750d7e363c3ed280aafba5e00886f71984f41ca
+Shader 'SsaoInterleaveShaderRD' (group 0) SHA256: edc32793e70830654484b7e312096580653596f6faedf87be84bd837ff03a8e2
+Shader 'ScreenSpaceReflectionScaleShaderRD' (group 0) SHA256: e822dd2629a444f31987451cabe5795569bf8868df1451fe0af0d793c10b8abf
+Shader 'ScreenSpaceReflectionShaderRD' (group 0) SHA256: dc188ea8d239e7180a726f67f5f12976848210ad98f7a93a847721d079282143
+Shader 'ScreenSpaceReflectionFilterShaderRD' (group 0) SHA256: ac34ebb9b749731ef23e8b9a02adbe5fa331ab10cd94489bf0deed5e28c96f32
+Shader 'SubsurfaceScatteringShaderRD' (group 0) SHA256: c87ec037921272175120bd13a778f08b87ee2838dd986dcb635b4569691e4255
+Shader 'MotionVectorsStoreShaderRD' (group 0) SHA256: 0f7dec93ebe782deeee69dc22fc590d26dfb1e9d93779f964babe9f9813635cc
+Shader 'SkyShaderRD' (group 0) SHA256: 448d9a7eb90b1c334ab625bb228fdf691de2717b37f45b23e219b1f2d36ef417
+Shader 'VoxelGiShaderRD' (group 0) SHA256: 95a09dae119e549a8c9c962c855ad7f6e96ae328ca771ea50fbe54449767a417
+Shader 'VoxelGiDebugShaderRD' (group 0) SHA256: e9e93a457170c6bb6970b9a7ccd46f978c11b60ea669a66564622b6e203c4f81
+Shader 'SdfgiPreprocessShaderRD' (group 0) SHA256: f8f5484f11068f0f81d857530dded63b3667a4d750af123ccf605c1cddbaf647
+Shader 'SdfgiDirectLightShaderRD' (group 0) SHA256: b27a49f73a3a7fc0f5c5145f801030dd4725906bb256a2d93e0427e3cca69383
+Shader 'SdfgiIntegrateShaderRD' (group 0) SHA256: 19fcaa228d0f678731000c1df9217ef8d21d7e5df65065a363d898ba3e5e1c54
+Shader 'GiShaderRD' (group 0) SHA256: 71d0ff334910be52109526029de94318a302c6d193542274b8e99cbe5a8cf133
+Shader 'SdfgiDebugShaderRD' (group 0) SHA256: 2ddd17356527dfb3215c4d4c274ead86b3744538e1e3196b8acab73eb31cbd15
+Shader 'SdfgiDebugProbesShaderRD' (group 0) SHA256: e01ce89a709919ed8fd5f514f95fdd9b0490acf5d52a0ff6e7db637c0f2352a4
+Shader 'VolumetricFogShaderRD' (group 0) SHA256: 49e608c805d3d5799bdc2e785c9f49b26fbb8f2d91ece489785c0a2c33a9a945
+Shader 'VolumetricFogProcessShaderRD' (group 0) SHA256: d27dcb2b80ff5590fb65c517686ffbab2919ac809650d1b421fe206c724454e7
+Shader 'BokehDofShaderRD' (group 0) SHA256: 13fafdc7a485696d30f95e1c6f1d1de40b38d1fd8f8baf0a9c75d561a9d05b27
+Shader 'CopyShaderRD' (group 0) SHA256: dae7f8876f5ff152fed4a7691a40221ecca9061b638c3a80f3a2937449031242
+Shader 'CopyToFbShaderRD' (group 0) SHA256: a4b618b2e22a5b2cc56271d32862b8979ee054cbb402e4069a8aba1131c0de24
+Shader 'CubeToDpShaderRD' (group 0) SHA256: 432e86432f0d0b3eb96a9b747838b2c38f49ab222daf13a49088aad1fc2cdda1
+Shader 'CubemapDownsamplerShaderRD' (group 0) SHA256: 171efde02913b98d452d83c2216b3237dda5a9c9460bcac27261f8bbd8a42e5e
+Shader 'CubemapFilterShaderRD' (group 0) SHA256: 7d9c151e60a6bd284cf0796a1a863b9ce665456ac99461a292bd900ca74871e2
+Shader 'CubemapRoughnessShaderRD' (group 0) SHA256: 9c24a6ca261d515c00c063deaff242fc05e839eb903694de70219bda3b89bcaf
+Shader 'SpecularMergeShaderRD' (group 0) SHA256: 07e3ec96e17bdf96251d10baa4d493fd4ea44f1472befab6b58988eeae52d42e
+Shader 'ShadowFrustumShaderRD' (group 0) SHA256: 29f24c0ceac127df4697a974fdddac6fdd3dab609a27aa1a2784eb5621244304
+Shader 'MotionVectorsShaderRD' (group 0) SHA256: 9d8a378c0c22714c3b6c3526e8961ebb3c50f38190341922f70f233a4b0bad21
+Shader 'LuminanceReduceShaderRD' (group 0) SHA256: d14bd28ed993d440371fcd598862f6a71bc02ba9dd58afed3542db905a3438e3
+Shader 'TonemapShaderRD' (group 0) SHA256: 98c0d5507b1b8e3317492558d2587ae7d07a498fcf6f6530acc1860e95b0d1ad
+Shader 'FsrUpscaleShaderRD' (group 0) SHA256: 33ab9eb235ef91e0b184f27da75a84df64d7e90c2b67fa1544d4d55d155c0daf
+Shader 'BlitShaderRD' (group 0) SHA256: c5389d0d248751a2c0109df0062e85e08c459d851ff4dfa1affdd8d5332573c8
+CoreAudio: detected 2 channels
+CoreAudio: output sampling rate: 48000 Hz
+CoreAudio: output audio buffer frames: 512 calculated latency: 10ms
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CameraServer: Registered camera FaceTime HD Camera with ID 1 and position 0 at index 0
+CORE API HASH: 4052744068
+EDITOR API HASH: 910296392
+Loading resource: res://src/autoload/UnifiedColorManager.gd
+Loading resource: res://src/core/managers/CoreSystemManager.gd
+Loading resource: res://src/core/managers/UISystemManager.gd
+[1;35mSCRIPT ERROR:[0;95m Parse Error: Class "Material3ThemeGenerator" hides a global script class.
+[0;90m          at: GDScript::reload (res://src/ui/themes/generators/Material3ThemeGenerator.gd:7)[0m
+[1;35mSCRIPT ERROR:[0;95m Compile Error: Failed to compile depended scripts.
+[0;90m          at: GDScript::reload (res://src/core/managers/UISystemManager.gd:0)[0m
+[1;31mERROR:[0;91m Failed to load script "res://src/core/managers/UISystemManager.gd" with error "Compilation failed".
+[0;90m   at: load (modules/gdscript/gdscript.cpp:3022)[0m
+Loading resource: res://src/core/managers/EducationalPlatformManager.gd
+Loading resource: res://src/core/managers/ResourceManager.gd
+Loading resource: res://src/autoload/AuthenticationManager.gd
+Loading resource: res://src/autoload/NetworkManager.gd
+Loading resource: res://src/systems/assessment/AssessmentService.gd
+Loading resource: res://src/systems/3d_interaction/HighlightMaterialManager.gd
+Loading resource: res://src/autoload/ProgressTracker.gd
+Loaded system CA certificates
+Loading resource: res://src/ui/screens/MainMenu.tscn
+Loading resource: res://src/ui_backup_20250615_222457/screens/MainMenu.gd
+Loading resource: res://src/scenes/EnhancedExplorationScene.tscn
+Loading resource: res://src/scenes/EnhancedExplorationScene.gd
+Loading resource: res://src/materials/axis_red.tres
+Loading resource: res://src/materials/axis_green.tres
+Loading resource: res://src/materials/axis_blue.tres
+Loading resource: res://src/ui/components/QuizPanel.tscn
+Loading resource: res://src/ui_backup_20250615_222457/components/QuizPanel.gd
+Loading resource: res://src/ui/components/StructureInfoPanel.tscn
+Loading resource: res://src/ui_backup_20250615_222457/components/StructureInfoPanel.gd
+Loading resource: res://src/ui/effects/shaders/glass_panel_v1.gdshader
+[UnifiedColorManager] Initializing unified color system...
+[UnifiedColorSystem] Validation logging enabled
+[UnifiedColorManager] Educational colors enabled
+[ShaderColorAdapter] Applying unified colors to scene: MainMenu (variant: enhanced)
+[ShaderColorAdapter] Updated 0 shader materials
+[UnifiedColorManager] ✅ Unified color system initialized
+[CoreSystemManager] Initializing consolidated core systems
+[CoreSystemManager] Error recovery system initialized
+[UISystemManager] Initializing consolidated UI system
+[EducationalPlatformManager] Initializing consolidated educational platform
+[ResourceManager] Initializing centralized resource management
+[ResourceManager] Preloading essential resources...
+Loading resource: res://src/ui/resources/materials/GlassPanelMaterial.tres
+Loading resource: res://src/ui/resources/styles/GlassPanelStyle.tres
+Loading resource: res://src/ui/resources/styles/SidebarPanelStyle.tres
+Loading resource: res://src/ui/resources/styles/BottomPanelStyle.tres
+[Auth] Manager initialized
+[Network] Manager initialized
+[Assessment] Loaded 5 assessments
+[HighlightManager] Initializing material system
+Loading resource: res://assets/shaders/structure_highlight/fresnel_rim.gdshader
+[HighlightManager] Shader loaded successfully
+[HighlightManager] Created material pool with 20 materials
+[Progress] Tracker initialized
+[Progress] Persistence enabled with autosave every 30 seconds
+[Progress] Loading saved progress...
+[SimplePersistence] Progress loaded successfully from save
+[Progress] Loaded progress for 4 categories
+[Progress]   - hippocampus: 75.0%
+[Progress]   - striatum: 25.0%
+[Progress]   - structures_explored: 11.0%
+[Progress]   - thalamus: 50.0%
+[Progress] Loaded 2 achievements
+[Progress] Last save was at: 2025-06-16T02:58:19
+[MainMenu] Initializing with Material 3 design
+[MainMenu] Using global theme management
+[MainMenu] Press F9 to test Material 3, F10 to cycle themes
+
+[MainMenu] Running Material 3 test...
+[MainMenu] Switching to Material 3...
+[1;35mSCRIPT ERROR:[0;95m Invalid call. Nonexistent function 'new' in base 'GDScript'.
+[0;90m          at: _generate_material3_theme (res://src/core/managers/UISystemManager.gd:295)[0m
+[MainMenu] ✗ Material 3 activation failed
+[MainMenu] Test complete.
+

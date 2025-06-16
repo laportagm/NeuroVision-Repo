@@ -25,8 +25,8 @@ const TRANSITION_DURATION = 0.3
 const POOL_INITIAL_SIZE = 10
 const ONBOARDING_SAVE_PATH = "user://onboarding_progress.save"
 
-# Preload Material 3 generators
-const Material3Generator = preload("res://src/ui/themes/generators/Material3ThemeGenerator.gd")
+# Material 3 generator (loaded dynamically to avoid circular dependencies)
+var Material3Generator = null
 
 # === ENUMS ===
 
@@ -76,6 +76,16 @@ var _onboarding_completed: bool = false
 
 func _ready() -> void:
 	print("[UISystemManager] Initializing consolidated UI system")
+	
+	# Load Material3 generator dynamically
+	var generator_path = "res://src/ui/themes/generators/Material3ThemeGenerator.gd"
+	if ResourceLoader.exists(generator_path):
+		Material3Generator = load(generator_path)
+		if Material3Generator:
+			print("[UISystemManager] Material3 generator loaded successfully")
+		else:
+			push_warning("[UISystemManager] Failed to load Material3 generator")
+	
 	_initialize_theme_system()
 	_initialize_ui_pools()
 	_load_onboarding_progress()
@@ -292,6 +302,10 @@ func _get_theme_resource(theme_name: String) -> Theme:
 
 func _generate_material3_theme(theme_name: String) -> Theme:
 	"""Generate Material 3 theme dynamically"""
+	if not Material3Generator:
+		push_error("[UISystemManager] Material3Generator not loaded")
+		return _get_fallback_theme()
+	
 	var generator = Material3Generator.new()
 	
 	# Extract variant from theme name
@@ -470,3 +484,27 @@ func _save_onboarding_progress() -> void:
 	
 	file.store_string(JSON.stringify(save_data))
 	file.close()
+
+func _get_fallback_theme() -> Theme:
+	"""Return a basic fallback theme if Material3 generation fails"""
+	var theme = Theme.new()
+	
+	# Set basic colors
+	theme.set_color("font_color", "Label", Color.WHITE)
+	theme.set_color("font_color", "Button", Color.WHITE)
+	theme.set_color("font_disabled_color", "Button", Color(0.7, 0.7, 0.7))
+	
+	# Set basic styleboxes
+	var button_normal = StyleBoxFlat.new()
+	button_normal.bg_color = Color(0.2, 0.2, 0.3)
+	button_normal.corner_radius_top_left = 4
+	button_normal.corner_radius_top_right = 4
+	button_normal.corner_radius_bottom_left = 4
+	button_normal.corner_radius_bottom_right = 4
+	theme.set_stylebox("normal", "Button", button_normal)
+	
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.1, 0.1, 0.15)
+	theme.set_stylebox("panel", "Panel", panel_style)
+	
+	return theme
