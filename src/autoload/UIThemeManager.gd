@@ -8,9 +8,9 @@ signal theme_transition_completed()
 
 # === CONSTANTS ===
 const THEMES = {
-	"dark": "res://src/ui/themes/themes/DarkTheme.tres",
-	"high_contrast": "res://src/ui/themes/themes/HighContrastTheme.tres", 
-	"colorblind": "res://src/ui/themes/themes/ColorblindTheme.tres",
+	"dark": "res://src/ui/themes/resources/themes/DarkTheme.tres",
+	"high_contrast": "res://src/ui/themes/resources/themes/HighContrastTheme.tres", 
+	"colorblind": "res://src/ui/themes/resources/themes/ColorblindTheme.tres",
 	"material3": "dynamic",  # Generated dynamically
 	"material3_high_contrast": "dynamic",  # Generated dynamically
 	"material3_colorblind": "dynamic"  # Generated dynamically
@@ -20,8 +20,8 @@ const DEFAULT_THEME = "dark"
 const TRANSITION_DURATION = 0.3
 
 # Preload Material 3 generators
-const Material3Generator = preload("res://src/ui/themes/Material3ThemeGenerator.gd")
-const ContentAdaptiveGenerator = preload("res://src/ui/themes/ContentAdaptiveThemeGenerator.gd")
+const Material3Generator = preload("res://src/ui/themes/generators/Material3ThemeGenerator.gd")
+# ContentAdaptiveThemeGenerator.gd does not exist - removing reference
 
 # === PRIVATE VARIABLES ===
 var _current_theme: String = DEFAULT_THEME

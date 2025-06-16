@@ -8,8 +8,8 @@ class_name M3PerformanceIntegration
 extends Resource
 
 # Preload dependencies
-const M3Tokens = preload("res://src/ui/themes/M3DesignTokens.gd")
-const PerformanceAdapter = preload("res://src/ui/themes/PerformanceThemeAdapter.gd")
+const M3Tokens = preload("res://src/ui/themes/core/M3DesignTokens.gd")
+const PerformanceAdapter = preload("res://src/ui/themes/utilities/PerformanceThemeAdapter.gd")
 
 # === PERFORMANCE PROFILES FOR M3 ===
 enum M3PerformanceLevel {

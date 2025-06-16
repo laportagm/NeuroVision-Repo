@@ -8,7 +8,7 @@ class_name M3AnimationHelper
 extends Resource
 
 # Preload Material 3 tokens
-const M3Tokens = preload("res://src/ui/themes/M3DesignTokens.gd")
+const M3Tokens = preload("res://src/ui/themes/core/M3DesignTokens.gd")
 
 # === ANIMATION PRESETS ===
 

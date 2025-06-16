@@ -1,34 +1,53 @@
-# Implement NeuroVis Autoload
+# Command: /implement-autoload
+# Purpose: Implement autoload manager for NeuroVision platform
+# Arguments:
+#   - $AUTOLOAD_NAME: Name of the autoload service to implement
+#   - $SERVICE_TYPE: Type of service (core_manager, specialized_service, ui_enhancement)
+#   - $DEPENDENCIES: Required dependencies (comma-separated)
+# Example: /implement-autoload AUTOLOAD_NAME="LearningProgressManager" SERVICE_TYPE="specialized_service" DEPENDENCIES="ProgressTracker,ContentManager"
+---
 
-You are implementing $ARGUMENTS autoload manager for the NeuroVis educational neuroanatomy application using Godot 4.x.
+You are implementing $AUTOLOAD_NAME autoload manager for the NeuroVision medical education platform using Godot 4.4.1.
 
-**File Location:** `src/autoload/$ARGUMENTS.gd`
-**Project Phase:** Phase 1 - Core Foundation
-**Educational Context:** Supporting neuroanatomy learning through robust global systems
+**File Location:** Based on $SERVICE_TYPE:
+- core_manager: `src/core/managers/$AUTOLOAD_NAME.gd`
+- specialized_service: `src/autoload/$AUTOLOAD_NAME.gd`
+- ui_enhancement: `src/autoload/$AUTOLOAD_NAME.gd`
+
+**Project Phase:** Phase 2 - Educational Features Enhancement
+**Educational Context:** Supporting medical education through robust global systems
 
 **Core Requirements:**
 1. **Single Responsibility:** Focus on one specific domain area
-2. **Educational Support:** Enable effective neuroanatomy learning
-3. **Performance Aware:** Maintain 30+ FPS on Intel UHD 620
-4. **Accessibility First:** Support screen readers and keyboard navigation
-5. **Error Resilient:** Graceful degradation and recovery
+2. **Medical Education Support:** Enable effective neuroanatomy learning
+3. **Performance Excellence:** Maintain 120+ FPS performance standard
+4. **WCAG AAA Accessibility:** Support screen readers and keyboard navigation
+5. **Production Stability:** Graceful degradation and recovery
 
 **Implementation Standards:**
 ```gdscript
 extends Node
-class_name [$ARGUMENTS]
+class_name $AUTOLOAD_NAME
 
-# Educational-focused signals
-signal [manager_event](context: Dictionary)
+# Medical education-focused signals
+signal service_initialized(service_name: String)
+signal error_occurred(error_context: Dictionary)
+
+# Dependencies: ${DEPENDENCIES:="none"}
+var _is_initialized: bool = false
+var _error_recovery_manager: Node
 
 # Core lifecycle
 func _ready() -> void:
     # Initialize with dependency checking
-    if not validate_dependencies():
-        ErrorRecoveryManager.handle_error(
-            ErrorRecoveryManager.ErrorType.DEPENDENCY_MISSING,
-            {"manager": "$ARGUMENTS"}
-        )
+    _error_recovery_manager = get_node_or_null("/root/ErrorRecoveryManager")
+    if not _validate_dependencies():
+        _handle_dependency_error()
+        return
+    
+    if initialize():
+        service_initialized.emit($AUTOLOAD_NAME)
+        _is_initialized = true
 
 # Required interface
 func initialize() -> bool:
@@ -45,11 +64,12 @@ func handle_error(error_context: Dictionary) -> void:
 ```
 
 **Integration Requirements:**
-- Connect with existing autoload managers appropriately
-- Support offline-first functionality (Phase 1 requirement)
-- Provide clear educational value through feedback
-- Handle performance constraints gracefully (Intel UHD 620)
-- Maintain accessibility standards (WCAG AAA)
+- Connect with existing 10 core autoload managers appropriately
+- Support offline-first functionality (production requirement)
+- Provide clear medical educational value through feedback
+- Maintain 120+ FPS performance standard (Intel UHD 620 optimized)
+- Ensure WCAG AAA accessibility compliance (7:1+ contrast ratios)
+- Use unified color system for any UI components
 
 **Educational Considerations:**
 - How does this manager support neuroanatomy learning objectives?

@@ -13,11 +13,11 @@ You are a code quality analyst specializing in Godot educational projects.
 TASK: Scan NeuroVision for cleanup opportunities in $TARGET areas.
 
 CONTEXT:
-- NeuroVision educational brain anatomy app with complex dependencies
-- 14 autoload managers with global access patterns
-- Material3 UI with 5 theme variants
-- 3D models with LOD versions (raw and processed)
-- Assessment system tied to brain structures
+- NeuroVision production-ready medical education platform with complex dependencies
+- 10 core autoload managers with global access patterns
+- Material3 UI with unified color system and 4 optimized theme variants
+- 3D models with LOD versions (raw and processed) for performance optimization
+- Assessment system tied to 21+ brain structures
 - Aggressive mode: ${AGGRESSIVE:="false"}
 - Include patterns: ${INCLUDE_PATTERNS:="*"}
 - Exclude directories: ${EXCLUDE_DIRS:=".godot,.import"}

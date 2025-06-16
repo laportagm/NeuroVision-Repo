@@ -198,7 +198,7 @@ func _apply_m3_theme_to_ui() -> void:
 	print("[EnhancedExplorationScene] Applying M3 theme to all UI components")
 	
 	# Apply comprehensive NeuroVision theme to entire UI hierarchy
-	var NeuroVisionTheme = preload("res://src/ui/themes/apply_neurovision_theme.gd")
+	var NeuroVisionTheme = preload("res://src/ui/themes/utilities/apply_neurovision_theme.gd")
 	NeuroVisionTheme.apply_neurovision_theme_to_scene($UI)
 	
 	# Apply M3 to top bar with proper header styling

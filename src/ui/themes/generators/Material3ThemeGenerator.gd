@@ -14,13 +14,13 @@ signal adaptive_color_generated(structure_name: String, color: Color)
 # === PROPERTIES ===
 var m3_tokens: M3DesignTokens
 var accessibility_manager: M3AccessibilityValidator
-var performance_adapter: PerformanceThemeAdapter
-var educational_colors: EducationalColorSystem
+# var performance_adapter: PerformanceThemeAdapter # Removed - using M3PerformanceIntegration instead
+# var educational_colors: EducationalColorSystem # Removed - deprecated, using M3DesignTokens
 var accessibility_validator: M3AccessibilityValidator
 
 # === INITIALIZATION ===
 func _init() -> void:
-	m3_tokens = preload("res://src/ui/themes/M3DesignTokens.gd").new()
+	m3_tokens = preload("res://src/ui/themes/core/M3DesignTokens.gd").new()
 	
 func setup_dependencies() -> void:
 	# Connect to existing managers if available
@@ -28,8 +28,9 @@ func setup_dependencies() -> void:
 	if tree:
 		if tree.root.has_node("AccessibilityManager"):
 			accessibility_manager = tree.root.get_node("AccessibilityManager")
-		if tree.root.has_node("PerformanceAdapter"):
-			performance_adapter = tree.root.get_node("PerformanceAdapter")
+		# Performance adapter deprecated - using M3PerformanceIntegration
+		# if tree.root.has_node("PerformanceAdapter"):
+		# 	performance_adapter = tree.root.get_node("PerformanceAdapter")
 
 # === MAIN THEME GENERATION ===
 
@@ -72,8 +73,9 @@ func generate_material3_theme(variant: String = "default") -> Theme:
 		_apply_accessibility_overrides(theme)
 	
 	# Apply performance optimizations
-	if performance_adapter:
-		_apply_performance_optimizations(theme)
+	# Performance optimizations now handled by M3PerformanceIntegration
+	# if performance_adapter:
+	_apply_performance_optimizations(theme)
 	
 	# Validate accessibility compliance
 	_validate_and_fix_accessibility(theme)
@@ -404,7 +406,7 @@ func _apply_accessibility_overrides(theme: Theme) -> void:
 # === PERFORMANCE OPTIMIZATIONS ===
 func _apply_performance_optimizations(theme: Theme) -> void:
 	# Use M3 Performance Integration for optimization
-	var M3Performance = preload("res://src/ui/themes/M3PerformanceIntegration.gd")
+	var M3Performance = preload("res://src/ui/themes/utilities/M3PerformanceIntegration.gd")
 	
 	# Detect optimal performance level
 	var performance_level = M3Performance.detect_optimal_performance_level()
@@ -522,7 +524,7 @@ func _validate_and_fix_accessibility(theme: Theme) -> void:
 	"""Validate and automatically fix accessibility issues"""
 	
 	# Load validator
-	var Validator = preload("res://src/ui/themes/M3AccessibilityValidator.gd")
+	var Validator = preload("res://src/ui/themes/validation/M3AccessibilityValidator.gd")
 	
 	# Validate the theme
 	var validation_result = Validator.validate_theme(theme)
@@ -549,7 +551,7 @@ func _validate_and_fix_accessibility(theme: Theme) -> void:
 func _fix_color_contrasts(theme: Theme) -> void:
 	"""Automatically adjust colors to meet WCAG AAA contrast requirements"""
 	
-	var Validator = preload("res://src/ui/themes/M3AccessibilityValidator.gd")
+	var Validator = preload("res://src/ui/themes/validation/M3AccessibilityValidator.gd")
 	var colors = M3DesignTokens.M3_COLORS
 	
 	# Fix text on surface contrast

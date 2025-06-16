@@ -8,7 +8,7 @@ extends EditorScript
 class_name GenerateNeuroVisionThemes
 
 # === CONSTANTS ===
-const THEME_OUTPUT_DIR = "res://src/ui/themes/themes/"
+const THEME_OUTPUT_DIR = "res://src/ui/themes/resources/themes/"
 const DARK_THEME_PATH = THEME_OUTPUT_DIR + "DarkTheme.tres"
 const HIGH_CONTRAST_THEME_PATH = THEME_OUTPUT_DIR + "HighContrastTheme.tres"
 const COLORBLIND_THEME_PATH = THEME_OUTPUT_DIR + "ColorblindTheme.tres"
@@ -393,7 +393,7 @@ func _validate_generated_themes() -> void:
 		COLORBLIND_THEME_PATH
 	]
 	
-	var Validator = preload("res://src/ui/themes/M3AccessibilityValidator.gd")
+	var Validator = preload("res://src/ui/themes/validation/M3AccessibilityValidator.gd")
 	
 	for theme_path in theme_paths:
 		var theme = load(theme_path) as Theme

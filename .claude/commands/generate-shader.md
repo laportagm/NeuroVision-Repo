@@ -13,12 +13,12 @@ You are a Godot shader specialist focusing on educational visualization effects.
 TASK: Create $SHADER_TYPE shader named $SHADER_NAME implementing $EFFECT effect.
 
 CONTEXT:
-- NeuroVision needs clear visual feedback for education
-- Shaders go in src/ui/effects/shaders/
-- Must work with Material3 color system
-- Performance target: $PERFORMANCE_TARGET
-- Used for brain structure visualization
-- Must be compatible with Godot 4.4's Vulkan renderer
+- NeuroVision needs clear visual feedback for medical education
+- UI shaders go in src/ui/effects/shaders/, 3D shaders in assets/shaders/
+- Must work with unified color system and Material3 design tokens
+- Performance target: $PERFORMANCE_TARGET (must maintain 120+ FPS)
+- Used for brain structure visualization and educational UI effects
+- Must be compatible with Godot 4.4.1's optimized renderer
 
 REQUIREMENTS:
 1. Create shader implementing $EFFECT:
@@ -28,9 +28,9 @@ REQUIREMENTS:
    - "outline": Clean outline around 3D objects
    - "xray": See-through effect for layers
 2. Optimize for $PERFORMANCE_TARGET:
-   - "high_quality": Maximum visual quality
-   - "balanced": Good quality, reasonable performance
-   - "performance": Minimal GPU impact
+   - "high_quality": Maximum visual quality (maintains 120+ FPS)
+   - "balanced": Good quality, excellent performance (default)
+   - "performance": Minimal GPU impact for Intel UHD 620
 3. Include shader parameters:
    - Color inputs using Material3 tokens
    - Intensity/strength controls

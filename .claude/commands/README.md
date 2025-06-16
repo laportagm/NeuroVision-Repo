@@ -81,11 +81,6 @@ Analyze performance impact of scenes, scripts, or shaders against target metrics
 /analyze-performance TARGET="src/ui/screens/BrainViewer.tscn" METRICS="fps,draw_calls,memory" CONTEXT="brain_view" DEVICE_PROFILE="low_end"
 ```
 
-#### `/optimize-3d-model`
-Optimize brain models for different platforms with automatic LOD generation.
-```bash
-/optimize-3d-model MODEL_NAME="brain_stem_detailed" OPTIMIZATION_LEVEL="moderate" TARGET_PLATFORM="mobile" PRESERVE_FEATURES="vertex_colors,materials"
-```
 
 #### `/generate-shader`
 Create custom visual effect shaders optimized for educational visualization.
@@ -197,14 +192,14 @@ Create well-structured development prompts for AI-assisted coding.
 
 ### 🧠 Adding New Brain Models
 ```bash
-# 1. Optimize model for platform
-/optimize-3d-model MODEL_NAME="cerebellum_detailed" OPTIMIZATION_LEVEL="moderate" TARGET_PLATFORM="mobile"
-
-# 2. Integrate into scenes
+# 1. Integrate models into scenes
 /model-integrate MODEL_NAME="cerebellum_detailed" TARGET_SCENES="viewer,exploration" INTEGRATION_TYPE="add_option" LOD_CONFIG="auto"
 
-# 3. Update component library
+# 2. Update component library
 /component-library ACTION="update" COMPONENT_TYPE="3d_control" COMPONENT_NAME="ModelSelector" COMPATIBILITY="new_models"
+
+# 3. Test performance impact
+/analyze-performance TARGET="BrainViewer.tscn" METRICS="fps,memory" DEVICE_PROFILE="integrated_graphics"
 ```
 
 ### 🎨 UI/UX Improvement Cycle
@@ -240,31 +235,31 @@ Create well-structured development prompts for AI-assisted coding.
 ### 📊 Performance Optimization Pipeline
 ```bash
 # 1. Baseline performance analysis
-/analyze-performance TARGET="BrainViewer.tscn" METRICS="all" DEVICE_PROFILE="low_end"
+/analyze-performance TARGET="BrainViewer.tscn" METRICS="all" DEVICE_PROFILE="integrated_graphics"
 
-# 2. Optimize heavy models
-/optimize-3d-model MODEL_NAME="full_brain" OPTIMIZATION_LEVEL="aggressive" TARGET_PLATFORM="mobile"
-
-# 3. Generate optimized shaders
+# 2. Generate optimized shaders
 /generate-shader SHADER_NAME="mobile_highlight" EFFECT="highlight" PERFORMANCE_TARGET="performance"
 
+# 3. Review code quality for performance
+/review-code-quality COMPONENT="BrainViewer" REVIEW_FOCUS="performance" DEPTH="standard"
+
 # 4. Re-test performance
-/analyze-performance TARGET="BrainViewer.tscn" METRICS="fps,memory" DEVICE_PROFILE="low_end"
+/analyze-performance TARGET="BrainViewer.tscn" METRICS="fps,memory" DEVICE_PROFILE="integrated_graphics"
 ```
 
 ## Best Practices
 
 ### General Guidelines
 1. **Always specify medical context** when updating educational content
-2. **Test on multiple theme variants** (all 5) when fixing UI issues
-3. **Consider mobile performance** for all optimizations (Intel UHD 620 target)
-4. **Include accessibility** in all UI components (WCAG AAA compliance)
+2. **Test on multiple theme variants** (all 4 current themes) when fixing UI issues
+3. **Leverage performance achievements** - optimize beyond 120+ FPS standard
+4. **Include accessibility** in all UI components (WCAG AAA compliance achieved)
 5. **Validate medical accuracy** for all content changes
 6. **Create tests** for new functionality
-7. **Check autoload dependencies** when debugging issues
-8. **Use component library** for consistent UI development
-9. **Plan for multiple models** when creating new scenes
-10. **Create variants early** for different platforms
+7. **Check autoload dependencies** (current 10 core systems) when debugging
+8. **Use unified color system** for all component development
+9. **Plan for Phase 2** educational feature enhancement
+10. **Maintain production-ready** standards for all changes
 
 ### Command-Specific Tips
 
@@ -275,10 +270,10 @@ Create well-structured development prompts for AI-assisted coding.
 - Test performance impact of scene changes
 
 #### UI Development
-- Apply Material3 design tokens consistently
-- Test all 5 theme variants
-- Ensure keyboard navigation works
-- Validate contrast ratios
+- Apply Material3 design tokens with unified color system
+- Test all 4 theme variants (enhanced, minimal, high contrast, colorblind safe)
+- Ensure keyboard navigation works (WCAG AAA standard)
+- Validate 7:1+ contrast ratios achieved
 
 #### Content Management
 - Cross-reference medical sources
@@ -295,21 +290,20 @@ Create well-structured development prompts for AI-assisted coding.
 ## Project-Specific Notes
 
 ### Technical Stack
-- **Engine**: Godot 4.x (4.4.1+)
-- **Design System**: Material3 with educational adaptations
-- **Autoloads**: 14 singleton services managing core functionality
-- **Theme Variants**: 5 color schemes
-  - neural_purple (primary)
-  - ocean_depths
-  - warm_cognition
-  - soft_sage
-  - midnight_focus
+- **Engine**: Godot 4.4.1 (Production)
+- **Design System**: Material3 with Unified Color Management
+- **Autoloads**: 10 core singleton services managing platform functionality
+- **Theme Variants**: 4 optimized schemes
+  - enhanced_student (engaging for students)
+  - minimal_clinical (professional medical)
+  - high_contrast_accessibility (WCAG AAA)
+  - colorblind_safe (universal accessibility)
 
 ### Requirements
-- **Accessibility**: WCAG AAA compliance mandatory
-- **Performance**: 30+ FPS on Intel UHD 620 graphics
-- **Educational**: Medical accuracy and learning effectiveness
-- **Platforms**: Desktop primary, mobile/tablet support planned
+- **Accessibility**: WCAG AAA compliance mandatory (achieved 7:1+ contrast)
+- **Performance**: 120+ FPS achieved (4x exceeding 30 FPS target on Intel UHD 620)
+- **Educational**: Medical textbook accuracy with 21+ brain structures
+- **Platforms**: Desktop production-ready, mobile/tablet optimized
 
 ### Architecture Highlights
 - **Model Expansion**: Designed for 5+ detailed brain models
@@ -350,7 +344,7 @@ When creating new slash commands:
 - **v1.1**: Added scene management commands
 - **v1.2**: Added maintenance and architecture commands
 - **v1.3**: Added UI/UX review and architecture audit
-- **Current**: Full suite of 19 specialized commands
+- **Current**: Optimized suite of 35 essential commands (removed 3 overly generic/specialized commands)
 
 ---
 

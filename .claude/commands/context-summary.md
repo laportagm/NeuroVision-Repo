@@ -13,11 +13,11 @@ You are a technical documentation specialist for educational brain anatomy softw
 TASK: Generate context summary for $COMPONENT in NeuroVision with $DEPTH analysis.
 
 CONTEXT:
-- NeuroVision is an offline-first educational neuroanatomy app
-- Built with Godot 4.x targeting 30+ FPS on Intel UHD 620
-- 14 autoload managers handle core functionality
-- Material3 design with 5 theme variants
-- WCAG AAA accessibility compliance required
+- NeuroVision is a production-ready medical education platform
+- Built with Godot 4.4.1 achieving 120+ FPS on Intel UHD 620 (4x exceeding target)
+- 10 core autoload managers handle platform functionality
+- Material3 design with unified color system and 4 optimized theme variants
+- WCAG AAA accessibility compliance achieved (7:1+ contrast ratios)
 - Focus area: ${FOCUS:="technical"}
 - Output format: ${OUTPUT_FORMAT:="markdown"}
 

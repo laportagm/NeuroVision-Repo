@@ -8,7 +8,7 @@ class_name M3AccessibilityValidator
 extends Resource
 
 # Preload dependencies
-const M3Tokens = preload("res://src/ui/themes/M3DesignTokens.gd")
+const M3Tokens = preload("res://src/ui/themes/core/M3DesignTokens.gd")
 
 # === WCAG AAA REQUIREMENTS ===
 const WCAG_AAA_CONTRAST_NORMAL = 7.0

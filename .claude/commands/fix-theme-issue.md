@@ -1,11 +1,11 @@
 # Command: /fix-theme-issue
-# Purpose: Fix theme-related issues in UI components or color inconsistencies
+# Purpose: Fix theme-related issues in UI components using unified color system
 # Arguments:
 #   - $COMPONENT: Component or file with theme issue
-#   - $ISSUE_TYPE: Type of issue (color, responsive, dark_mode, contrast)
-#   - $THEME_VARIANT: Which theme variant (neural_purple, ocean_depths, warm_cognition, all)
+#   - $ISSUE_TYPE: Type of issue (color, responsive, accessibility, contrast, unified_colors)
+#   - $THEME_VARIANT: Which theme variant (enhanced_student, minimal_clinical, high_contrast_accessibility, colorblind_safe, all)
 #   - $DESCRIPTION: Description of the visual issue
-# Example: /fix-theme-issue COMPONENT="QuizQuestionCard.gd" ISSUE_TYPE="contrast" THEME_VARIANT="ocean_depths" DESCRIPTION="Text hard to read on surface_variant background"
+# Example: /fix-theme-issue COMPONENT="QuizQuestionCard.gd" ISSUE_TYPE="contrast" THEME_VARIANT="high_contrast_accessibility" DESCRIPTION="Text contrast below WCAG AAA 7:1 requirement"
 ---
 
 You are a Material3 UI specialist with expertise in accessible educational interfaces.
@@ -13,12 +13,13 @@ You are a Material3 UI specialist with expertise in accessible educational inter
 TASK: Fix theme $ISSUE_TYPE issue in $COMPONENT affecting $THEME_VARIANT variant.
 
 CONTEXT:
-- NeuroVision uses Material3 design with educational adaptations
-- UIThemeManager handles theme switching and color tokens
-- Themes defined in assets/themes/color_schemes/
+- NeuroVision uses Material3 design with Unified Color Management System
+- UnifiedColorManager and UIThemeManager handle theme switching and color tokens
+- Themes defined through M3DesignTokens with unified color system
 - Issue description: $DESCRIPTION
-- Must maintain WCAG AA contrast ratios for education
-- Components must work across all theme variants
+- Must maintain WCAG AAA contrast ratios (7:1+ achieved) for medical education
+- Components must work across all 4 theme variants
+- Unified color system ensures no hardcoded colors in codebase
 
 REQUIREMENTS:
 1. Analyze $COMPONENT for theme color usage
@@ -29,26 +30,26 @@ REQUIREMENTS:
    - On_* colors (text on colored backgrounds)
    - Error/Success states
 4. Fix based on $ISSUE_TYPE:
-   - "color": Correct color token usage
+   - "color": Correct unified color token usage
    - "responsive": Fix color adaptation to theme changes
-   - "dark_mode": Ensure proper dark theme support
-   - "contrast": Fix accessibility contrast issues
+   - "accessibility": Ensure WCAG AAA compliance
+   - "contrast": Fix contrast to meet 7:1+ standard
+   - "unified_colors": Migrate hardcoded colors to unified system
 5. Verify fix across theme variants:
-   - neural_purple (primary)
-   - ocean_depths
-   - warm_cognition
-   - soft_sage
-   - midnight_focus
-6. Update any hardcoded colors to theme tokens
-7. Test theme change signal handling
+   - enhanced_student (engaging for students)
+   - minimal_clinical (professional medical)
+   - high_contrast_accessibility (WCAG AAA)
+   - colorblind_safe (universal accessibility)
+6. Ensure unified color system compliance
+7. Test theme change signal handling through UnifiedColorManager
 
 CONSTRAINTS:
-- Must use UIThemeManager color tokens only
-- Cannot hardcode hex colors
-- Must maintain minimum 4.5:1 contrast for text
-- Must preserve educational clarity
-- Cannot break existing theme functionality
-- Must handle theme_changed signal
+- Must use UnifiedColorManager and M3DesignTokens only
+- Cannot hardcode hex colors (unified system enforced)
+- Must maintain 7:1+ contrast for WCAG AAA compliance
+- Must preserve medical education clarity
+- Cannot break existing unified color functionality
+- Must handle theme_changed signal through unified system
 
 OUTPUT:
 - Fixed component with proper theme integration

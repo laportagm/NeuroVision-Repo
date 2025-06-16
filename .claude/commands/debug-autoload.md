@@ -13,15 +13,17 @@ You are a Godot systems architect specializing in singleton pattern debugging.
 TASK: Debug $ISSUE_TYPE issue in $AUTOLOAD_NAME autoload service.
 
 CONTEXT:
-- NeuroVision has 14 autoload services in src/autoload/
+- NeuroVision has 10 core autoload services across src/autoload/ and src/core/managers/
+- Core Managers: UnifiedColorManager, CoreSystemManager, UISystemManager, EducationalPlatformManager, ResourceManager
+- Specialized Services: AuthenticationManager, NetworkManager, AssessmentService, HighlightMaterialManager, ProgressTracker
 - Autoloads initialize in project.godot order
 - Issue symptoms: $SYMPTOMS
 - Related systems: ${RELATED_SYSTEMS:="unknown"}
 - Autoloads handle critical educational functionality
-- Must maintain service availability
+- Must maintain service availability in production-ready platform
 
 REQUIREMENTS:
-1. Analyze $AUTOLOAD_NAME implementation in src/autoload/
+1. Analyze $AUTOLOAD_NAME implementation (check both src/autoload/ and src/core/managers/)
 2. Check for $ISSUE_TYPE problems:
    - "initialization": _ready(), dependencies, load order
    - "dependency": Circular deps, missing services

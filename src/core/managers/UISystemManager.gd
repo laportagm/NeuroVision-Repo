@@ -26,8 +26,7 @@ const POOL_INITIAL_SIZE = 10
 const ONBOARDING_SAVE_PATH = "user://onboarding_progress.save"
 
 # Preload Material 3 generators
-const Material3Generator = preload("res://src/ui/themes/Material3ThemeGenerator.gd")
-const ContentAdaptiveGenerator = preload("res://src/ui/themes/ContentAdaptiveThemeGenerator.gd")
+const Material3Generator = preload("res://src/ui/themes/generators/Material3ThemeGenerator.gd")
 
 # === ENUMS ===
 
