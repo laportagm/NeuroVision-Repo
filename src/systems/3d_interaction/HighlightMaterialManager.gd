@@ -43,6 +43,7 @@ var _material_pool: Array[Material] = []
 var _active_materials: Dictionary = {}  # MeshInstance3D -> MaterialState
 var _transition_tweens: Dictionary = {}  # MeshInstance3D -> Tween
 var _original_materials: Dictionary = {}  # MeshInstance3D -> Array[Material]
+var _fallback_material: Material
 
 # Material state tracking
 class MaterialState:
@@ -167,7 +168,7 @@ func _initialize_material_pool() -> void:
 			var std_mat = StandardMaterial3D.new()
 			std_mat.emission_enabled = true
 			std_mat.emission = UnifiedColorSystem.get_color("primary")
-			std_mat.emission_energy = 0.5
+			std_mat.emission_energy_multiplier = 0.5
 			std_mat.rim_enabled = true
 			std_mat.rim = 1.0
 			std_mat.rim_tint = 0.5
@@ -192,7 +193,7 @@ func _get_from_pool() -> Material:
 			var std_mat = StandardMaterial3D.new()
 			std_mat.emission_enabled = true
 			std_mat.emission = UnifiedColorSystem.get_color("primary")
-			std_mat.emission_energy = 0.5
+			std_mat.emission_energy_multiplier = 0.5
 			std_mat.rim_enabled = true
 			std_mat.rim = 1.0
 			std_mat.rim_tint = 0.5
@@ -212,7 +213,7 @@ func _return_to_pool(material: Material) -> void:
 			material.set_shader_parameter("rim_intensity", 0.0)
 			material.set_shader_parameter("rim_color", UnifiedColorSystem.get_color("on_primary"))
 		elif material is StandardMaterial3D:
-			material.emission_energy = 0.0
+			material.emission_energy_multiplier = 0.0
 			material.albedo_color = UnifiedColorSystem.get_color("on_primary")
 		_material_pool.append(material)
 
@@ -306,7 +307,7 @@ func _update_material_transition(progress: float, mat_state: MaterialState) -> v
 		
 		material.albedo_color = blended_color
 		material.emission = blended_color
-		material.emission_energy = blended_intensity * 0.5
+		material.emission_energy_multiplier = blended_intensity * 0.5
 		
 		# Use rim for edge highlighting
 		if blended_intensity > 0.1:
@@ -353,3 +354,33 @@ func debug_print_state() -> void:
 	print("  Active highlights: ", get_active_highlight_count())
 	print("  Pool size: ", get_pool_size())
 	print("  Active transitions: ", _transition_tweens.size())
+
+func _exit_tree() -> void:
+	"""Clean up resources to prevent RID leaks"""
+	print("[HighlightManager] Cleaning up materials...")
+	
+	# Clean up all active materials
+	for mesh in _active_materials:
+		if is_instance_valid(mesh):
+			remove_highlight(mesh)
+	_active_materials.clear()
+	
+	# Clean up material pool
+	for material in _material_pool:
+		if is_instance_valid(material):
+			# Materials are resources, not nodes - just clear the reference
+			pass
+	_material_pool.clear()
+	
+	# Clean up fallback material
+	if is_instance_valid(_fallback_material):
+		# Materials are resources, not nodes - just clear the reference
+		_fallback_material = null
+	
+	# Stop all tweens
+	for tween in _transition_tweens.values():
+		if is_instance_valid(tween):
+			tween.kill()
+	_transition_tweens.clear()
+	
+	print("[HighlightManager] Cleanup complete")

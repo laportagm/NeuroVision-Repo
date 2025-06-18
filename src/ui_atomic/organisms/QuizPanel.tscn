@@ -1,0 +1,221 @@
+[gd_scene load_steps=4 format=3 uid="uid://b86jwh5kh65xd"]
+
+[ext_resource type="Script" path="res://src/ui_atomic/organisms/QuizPanel.gd" id="1_quiz"]
+[ext_resource type="Shader" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="2_glass"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("2_glass")
+shader_parameter/blur_amount = 8.0
+shader_parameter/tint_color = Color(0.1, 0.12, 0.15, 0.95)
+
+[node name="QuizPanel" type="Control"]
+custom_minimum_size = Vector2(600, 700)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -350.0
+offset_right = 300.0
+offset_bottom = 350.0
+script = ExtResource("1_quiz")
+
+[node name="GlassBackground" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_1")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.08, 0.12, 0.95)
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="ProgressHeader" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 16
+
+[node name="ProgressBar" type="ProgressBar" parent="MainContainer/ProgressHeader"]
+custom_minimum_size = Vector2(200, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+show_percentage = false
+
+[node name="ScoreDisplay" type="Label" parent="MainContainer/ProgressHeader"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Score: 0"
+horizontal_alignment = 1
+
+[node name="StreakCounter" type="HBoxContainer" parent="MainContainer/ProgressHeader"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StreakIcon" type="TextureRect" parent="MainContainer/ProgressHeader/StreakCounter"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="StreakNumber" type="Label" parent="MainContainer/ProgressHeader/StreakCounter"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Streak: 0"
+
+[node name="QuestionArea" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="QuestionText" type="RichTextLabel" parent="MainContainer/QuestionArea"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_vertical = 0
+bbcode_enabled = true
+text = "Loading question..."
+fit_content = true
+
+[node name="QuestionImage" type="TextureRect" parent="MainContainer/QuestionArea"]
+visible = false
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+stretch_mode = 5
+
+[node name="AnswerContainer" type="VBoxContainer" parent="MainContainer/QuestionArea"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="FeedbackArea" type="Control" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="CorrectFeedback" type="PanelContainer" parent="MainContainer/FeedbackArea"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CorrectContainer" type="HBoxContainer" parent="MainContainer/FeedbackArea/CorrectFeedback"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="CheckIcon" type="Label" parent="MainContainer/FeedbackArea/CorrectFeedback/CorrectContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "✓"
+vertical_alignment = 1
+
+[node name="FeedbackText" type="RichTextLabel" parent="MainContainer/FeedbackArea/CorrectFeedback/CorrectContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Correct! Great job!"
+fit_content = true
+
+[node name="IncorrectFeedback" type="PanelContainer" parent="MainContainer/FeedbackArea"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="IncorrectContainer" type="HBoxContainer" parent="MainContainer/FeedbackArea/IncorrectFeedback"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="CrossIcon" type="Label" parent="MainContainer/FeedbackArea/IncorrectFeedback/IncorrectContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "✗"
+vertical_alignment = 1
+
+[node name="FeedbackText" type="RichTextLabel" parent="MainContainer/FeedbackArea/IncorrectFeedback/IncorrectContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Incorrect. The correct answer is..."
+fit_content = true
+
+[node name="ConfidenceArea" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="ConfidenceLabel" type="Label" parent="MainContainer/ConfidenceArea"]
+layout_mode = 2
+text = "How confident are you in your answer?"
+horizontal_alignment = 1
+
+[node name="ConfidenceSlider" type="HSlider" parent="MainContainer/ConfidenceArea"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+min_value = 1.0
+max_value = 5.0
+step = 1.0
+value = 3.0
+
+[node name="ConfidenceLabels" type="HBoxContainer" parent="MainContainer/ConfidenceArea"]
+layout_mode = 2
+
+[node name="LowLabel" type="Label" parent="MainContainer/ConfidenceArea/ConfidenceLabels"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 12
+text = "Not sure"
+
+[node name="Spacer" type="Control" parent="MainContainer/ConfidenceArea/ConfidenceLabels"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HighLabel" type="Label" parent="MainContainer/ConfidenceArea/ConfidenceLabels"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 12
+text = "Very confident"
+
+[node name="ActionArea" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="SubmitButton" type="Button" parent="MainContainer/ActionArea"]
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+text = "Submit"
+
+[node name="SkipButton" type="Button" parent="MainContainer/ActionArea"]
+custom_minimum_size = Vector2(100, 44)
+layout_mode = 2
+text = "Skip"
+
+[node name="ExplanationButton" type="Button" parent="MainContainer/ActionArea"]
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+text = "Explanation"
+
+[node name="CloseButton" type="Button" parent="MainContainer/ActionArea"]
+custom_minimum_size = Vector2(80, 44)
+layout_mode = 2
+text = "Close"

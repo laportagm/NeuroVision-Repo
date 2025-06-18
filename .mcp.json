@@ -1,0 +1,217 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/specification/main/schema/mcp_config_schema.json",
+  "description": "MCP configuration for NeuroVision educational neuroscience platform",
+  "version": "1.1.0",
+  "mcpServers": {
+    "godot": {
+      "description": "🎮 Godot 4.4.1 engine integration for NeuroVision educational platform - PRIMARY DEVELOPMENT TOOL",
+      "type": "stdio",
+      "command": "node",
+      "cwd": "/Users/gagelaporta/Desktop/NeuroVision-Repo",
+      "stdin": true,
+      "stdout": true,
+      "stderr": true,
+      "args": [
+        "/Users/gagelaporta/mcp-servers/godot-mcp/build/index.js"
+      ],
+      "env": {
+        "DEBUG": "true",
+        "GODOT_PROJECT_PATH": "/Users/gagelaporta/Desktop/NeuroVision-Repo",
+        "GODOT_PROJECT_NAME": "NeuroVision",
+        "GODOT_PROJECT_VERSION": "2.1.0",
+        "GODOT_PROJECT_AUTHOR": "Gage Laporta",
+        "GODOT_ENGINE_VERSION": "4.4.1",
+        "NEUROVISION_EDUCATIONAL_MODE": "true",
+        "NEUROVISION_TARGET_AUDIENCE": "medical_students",
+        "MCP_USAGE_HINT": "Use for scene creation, node management, 3D brain model integration, educational UI development",
+        "CLAUDE_PROMPT_HINT": "Mention 'use Godot MCP' or 'gdscene/gdrun/gdeditor' for automatic tool selection"
+      },
+      "tags": ["godot", "game-engine", "educational", "neuroscience", "primary-tool"],
+      "priority": 1,
+      "capabilities": [
+        "scene_creation",
+        "node_management", 
+        "3d_model_loading",
+        "educational_ui_development",
+        "performance_testing",
+        "brain_visualization"
+      ]
+    },
+    "filesystem-core": {
+      "description": "Core NeuroVision source code and educational systems access",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/src",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/scenes",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/docs"
+      ],
+      "env": {
+        "FILESYSTEM_DESCRIPTION": "Educational platform core systems"
+      },
+      "tags": ["filesystem", "core", "educational"],
+      "priority": 2
+    },
+    "filesystem-assets": {
+      "description": "Educational assets: 3D brain models, anatomical data, textures",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/assets"
+      ],
+      "env": {
+        "FILESYSTEM_DESCRIPTION": "Educational anatomical assets and 3D models"
+      },
+      "tags": ["assets", "3d-models", "anatomical-data", "educational"],
+      "priority": 3
+    },
+    "filesystem-config": {
+      "description": "Project configuration, build settings, and development tools",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/.vscode",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/tools"
+      ],
+      "env": {
+        "FILESYSTEM_DESCRIPTION": "Development configuration and tools"
+      },
+      "tags": ["config", "development", "tools"],
+      "priority": 4
+    },
+    "memory-educational": {
+      "description": "Educational context memory for learning analytics and user progress",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_DESCRIPTION": "Educational platform learning context and analytics"
+      },
+      "tags": ["memory", "educational", "analytics", "learning"],
+      "priority": 2
+    },
+    "sequential-thinking": {
+      "description": "Complex problem-solving for educational feature development",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {
+        "THINKING_CONTEXT": "Educational neuroscience platform development"
+      },
+      "tags": ["thinking", "problem-solving", "development"],
+      "priority": 3
+    },
+    "sqlite-analytics": {
+      "description": "Educational analytics database for learning progress tracking",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/data/educational_analytics.db"
+      ],
+      "env": {
+        "SQLITE_DESCRIPTION": "Educational learning analytics and progress tracking"
+      },
+      "tags": ["database", "analytics", "educational", "sqlite"],
+      "priority": 4
+    },
+    "fetch-medical": {
+      "description": "Medical and educational resource fetching for anatomical references",
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/gagelaporta/mcp-servers/official-mcp-servers/src/fetch/dist/index.js"
+      ],
+      "env": {
+        "FETCH_USER_AGENT": "NeuroVision-Educational-Platform/2.1.0",
+        "FETCH_TIMEOUT": "30000"
+      },
+      "tags": ["web", "medical", "educational", "research"],
+      "priority": 5
+    },
+    "github-neurovision": {
+      "description": "NeuroVision project repository management and collaboration",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "your_token_here",
+        "GITHUB_DEFAULT_REPO": "gagelaporta/NeuroVision-Repo",
+        "GITHUB_DESCRIPTION": "Educational neuroscience visualization platform"
+      },
+      "tags": ["github", "collaboration", "version-control"],
+      "priority": 6
+    }
+  },
+  "profiles": {
+    "development": {
+      "description": "Full development environment with all educational tools",
+      "servers": ["godot", "filesystem-core", "filesystem-assets", "filesystem-config", "memory-educational", "sequential-thinking"],
+      "priority": 1
+    },
+    "testing": {
+      "description": "🧪 Testing and debugging profile for NeuroVision educational platform",
+      "servers": ["godot", "filesystem-core", "memory-educational", "sequential-thinking"],
+      "priority": 1,
+      "testing_capabilities": [
+        "automated_scene_testing",
+        "performance_profiling", 
+        "educational_workflow_validation",
+        "accessibility_compliance_testing",
+        "brain_model_loading_verification",
+        "ui_component_testing"
+      ],
+      "debug_hints": [
+        "Use 'gdtest [scene]' for educational scene testing",
+        "Use 'gddebug [issue]' for Godot-specific debugging", 
+        "Use 'gdperformance' for 60fps validation",
+        "Use 'gdmemory' for educational content memory analysis"
+      ]
+    },
+    "educational-content": {
+      "description": "Focus on educational content development and anatomical data",
+      "servers": ["filesystem-assets", "memory-educational", "sqlite-analytics", "fetch-medical"],
+      "priority": 2
+    },
+    "minimal": {
+      "description": "Minimal setup for basic file operations",
+      "servers": ["filesystem-core", "memory-educational"],
+      "priority": 3
+    }
+  },
+  "metadata": {
+    "project": "NeuroVision Educational Platform",
+    "version": "2.1.0",
+    "maintainer": "Gage LaPorta",
+    "last_updated": "2025-06-18",
+    "godot_version": "4.4.1",
+    "target_audience": "medical_students,neuroscience_researchers,healthcare_professionals",
+    "educational_focus": "neuroanatomy,brain_visualization,interactive_learning",
+    "performance_requirements": {
+      "frame_rate": "60fps",
+      "loading_time": "<3s",
+      "memory_budget": "<500MB"
+    },
+    "accessibility": {
+      "wcag_compliance": "2.1_AA",
+      "screen_reader_support": true,
+      "keyboard_navigation": true
+    }
+  }
+}

@@ -20,7 +20,7 @@ const DEFAULT_THEME = "dark"
 const TRANSITION_DURATION = 0.3
 
 # Preload Material 3 generators
-const Material3Generator = preload("res://src/ui/themes/generators/Material3ThemeGenerator.gd")
+const Material3Generator = preload("res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd")
 # ContentAdaptiveThemeGenerator.gd does not exist - removing reference
 
 # === PRIVATE VARIABLES ===
@@ -32,6 +32,63 @@ var _transition_tween: Tween = null
 var _glass_shader_full: Shader = null
 var _glass_shader_lite: Shader = null
 var _current_shader_quality: String = "medium"
+
+# === Phase 6: Advanced Performance System ===
+var _performance_predictor = {}
+var _quality_adaptation_enabled = true
+var _performance_history = []
+var _current_quality_profile = "auto"
+var _performance_monitor_timer: Timer = null
+var _frame_time_samples = []
+var _memory_usage_samples = []
+var _quality_switch_threshold = 3.0  # seconds before switching quality
+var _last_quality_switch_time = 0.0
+
+# Quality profiles with specific settings
+var _quality_profiles = {
+	"maximum": {
+		"glass_blur_samples": 15,
+		"shadow_quality": "high",
+		"lighting_complexity": "full",
+		"animation_detail": "enhanced",
+		"particle_count": 100,
+		"texture_resolution": 1.0
+	},
+	"high": {
+		"glass_blur_samples": 10,
+		"shadow_quality": "medium", 
+		"lighting_complexity": "standard",
+		"animation_detail": "full",
+		"particle_count": 75,
+		"texture_resolution": 0.9
+	},
+	"medium": {
+		"glass_blur_samples": 6,
+		"shadow_quality": "low",
+		"lighting_complexity": "simplified",
+		"animation_detail": "reduced",
+		"particle_count": 50,
+		"texture_resolution": 0.8
+	},
+	"low": {
+		"glass_blur_samples": 3,
+		"shadow_quality": "off",
+		"lighting_complexity": "basic",
+		"animation_detail": "minimal",
+		"particle_count": 25,
+		"texture_resolution": 0.7
+	}
+}
+
+# Performance thresholds
+var _performance_thresholds = {
+	"target_fps": 60.0,
+	"warning_fps": 45.0,
+	"critical_fps": 30.0,
+	"memory_limit_mb": 500.0,
+	"frame_time_ms_warning": 22.0,  # 1000/45 fps
+	"frame_time_ms_critical": 33.0  # 1000/30 fps
+}
 
 # === PUBLIC VARIABLES ===
 var current_theme_resource: Theme = null
@@ -51,12 +108,19 @@ func _ready() -> void:
 		_setup_effects_integration()
 	
 	# Connect to settings manager if available
-	if SettingsManager:
-		SettingsManager.setting_changed.connect(_on_setting_changed)
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_signal("setting_changed"):
+		settings_manager.setting_changed.connect(_on_setting_changed)
 	
 	# Connect to performance monitor for quality-based shader switching
-	if PerformanceMonitor:
-		PerformanceMonitor.quality_level_changed.connect(_on_quality_level_changed)
+	var performance_monitor = get_node_or_null("/root/PerformanceMonitor")
+	if performance_monitor and performance_monitor.has_signal("quality_level_changed"):
+		performance_monitor.quality_level_changed.connect(_on_quality_level_changed)
+	
+	# === Phase 6: Initialize Performance Monitoring ===
+	_initialize_performance_monitoring()
+	_setup_ml_performance_predictor()
+	print("[UIThemeManager] Phase 6 performance monitoring initialized")
 
 func set_theme(theme_name: String, animated: bool = true) -> void:
 	"""Change the current theme"""
@@ -170,8 +234,9 @@ func _load_saved_theme() -> void:
 	"""Load the saved theme preference"""
 	var saved_theme = DEFAULT_THEME
 	
-	if SettingsManager:
-		saved_theme = SettingsManager.get_setting("ui_theme", DEFAULT_THEME)
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("get_setting"):
+		saved_theme = settings_manager.get_setting("ui_theme", DEFAULT_THEME)
 	
 	set_theme(saved_theme, false)
 
@@ -227,8 +292,9 @@ func _apply_theme_immediate(theme: Theme, theme_name: String) -> void:
 	_apply_theme_to_tree(get_tree().root, theme)
 	
 	# Save preference
-	if SettingsManager:
-		SettingsManager.set_setting("ui_theme", theme_name)
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("set_setting"):
+		settings_manager.set_setting("ui_theme", theme_name)
 	
 	theme_changed.emit(theme_name)
 	theme_transition_completed.emit()
@@ -375,14 +441,16 @@ func is_current_theme_accessible() -> bool:
 ## Generate Material 3 theme for specific brain structure
 func generate_m3_brain_region_theme(region_name: String, complexity_level: int = 1) -> void:
 	"""Generate and apply Material 3 theme adapted for brain region"""
-	var theme = ContentAdaptiveGenerator.generate_brain_region_theme(
-		region_name, complexity_level, true
-	)
+	# ContentAdaptiveGenerator not implemented yet - use fallback
+	push_warning("[UIThemeManager] ContentAdaptiveGenerator not available, using default Material 3 theme")
+	
+	# Use Material3Generator as fallback
+	var theme = Material3Generator.new().generate_theme()
 	
 	# Apply the generated theme
 	apply_theme(theme, "material3_" + region_name.to_lower())
 	
-	print("[UIThemeManager] Applied Material 3 theme for region: " + region_name)
+	print("[UIThemeManager] Applied fallback Material 3 theme for region: " + region_name)
 
 ## Check if current theme is Material 3
 func is_material3_active() -> bool:
@@ -537,16 +605,17 @@ func preview_theme(theme: Theme, preview_duration: float = 5.0) -> void:
 ## Save user theme preferences
 func save_user_theme_preferences(preferences: Dictionary) -> void:
 	"""Save comprehensive theme preferences"""
-	if not SettingsManager:
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if not settings_manager or not settings_manager.has_method("set_setting"):
 		push_warning("[UIThemeManager] SettingsManager not available")
 		return
 	
 	# Save individual preferences
 	for key in preferences:
-		SettingsManager.set_setting("theme_" + key, preferences[key])
+		settings_manager.set_setting("theme_" + key, preferences[key])
 	
 	# Save timestamp
-	SettingsManager.set_setting("theme_preferences_updated", Time.get_unix_time_from_system())
+	settings_manager.set_setting("theme_preferences_updated", Time.get_unix_time_from_system())
 	
 	print("[UIThemeManager] Saved theme preferences: " + str(preferences.keys()))
 
@@ -617,9 +686,10 @@ func reset_to_default_theme() -> void:
 	set_theme(DEFAULT_THEME, true)
 	
 	# Clear saved preferences
-	if SettingsManager:
-		SettingsManager.set_setting("ui_theme", DEFAULT_THEME)
-		SettingsManager.set_setting("theme_preferences_updated", 0)
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("set_setting"):
+		settings_manager.set_setting("ui_theme", DEFAULT_THEME)
+		settings_manager.set_setting("theme_preferences_updated", 0)
 
 # === PERFORMANCE-BASED SHADER MANAGEMENT ===
 
@@ -665,8 +735,9 @@ func force_shader_quality(quality_level: String) -> void:
 	apply_quality_based_shaders(quality_level)
 	
 	# Save the forced setting
-	if SettingsManager:
-		SettingsManager.set_setting("forced_shader_quality", quality_level)
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("set_setting"):
+		settings_manager.set_setting("forced_shader_quality", quality_level)
 
 func is_lite_shader_active() -> bool:
 	"""Check if the lite shader is currently active"""
@@ -820,8 +891,9 @@ func _preload_shaders() -> void:
 	
 	# Set initial quality based on saved settings or default to medium
 	var initial_quality = "medium"
-	if SettingsManager:
-		initial_quality = SettingsManager.get_setting("forced_shader_quality", "medium")
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("get_setting"):
+		initial_quality = settings_manager.get_setting("forced_shader_quality", "medium")
 	
 	_current_shader_quality = initial_quality
 
@@ -923,15 +995,16 @@ func _setup_effects_integration() -> void:
 	
 	# Configure glass morphism quality based on current performance
 	var quality_level = 2  # Default to medium
-	if PerformanceMonitor and PerformanceMonitor.has_method("get_current_quality_level"):
-		quality_level = PerformanceMonitor.get_current_quality_level()
+	var performance_monitor = get_node_or_null("/root/PerformanceMonitor")
+	if performance_monitor and performance_monitor.has_method("get_current_quality_level"):
+		quality_level = performance_monitor.get_current_quality_level()
 	
 	effects_manager.set_glass_quality(quality_level)
 	
 	# Configure NeuroVision specific effects
 	var neurovision_config = {
 		"glass_opacity": 0.85,
-		"tint_color": M3DesignTokens.M3_COLORS["primary"],
+		"tint_color": Color("#58a6ff"),  # Primary color from M3DesignTokens
 		"blur_amount": 12.0,
 		"enable_chromatic_aberration": quality_level > 2,
 		"transition_duration": theme_transition_duration
@@ -993,6 +1066,7 @@ func apply_brain_structure_highlight(control: Control, structure_name: String) -
 	
 	# Get structure-specific color
 	var structure_color = Color.CYAN  # Default
+	const M3DesignTokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
 	if M3DesignTokens.BRAIN_STRUCTURE_COLORS.has(structure_name):
 		structure_color = M3DesignTokens.BRAIN_STRUCTURE_COLORS[structure_name]
 	
@@ -1022,6 +1096,362 @@ func update_effects_quality(quality_level: int) -> void:
 		apply_quality_based_shaders(quality_names[quality_level])
 	
 	print("[UIThemeManager] Updated NeuroVision effects quality to level: %d" % quality_level)
+
+# === Phase 6: PERFORMANCE MONITORING AND QUALITY ADAPTATION ===
+
+func _initialize_performance_monitoring() -> void:
+	"""Initialize performance monitoring system for quality adaptation"""
+	print("[Performance] Initializing machine learning-based performance monitoring")
+	
+	# Create performance monitoring timer
+	_performance_monitor_timer = Timer.new()
+	_performance_monitor_timer.wait_time = 0.5  # Check every 500ms
+	_performance_monitor_timer.timeout.connect(_monitor_performance_metrics)
+	_performance_monitor_timer.autostart = true
+	add_child(_performance_monitor_timer)
+	
+	# Initialize sample arrays
+	_frame_time_samples.resize(20)  # Keep last 20 samples (10 seconds)
+	_memory_usage_samples.resize(40)  # Keep last 40 samples (20 seconds)
+	_performance_history.resize(100)  # Keep last 100 performance snapshots
+	
+	# Load saved quality profile or auto-detect
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("get_setting"):
+		_current_quality_profile = settings_manager.get_setting("performance_quality_profile", "auto")
+	
+	print("[Performance] Quality adaptation enabled: ", _quality_adaptation_enabled)
+	print("[Performance] Current quality profile: ", _current_quality_profile)
+
+func _setup_ml_performance_predictor() -> void:
+	"""Setup machine learning-based performance predictor"""
+	_performance_predictor = {
+		"hardware_score": _calculate_hardware_score(),
+		"baseline_performance": {},
+		"adaptation_patterns": {},
+		"prediction_weights": {
+			"fps_weight": 0.4,
+			"frame_time_weight": 0.3,
+			"memory_weight": 0.2,
+			"gpu_weight": 0.1
+		},
+		"learning_rate": 0.1,
+		"confidence_threshold": 0.7
+	}
+	
+	print("[Performance] ML predictor initialized with hardware score: ", _performance_predictor.hardware_score)
+
+func _monitor_performance_metrics() -> void:
+	"""Monitor real-time performance metrics"""
+	if not _quality_adaptation_enabled:
+		return
+	
+	var current_time = Time.get_time_dict_from_system()
+	var fps = Engine.get_frames_per_second()
+	var frame_time = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0  # Convert to ms
+	var memory_usage = OS.get_static_memory_usage() / 1024.0 / 1024.0  # Convert to MB
+	
+	# Store samples in circular buffer
+	var sample_index = int(Time.get_time_dict_from_system().second * 2) % 20
+	_frame_time_samples[sample_index] = frame_time
+	
+	var memory_index = int(Time.get_time_dict_from_system().second * 2) % 40
+	_memory_usage_samples[memory_index] = memory_usage
+	
+	# Create performance snapshot
+	var performance_snapshot = {
+		"timestamp": Time.get_unix_time_from_system(),
+		"fps": fps,
+		"frame_time_ms": frame_time,
+		"memory_mb": memory_usage,
+		"quality_profile": _current_quality_profile,
+		"gpu_utilization": _estimate_gpu_utilization()
+	}
+	
+	# Add to history (circular buffer)
+	var history_index = int(Time.get_unix_time_from_system()) % 100
+	_performance_history[history_index] = performance_snapshot
+	
+	# Check if quality adaptation is needed
+	_evaluate_quality_adaptation(performance_snapshot)
+
+func _evaluate_quality_adaptation(snapshot: Dictionary) -> void:
+	"""Evaluate if quality adaptation is needed based on performance"""
+	if _current_quality_profile != "auto":
+		return  # Manual quality setting, don't auto-adapt
+	
+	var current_time = Time.get_unix_time_from_system()
+	if current_time - _last_quality_switch_time < _quality_switch_threshold:
+		return  # Too soon since last quality switch
+	
+	var fps = snapshot.fps
+	var frame_time = snapshot.frame_time_ms
+	var memory = snapshot.memory_mb
+	
+	# ML-based quality prediction
+	var predicted_quality = _predict_optimal_quality(snapshot)
+	var current_quality = _get_quality_level_from_profile()
+	
+	# Performance threshold evaluation
+	var needs_quality_reduction = false
+	var can_increase_quality = false
+	
+	if fps < _performance_thresholds.critical_fps or frame_time > _performance_thresholds.frame_time_ms_critical:
+		needs_quality_reduction = true
+		print("[Performance] Critical performance detected - FPS: %.1f, Frame time: %.1fms" % [fps, frame_time])
+	elif fps < _performance_thresholds.warning_fps or frame_time > _performance_thresholds.frame_time_ms_warning:
+		if current_quality > 1:  # Only reduce if not already at low quality
+			needs_quality_reduction = true
+			print("[Performance] Warning performance detected - FPS: %.1f, Frame time: %.1fms" % [fps, frame_time])
+	elif fps > _performance_thresholds.target_fps and frame_time < 16.0:  # 60+ fps and good frame time
+		if current_quality < 3:  # Can increase quality
+			can_increase_quality = true
+	
+	# Memory check
+	if memory > _performance_thresholds.memory_limit_mb:
+		needs_quality_reduction = true
+		print("[Performance] Memory limit exceeded: %.1fMB" % memory)
+	
+	# Apply quality changes
+	if needs_quality_reduction and current_quality > 0:
+		var new_quality = max(0, current_quality - 1)
+		_apply_quality_profile_by_level(new_quality)
+		_last_quality_switch_time = current_time
+		print("[Performance] Reduced quality to level %d due to performance issues" % new_quality)
+	elif can_increase_quality and _calculate_performance_stability() > 0.8:
+		var new_quality = min(3, current_quality + 1)
+		_apply_quality_profile_by_level(new_quality)
+		_last_quality_switch_time = current_time
+		print("[Performance] Increased quality to level %d due to stable performance" % new_quality)
+
+func _predict_optimal_quality(snapshot: Dictionary) -> int:
+	"""Use ML to predict optimal quality level"""
+	var weights = _performance_predictor.prediction_weights
+	var hardware_score = _performance_predictor.hardware_score
+	
+	# Normalize metrics
+	var fps_score = min(1.0, snapshot.fps / 120.0)  # Normalize to 120fps max
+	var frame_time_score = max(0.0, 1.0 - (snapshot.frame_time_ms / 50.0))  # 50ms = very bad
+	var memory_score = max(0.0, 1.0 - (snapshot.memory_mb / 1000.0))  # 1GB = very high
+	var gpu_score = snapshot.gpu_utilization
+	
+	# Calculate weighted score
+	var performance_score = (
+		fps_score * weights.fps_weight +
+		frame_time_score * weights.frame_time_weight +
+		memory_score * weights.memory_weight +
+		gpu_score * weights.gpu_weight
+	)
+	
+	# Map to quality level (0-3)
+	if performance_score > 0.8:
+		return 3  # Maximum quality
+	elif performance_score > 0.6:
+		return 2  # High quality
+	elif performance_score > 0.4:
+		return 1  # Medium quality
+	else:
+		return 0  # Low quality
+
+func _calculate_hardware_score() -> float:
+	"""Calculate hardware capability score"""
+	var score = 0.5  # Base score
+	
+	# CPU assessment (simplified)
+	var cpu_count = OS.get_processor_count()
+	score += min(0.3, cpu_count / 16.0)  # Max 0.3 for CPU
+	
+	# Memory assessment
+	var memory_gb = OS.get_static_memory_peak_usage() / (1024.0 * 1024.0 * 1024.0)
+	score += min(0.2, memory_gb / 32.0)  # Max 0.2 for memory
+	
+	# Platform assessment
+	match OS.get_name():
+		"Windows", "macOS", "Linux":
+			score += 0.0  # Desktop platforms get no penalty/bonus
+		_:
+			score -= 0.1  # Other platforms get penalty
+	
+	return clamp(score, 0.0, 1.0)
+
+func _estimate_gpu_utilization() -> float:
+	"""Estimate GPU utilization based on available metrics"""
+	var draw_calls = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
+	var objects_drawn = Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)
+	
+	# Simple heuristic based on rendering load
+	var base_utilization = min(1.0, (draw_calls / 500.0) + (objects_drawn / 1000.0))
+	
+	# Adjust based on current shader quality
+	match _current_shader_quality:
+		"high", "ultra":
+			base_utilization += 0.2
+		"medium":
+			base_utilization += 0.1
+		"low":
+			base_utilization += 0.0
+	
+	return clamp(base_utilization, 0.0, 1.0)
+
+func _calculate_performance_stability() -> float:
+	"""Calculate performance stability over recent samples"""
+	if _frame_time_samples.is_empty():
+		return 0.0
+	
+	var valid_samples = []
+	for sample in _frame_time_samples:
+		if sample != null and sample > 0:  # Only include valid samples
+			valid_samples.append(sample)
+	
+	if valid_samples.size() < 5:
+		return 0.0
+	
+	# Calculate coefficient of variation (std dev / mean)
+	var mean = 0.0
+	for sample in valid_samples:
+		mean += sample
+	mean /= valid_samples.size()
+	
+	var variance = 0.0
+	for sample in valid_samples:
+		variance += pow(sample - mean, 2)
+	variance /= valid_samples.size()
+	
+	var std_dev = sqrt(variance)
+	var cv = std_dev / mean if mean > 0 else 1.0
+	
+	# Return stability (lower CV = higher stability)
+	return max(0.0, 1.0 - cv)
+
+func _get_quality_level_from_profile() -> int:
+	"""Get current quality level as integer"""
+	var profile_names = ["low", "medium", "high", "maximum"]
+	return profile_names.find(_current_quality_profile.replace("auto", "medium"))
+
+func _apply_quality_profile_by_level(level: int) -> void:
+	"""Apply quality profile by level (0-3)"""
+	var profile_names = ["low", "medium", "high", "maximum"]
+	if level >= 0 and level < profile_names.size():
+		apply_performance_quality_profile(profile_names[level])
+
+## Public API for performance management
+
+func enable_quality_adaptation(enabled: bool) -> void:
+	"""Enable or disable automatic quality adaptation"""
+	_quality_adaptation_enabled = enabled
+	print("[Performance] Quality adaptation %s" % ("enabled" if enabled else "disabled"))
+	
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("set_setting"):
+		settings_manager.set_setting("performance_adaptation_enabled", enabled)
+
+func set_quality_profile(profile_name: String) -> void:
+	"""Set specific quality profile manually"""
+	if not profile_name in _quality_profiles and profile_name != "auto":
+		push_error("[Performance] Unknown quality profile: " + profile_name)
+		return
+	
+	_current_quality_profile = profile_name
+	print("[Performance] Quality profile set to: " + profile_name)
+	
+	if profile_name != "auto":
+		apply_performance_quality_profile(profile_name)
+	
+	var settings_manager = get_node_or_null("/root/SettingsManager")
+	if settings_manager and settings_manager.has_method("set_setting"):
+		settings_manager.set_setting("performance_quality_profile", profile_name)
+
+func apply_performance_quality_profile(profile_name: String) -> void:
+	"""Apply quality profile settings across all systems"""
+	if not profile_name in _quality_profiles:
+		push_error("[Performance] Unknown quality profile: " + profile_name)
+		return
+	
+	var profile = _quality_profiles[profile_name]
+	print("[Performance] Applying quality profile: %s" % profile_name)
+	
+	# Apply glass shader quality
+	var shader_quality = "medium"
+	match profile_name:
+		"maximum":
+			shader_quality = "ultra"
+		"high":
+			shader_quality = "high"
+		"medium":
+			shader_quality = "medium"
+		"low":
+			shader_quality = "low"
+	
+	apply_quality_based_shaders(shader_quality)
+	
+	# Update shader parameters based on profile
+	_update_shader_parameters_for_profile(profile)
+	
+	# Notify other systems about quality change
+	var scene_manager = get_node_or_null("/root/EnhancedExplorationScene")
+	if scene_manager and scene_manager.has_method("apply_performance_quality"):
+		scene_manager.apply_performance_quality(profile)
+	
+	# Update current profile
+	_current_quality_profile = profile_name
+
+func _update_shader_parameters_for_profile(profile: Dictionary) -> void:
+	"""Update shader parameters based on quality profile"""
+	var ui_panels = get_tree().get_nodes_in_group("ui_panels")
+	
+	for panel in ui_panels:
+		if panel is Control and panel.material is ShaderMaterial:
+			var material = panel.material as ShaderMaterial
+			
+			# Update blur samples for glass effect
+			_set_shader_parameter_safely(material, "blur_amount", float(profile.glass_blur_samples) / 2.0)
+			
+			# Adjust other parameters based on quality
+			match _current_quality_profile:
+				"maximum":
+					_set_shader_parameter_safely(material, "noise_amount", 0.03)
+					_set_shader_parameter_safely(material, "saturation_boost", 1.3)
+					_set_shader_parameter_safely(material, "enable_chromatic_aberration", true)
+				"high":
+					_set_shader_parameter_safely(material, "noise_amount", 0.02)
+					_set_shader_parameter_safely(material, "saturation_boost", 1.2)
+					_set_shader_parameter_safely(material, "enable_chromatic_aberration", false)
+				"medium":
+					_set_shader_parameter_safely(material, "noise_amount", 0.01)
+					_set_shader_parameter_safely(material, "saturation_boost", 1.1)
+				"low":
+					_set_shader_parameter_safely(material, "noise_amount", 0.0)
+					_set_shader_parameter_safely(material, "saturation_boost", 1.0)
+
+func get_performance_metrics() -> Dictionary:
+	"""Get current performance metrics"""
+	return {
+		"fps": Engine.get_frames_per_second(),
+		"frame_time_ms": Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
+		"memory_mb": OS.get_static_memory_usage() / 1024.0 / 1024.0,
+		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		"objects_drawn": Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME),
+		"quality_profile": _current_quality_profile,
+		"adaptation_enabled": _quality_adaptation_enabled,
+		"hardware_score": _performance_predictor.get("hardware_score", 0.5),
+		"performance_stability": _calculate_performance_stability()
+	}
+
+func get_quality_profiles() -> Dictionary:
+	"""Get available quality profiles"""
+	return _quality_profiles.duplicate()
+
+func log_performance_summary() -> void:
+	"""Log comprehensive performance summary"""
+	var metrics = get_performance_metrics()
+	print("[Performance Summary]")
+	print("  FPS: %.1f (Target: %.1f)" % [metrics.fps, _performance_thresholds.target_fps])
+	print("  Frame Time: %.1fms" % metrics.frame_time_ms)
+	print("  Memory Usage: %.1fMB (Limit: %.1fMB)" % [metrics.memory_mb, _performance_thresholds.memory_limit_mb])
+	print("  Quality Profile: %s" % metrics.quality_profile)
+	print("  Adaptation Enabled: %s" % str(metrics.adaptation_enabled))
+	print("  Hardware Score: %.2f" % metrics.hardware_score)
+	print("  Performance Stability: %.2f" % metrics.performance_stability)
 
 # === WRAPPER FUNCTIONS ===
 

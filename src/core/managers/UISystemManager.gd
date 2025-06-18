@@ -78,7 +78,7 @@ func _ready() -> void:
 	print("[UISystemManager] Initializing consolidated UI system")
 	
 	# Load Material3 generator dynamically
-	var generator_path = "res://src/ui/themes/generators/Material3ThemeGenerator.gd"
+	var generator_path = "res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd"
 	if ResourceLoader.exists(generator_path):
 		Material3Generator = load(generator_path)
 		if Material3Generator:
@@ -274,7 +274,7 @@ func _initialize_ui_pools() -> void:
 
 func _preload_shaders() -> void:
 	"""Preload glass morphism shaders"""
-	var shader_path = "res://src/ui/effects/shaders/glass_panel_v1.gdshader"
+	var shader_path = "res://src/ui_atomic/effects/shaders/glass_panel.gdshader"
 	if ResourceLoader.exists(shader_path):
 		_glass_shader_full = load(shader_path)
 	

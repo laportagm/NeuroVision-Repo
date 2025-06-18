@@ -33,6 +33,7 @@ const SimplePersistenceClass = preload("res://src/systems/persistence/SimplePers
 # === PRIVATE VARIABLES ===
 var _user_progress: Dictionary = {}
 var _achievements: Dictionary = {}
+var _session_stats: Dictionary = {}
 var _persistence
 var _autosave_timer: Timer
 var _last_save_time: float = 0.0
@@ -198,3 +199,18 @@ func _notification(what: int) -> void:
 		if PERSISTENCE_ENABLED and _persistence:
 			print("[Progress] Performing final save before exit...")
 			_save_progress()
+
+func _exit_tree() -> void:
+	"""Clean up resources on exit"""
+	# Stop autosave timer
+	if _autosave_timer and is_instance_valid(_autosave_timer):
+		_autosave_timer.stop()
+		_autosave_timer.queue_free()
+		_autosave_timer = null
+	
+	# Final save already handled in _notification
+	
+	# Clear data structures
+	_user_progress.clear()
+	_achievements.clear()
+	_session_stats.clear()

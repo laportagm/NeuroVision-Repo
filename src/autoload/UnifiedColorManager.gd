@@ -461,3 +461,69 @@ func get_system_status() -> Dictionary:
 		"color_cache_size": M3DesignTokens._color_cache.size(),
 		"validation_logs": UnifiedColorSystem._color_access_log.size()
 	}
+
+# === PHASE 1 ENHANCEMENT: SMART COLOR ADAPTATION SYSTEM ===
+
+# Smart Color Adaptation System
+var _color_usage_analytics = {}
+var _current_context = "default"
+var _adaptation_enabled = true
+
+func enable_smart_color_adaptation(enabled: bool) -> void:
+	_adaptation_enabled = enabled
+	if enabled:
+		print("[ColorManager] Smart color adaptation enabled")
+	else:
+		print("[ColorManager] Using static color system")
+
+func set_brain_region_context(region: String) -> void:
+	if not _adaptation_enabled:
+		return
+		
+	_current_context = region
+	var contextual_colors = M3DesignTokens.generate_contextual_palette(region)
+	
+	# Smoothly transition to contextual colors
+	_animate_color_transition(contextual_colors)
+	
+	print("[ColorManager] Switched to %s context" % region)
+
+func _animate_color_transition(new_colors: Dictionary) -> void:
+	var tween = create_tween()
+	tween.set_parallel(true)
+	
+	# Animate primary color transition
+	var current_primary = get_color("primary")
+	var target_primary = new_colors.get("primary", current_primary)
+	
+	tween.tween_method(_interpolate_primary_color, current_primary, target_primary, 0.8)
+	
+	# Emit signal for UI components to update
+	await tween.finished
+	theme_changed.emit(current_theme_variant)
+
+func _interpolate_primary_color(_color: Color) -> void:
+	# Update the current primary color for smooth transitions
+	# This would integrate with the existing color system
+	pass
+
+## Clean up resources on exit
+func _exit_tree() -> void:
+	"""Clean up resources to prevent RID leaks"""
+	print("[UnifiedColorManager] Cleaning up resources...")
+	
+	# Clear color caches
+	if M3DesignTokens._color_cache:
+		M3DesignTokens._color_cache.clear()
+	
+	# Clear any cached materials or styles
+	_brain_structure_color_overrides.clear()
+	
+	# Clear validation logs
+	if UnifiedColorSystem._color_access_log:
+		UnifiedColorSystem._color_access_log.clear()
+	
+	# Clear adaptation analytics
+	_color_usage_analytics.clear()
+	
+	print("[UnifiedColorManager] Cleanup complete")

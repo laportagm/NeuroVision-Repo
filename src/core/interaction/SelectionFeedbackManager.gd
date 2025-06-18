@@ -85,7 +85,7 @@ func provide_selection_feedback(mesh_instance: MeshInstance3D, structure_name: S
 	# Accessibility announcement
 	_announce_selection(structure_name)
 
-func provide_hover_feedback(mesh_instance: MeshInstance3D, structure_name: String) -> void:
+func provide_hover_feedback(mesh_instance: MeshInstance3D, _structure_name: String) -> void:
 	"""Provide subtle feedback for structure hovering"""
 	if not mesh_instance:
 		return
@@ -182,7 +182,7 @@ func _preload_audio_resources() -> void:
 			# Create placeholder sound if file doesn't exist
 			_audio_cache[key] = _create_placeholder_sound(key)
 
-func _create_placeholder_sound(type: String) -> AudioStream:
+func _create_placeholder_sound(_type: String) -> AudioStream:
 	"""Create a simple procedural sound as placeholder"""
 	# In production, you'd have actual audio files
 	# This is just to prevent errors during development
@@ -213,8 +213,7 @@ func _create_selection_ring(index: int) -> MeshInstance3D:
 	var torus = TorusMesh.new()
 	torus.inner_radius = 0.8 + (index * 0.1)
 	torus.outer_radius = 1.0 + (index * 0.1)
-	torus.height = 0.05
-	torus.radial_segments = 32
+	torus.ring_segments = 32
 	torus.rings = 8
 	ring.mesh = torus
 	
@@ -223,7 +222,7 @@ func _create_selection_ring(index: int) -> MeshInstance3D:
 	material.albedo_color = M3DesignTokens.get_color("primary")
 	material.emission_enabled = true
 	material.emission = M3DesignTokens.get_color("primary")
-	material.emission_energy = 0.5 - (index * 0.1)
+	material.emission_energy_multiplier = 0.5 - (index * 0.1)
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.albedo_color.a = 0.8 - (index * 0.2)
 	ring.material_override = material
@@ -250,30 +249,42 @@ func _create_selection_pulse(mesh_instance: MeshInstance3D) -> void:
 	
 	_active_tweens[mesh_instance] = tween
 
-func _show_selection_indicator(mesh_instance: MeshInstance3D) -> void:
+func _show_selection_indicator(_mesh_instance: MeshInstance3D) -> void:
 	"""Show and animate selection indicator at mesh position"""
-	if not _selection_indicator:
-		return
+	# Selection indicator disabled - no visual rings shown
+	# This removes the blue blur ring that appears after right-clicking
+	return
 	
-	_selection_indicator.visible = true
-	_selection_indicator.global_position = mesh_instance.global_position
-	
-	# Animate rings
-	for i in range(_selection_indicator.get_child_count()):
-		var ring = _selection_indicator.get_child(i)
-		if ring is MeshInstance3D:
-			_animate_selection_ring(ring, i)
+	# Original code commented out to remove visual rings
+	# if not _selection_indicator:
+	# 	return
+	# 
+	# _selection_indicator.visible = true
+	# _selection_indicator.global_position = mesh_instance.global_position
+	# 
+	# # Animate rings
+	# for i in range(_selection_indicator.get_child_count()):
+	# 	var ring = _selection_indicator.get_child(i)
+	# 	if ring is MeshInstance3D:
+	# 		_animate_selection_ring(ring, i)
 
-func _animate_selection_ring(ring: MeshInstance3D, index: int) -> void:
+func _animate_selection_ring(ring: MeshInstance3D, _index: int) -> void:
 	"""Animate individual selection ring"""
+	# Disabled spinning animation - rings now remain static
+	# var tween = create_tween()
+	# tween.set_loops()
+	# tween.set_trans(Tween.TRANS_LINEAR)
+	# 
+	# var rotation_speed = 1.0 + (index * 0.5)
+	# var duration = 2.0 / rotation_speed
+	# 
+	# tween.tween_property(ring, "rotation:y", TAU, duration).from(0.0)
+	
+	# Optional: Add a subtle pulse animation instead of spinning
 	var tween = create_tween()
 	tween.set_loops()
-	tween.set_trans(Tween.TRANS_LINEAR)
-	
-	var rotation_speed = 1.0 + (index * 0.5)
-	var duration = 2.0 / rotation_speed
-	
-	tween.tween_property(ring, "rotation:y", TAU, duration).from(0.0)
+	tween.tween_property(ring, "scale", Vector3.ONE * 1.1, 1.0)
+	tween.tween_property(ring, "scale", Vector3.ONE, 1.0)
 
 func _create_hover_glow(mesh_instance: MeshInstance3D) -> void:
 	"""Create subtle glow effect for hovered mesh"""
@@ -286,12 +297,20 @@ func _create_hover_glow(mesh_instance: MeshInstance3D) -> void:
 	var duration = _get_feedback_duration()
 	
 	# Store original emission values and boost them
+	var has_tweeners = false
 	for i in range(mesh_instance.get_surface_override_material_count()):
 		var material = mesh_instance.get_surface_override_material(i)
 		if material and material is StandardMaterial3D:
-			var original_emission = material.emission_energy
-			var target_emission = original_emission + hover_glow_intensity
-			tween.tween_property(material, "emission_energy", target_emission, duration * 0.3)
+			var std_material = material as StandardMaterial3D
+			if std_material.emission_enabled:
+				var original_emission = std_material.emission_energy_multiplier
+				var target_emission = original_emission + hover_glow_intensity
+				tween.tween_property(std_material, "emission_energy_multiplier", target_emission, duration * 0.3)
+				has_tweeners = true
+	
+	# If no tweeners were added, kill the tween to prevent errors
+	if not has_tweeners:
+		tween.kill()
 
 func _create_error_shake() -> void:
 	"""Create subtle screen shake for errors"""
@@ -341,7 +360,7 @@ func _play_error_sound() -> void:
 		_audio_player.stream = _audio_cache["error"]
 		_audio_player.play()
 
-func _trigger_haptic_feedback(strength: float) -> void:
+func _trigger_haptic_feedback(_strength: float) -> void:
 	"""Trigger haptic feedback if available"""
 	# This would integrate with platform-specific haptic APIs
 	# For now, we'll just log it

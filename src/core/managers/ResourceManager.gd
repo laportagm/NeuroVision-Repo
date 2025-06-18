@@ -44,13 +44,13 @@ const CATEGORY_EXTENSIONS = {
 	ResourceCategory.FONTS: [".ttf", ".otf", ".woff", ".woff2"]
 }
 
-# Essential resources that should always be cached
+# Essential resources that should always be cached - using atomic UI paths
 const ESSENTIAL_RESOURCES = {
-	"glass_panel_material": "res://src/ui/resources/materials/GlassPanelMaterial.tres",
-	"glass_panel_style": "res://src/ui/resources/styles/GlassPanelStyle.tres",
-	"sidebar_panel_style": "res://src/ui/resources/styles/SidebarPanelStyle.tres",
-	"bottom_panel_style": "res://src/ui/resources/styles/BottomPanelStyle.tres"
-	# Note: BaseEducationalScene.tscn removed as it doesn't exist yet
+	"glass_panel_material": "res://src/ui_atomic/resources/materials/GlassPanelMaterial.tres",
+	"glass_panel_style": "res://src/ui_atomic/resources/styles/GlassPanelStyle.tres",
+	"sidebar_panel_style": "res://src/ui_atomic/resources/styles/SidebarPanelStyle.tres",
+	"bottom_panel_style": "res://src/ui_atomic/resources/styles/BottomPanelStyle.tres"
+	# Note: Using atomic UI resource paths for consistency
 }
 
 # === PRIVATE VARIABLES ===
@@ -96,13 +96,13 @@ func load_resource(resource_path: String, cache_policy: CachePolicy = CachePolic
 	return resource
 
 func load_shared_style(style_name: String) -> StyleBox:
-	"""Load a shared UI style resource"""
-	var style_path = "res://src/ui/resources/styles/" + style_name + ".tres"
+	"""Load a shared UI style resource from atomic UI"""
+	var style_path = "res://src/ui_atomic/resources/styles/" + style_name + ".tres"
 	return load_resource(style_path, CachePolicy.PERMANENT)
 
 func load_shared_material(material_name: String) -> Material:
-	"""Load a shared material resource"""
-	var material_path = "res://src/ui/resources/materials/" + material_name + ".tres"
+	"""Load a shared material resource from atomic UI"""
+	var material_path = "res://src/ui_atomic/resources/materials/" + material_name + ".tres"
 	return load_resource(material_path, CachePolicy.PERMANENT)
 
 func preload_resources(resource_paths: Array[String], cache_policy: CachePolicy = CachePolicy.TEMPORARY) -> void:
@@ -319,3 +319,20 @@ func _remove_lru_resources() -> void:
 		if _cache_size_bytes <= target_size:
 			break
 		_remove_from_cache(candidate.path)
+
+func _exit_tree() -> void:
+	"""Clean up resources on exit"""
+	print("[ResourceManager] Cleaning up resources...")
+	
+	# Stop cleanup timer
+	if _cleanup_timer:
+		_cleanup_timer.stop()
+		_cleanup_timer.queue_free()
+	
+	# Clear all caches
+	_resource_cache.clear()
+	_cache_metadata.clear()
+	_reference_counts.clear()
+	_cache_size_bytes = 0
+	
+	print("[ResourceManager] Cleanup complete")

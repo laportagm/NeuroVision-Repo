@@ -51,7 +51,13 @@
         "sdras.night-owl",                   // Night Owl theme (great for long coding sessions)
         
         // === ACCESSIBILITY TESTING ===
-        "deque-systems.vscode-axe-linter"    // Accessibility linting
+        "deque-systems.vscode-axe-linter",   // Accessibility linting
+        
+        // === ENHANCED DEVELOPMENT ===
+        "ms-vscode.vscode-json",             // Better JSON editing
+        "redhat.vscode-yaml",                // YAML support for CI/CD
+        "ms-vscode.hexeditor",               // Binary file inspection
+        "bierner.github-markdown-preview"    // Enhanced markdown preview
     ],
     
     // Extensions that might conflict or aren't needed

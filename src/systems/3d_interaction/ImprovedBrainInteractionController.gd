@@ -410,7 +410,7 @@ func _create_highlighted_material(base_material: Material, highlight_color: Colo
 	if use_emission:
 		new_material.emission_enabled = true
 		new_material.emission = highlight_color
-		new_material.emission_energy = emission_strength
+		new_material.emission_energy_multiplier = emission_strength
 	
 	if use_outline:
 		new_material.grow_amount = outline_width

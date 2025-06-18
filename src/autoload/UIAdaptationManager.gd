@@ -424,18 +424,20 @@ func _apply_educational_theme() -> void:
 	var resolved_variant = _resolve_theme_variant()
 	var generator_variant = _convert_to_generator_variant(resolved_variant)
 	
-	# Load and use EducationalThemeGenerator directly
-	var theme_generator_script = load("res://src/ui/themes/EducationalThemeGenerator.gd")
+	# EducationalThemeGenerator not implemented yet - use fallback
+	push_warning("[UIAdaptationManager] EducationalThemeGenerator not available, using Material3Generator fallback")
 	
-	# Generate educational theme
-	_current_educational_theme = theme_generator_script.generate_educational_theme(generator_variant, _current_learning_level)
+	# Use Material3Generator as fallback
+	const Material3Generator = preload("res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd")
+	var fallback_theme = Material3Generator.new().generate_theme()
+	_current_educational_theme = fallback_theme
 	
 	# Apply theme to UI system
 	if has_node("/root/UIThemeManager"):
 		var theme_mgr = get_node("/root/UIThemeManager")
 		var theme_name = "educational_" + str(resolved_variant).to_lower() + "_level" + str(_current_learning_level)
 		theme_mgr.apply_theme(_current_educational_theme, theme_name)
-		print("[UIAdaptationManager] Applied educational theme - Variant: " + str(resolved_variant) + ", Level: " + str(_current_learning_level))
+		print("[UIAdaptationManager] Applied fallback educational theme - Variant: " + str(resolved_variant) + ", Level: " + str(_current_learning_level))
 	else:
 		push_warning("[UIAdaptationManager] UIThemeManager not available for educational theme application")
 	

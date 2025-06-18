@@ -1,0 +1,164 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4olnrbjeqmk6"]
+
+[ext_resource type="Script" uid="uid://clvte0p7h1h4x" path="res://src/ui_atomic/organisms/StructureInfoPanel.gd" id="1_8xqnf"]
+[ext_resource type="Shader" uid="uid://dqk0ra5nbr0in" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="2_glass"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("2_glass")
+shader_parameter/blur_amount = 6.0
+shader_parameter/tint_color = Color(0.12, 0.15, 0.18, 0.95)
+
+[node name="StructureInfoPanel" type="Control"]
+material = SubResource("ShaderMaterial_1")
+layout_mode = 3
+anchor_left = 0.971875
+anchor_right = 0.971875
+anchor_bottom = 0.931944
+offset_left = -320.0
+offset_top = 79.0
+offset_right = 27.0
+offset_bottom = -50.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_8xqnf")
+metadata/_edit_use_anchors_ = true
+
+[node name="BackgroundGlass" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_1")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.1, 0.12, 0.95)
+
+[node name="ContentContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="HeaderSection" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 16
+
+[node name="StructureIcon" type="TextureRect" parent="ContentContainer/HeaderSection"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+stretch_mode = 5
+
+[node name="TitleArea" type="VBoxContainer" parent="ContentContainer/HeaderSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="StructureTitle" type="Label" parent="ContentContainer/HeaderSection/TitleArea"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Structure Name"
+autowrap_mode = 2
+
+[node name="LatinName" type="Label" parent="ContentContainer/HeaderSection/TitleArea"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Latin Name"
+autowrap_mode = 2
+
+[node name="BookmarkButton" type="Button" parent="ContentContainer/HeaderSection"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "★"
+flat = true
+
+[node name="TabContainer" type="TabContainer" parent="ContentContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Overview" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_name = "Overview"
+metadata/_tab_index = 0
+
+[node name="OverviewContent" type="RichTextLabel" parent="ContentContainer/TabContainer/Overview"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Loading overview..."
+fit_content = true
+
+[node name="Details" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_name = "Details"
+metadata/_tab_index = 1
+
+[node name="DetailedContent" type="RichTextLabel" parent="ContentContainer/TabContainer/Details"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Loading detailed information..."
+fit_content = true
+
+[node name="Clinical" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_name = "Clinical"
+metadata/_tab_index = 2
+
+[node name="ClinicalContent" type="RichTextLabel" parent="ContentContainer/TabContainer/Clinical"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Loading clinical information..."
+fit_content = true
+
+[node name="Related" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_name = "Related"
+metadata/_tab_index = 3
+
+[node name="RelatedStructures" type="VBoxContainer" parent="ContentContainer/TabContainer/Related"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ActionBar" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="QuizButton" type="Button" parent="ContentContainer/ActionBar"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Quiz"
+
+[node name="NotesButton" type="Button" parent="ContentContainer/ActionBar"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Notes"
+
+[node name="CloseButton" type="Button" parent="ContentContainer/ActionBar"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "Close"

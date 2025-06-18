@@ -201,6 +201,18 @@
   "markdown.preview.fontSize": 14,
   "markdown.preview.lineHeight": 1.6,
 
+  // ====== Enhanced Git Integration ======
+  "git.inputValidation": true,
+  "git.rebaseWhenSync": true,
+  "git.autofetchPeriod": 180,
+
+  // ====== Accessibility Enhancement ======
+  "accessibility.signals": {
+    "chatRequestSent": "on",
+    "chatResponseReceived": "on"
+  },
+  "editor.accessibilitySupport": "on",
+
   // ====== Debug Settings ======
   "debug.console.fontSize": 13,
   "debug.console.fontFamily": "'JetBrains Mono', monospace",
@@ -214,7 +226,7 @@
   "extensions.ignoreRecommendations": false,
   "workbench.startupEditor": "none",
   "workbench.colorTheme": "Default Dark+",
-  "workbench.iconTheme": "vscode-icons",
+  "workbench.iconTheme": "vs-seti",
 
   // ====== Custom File Icons ======
   "material-icon-theme.files.associations": {

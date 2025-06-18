@@ -67,15 +67,31 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            // Test Enhanced Exploration Scene directly
-            "name": "🧠 Test Brain Viewer",
+            // Educational Content Validation
+            "name": "🧪 Educational Content Validator",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
+            "args": [
+                "--path", 
+                "${workspaceFolder}",
+                "--script", 
+                "res://tools/scripts/quick_test.sh",
+                "--headless"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            // Test current main scene (node_3d)
+            "name": "🧠 Test Main Educational Scene", 
             "type": "node-terminal",
             "request": "launch",
             "command": "/Applications/Godot.app/Contents/MacOS/Godot",
             "args": [
                 "--path",
                 "${workspaceFolder}",
-                "res://src/scenes/EnhancedExplorationScene.tscn"
+                "res://scenes/main/node_3d.tscn"
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
