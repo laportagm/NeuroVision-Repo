@@ -1,0 +1,549 @@
+NeuroVision Comprehensive Error Report
+Generated: Thu Jun 19 16:35:12 EDT 2025
+========================================
+
+
+=== GDScript Syntax Issues ===
+
+Checking for Python-style syntax...
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/accessibility/SimpleFocusManager.gd
+18:var _focus_registry: Array[Control] = []
+27:	if control in _focus_registry:
+62:	for control in _focus_registry:
+
+
+=== Potential Missing Node References ===
+
+Checking for get_node calls...
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/3d/EnhancedExplorationScene.gd
+1012:		var perf_monitor = get_node("/root/PerformanceMonitor")
+1284:		var content_service = get_node("/root/StructureContentService")
+1290:		var learning_content = get_node("/root/LearningContentManager")
+1769:		var assessment_service = get_node("/root/AssessmentService")
+2256:		var assessment_service = get_node("/root/AssessmentService")
+2266:		var assessment_service = get_node("/root/AssessmentService")
+2282:		var assessment_service = get_node("/root/AssessmentService")
+2295:		var assessment_service = get_node("/root/AssessmentService")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/runtime_test.gd
+47:        var singleton = get_node("/root/" + autoload_name)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/test_phase4_material3.gd
+178:		var theme_manager = get_node("/root/UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/managers/CoreSystemManager.gd
+355:				get_node("/root/UISystemManager").set_accessibility_feature("high_contrast", enabled)
+358:				get_node("/root/UISystemManager").set_accessibility_feature("large_text", enabled)
+361:				get_node("/root/UISystemManager").set_accessibility_feature("reduced_motion", enabled)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/interaction/SelectionFeedbackManager.gd
+61:		var accessibility = get_node("/root/AccessibilityManager")
+374:		var accessibility = get_node("/root/AccessibilityManager")
+381:		var accessibility = get_node("/root/AccessibilityManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/M3AnimationHelper.gd
+311:		return control.get_node("StateOverlay")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/ContextualColorGenerator.gd
+74:		settings_manager = tree.root.get_node("SettingsManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/PerformanceAwareShaderManager.gd
+106:		performance_monitor = tree.root.get_node("UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/generators/Material3ThemeGenerator.gd
+38:			accessibility_manager = tree.root.get_node("AccessibilityManager")
+43:			performance_monitor = tree.root.get_node("UIThemeManager")
+827:		var core_manager = tree.root.get_node("CoreSystemManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/QuizPanel.gd
+205:	var feedback_content = correct_feedback.get_node("CorrectContainer/FeedbackText")
+228:	var feedback_content = incorrect_feedback.get_node("IncorrectContainer/FeedbackText")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/LearningProgressManager.gd
+264:		var content_manager = get_node("/root/LearningContentManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UIAdaptationManager.gd
+298:		var settings_mgr = get_node("/root/SettingsManager")
+304:		var accessibility_mgr = get_node("/root/AccessibilityManager")
+317:	var settings_mgr = get_node("/root/SettingsManager")
+407:		var settings_mgr = get_node("/root/SettingsManager")
+413:		var settings_mgr = get_node("/root/SettingsManager")
+419:		var settings_mgr = get_node("/root/SettingsManager")
+437:		var theme_mgr = get_node("/root/UIThemeManager")
+454:		var accessibility_mgr = get_node("/root/AccessibilityManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/LearningContentManager.gd
+92:		var ui_mgr = get_node("/root/UIAdaptationManager")
+99:		var content_svc = get_node("/root/StructureContentService")
+114:	var content_svc = get_node("/root/StructureContentService")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UnifiedColorManager.gd
+351:		var theme_manager = get_node("/root/UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/HighlightSystemIntegration.gd
+20:		_highlight_manager = get_node("/root/HighlightMaterialManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_rendering/AdvancedPostProcessingManager.gd
+383:		performance_monitor = tree.root.get_node("UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_rendering/ComprehensiveBrainRenderingSystem.gd
+196:		performance_monitor = tree.root.get_node("UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_rendering/HDRIEnvironmentManager.gd
+174:		performance_monitor = tree.root.get_node("UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_rendering/MedicalGradeLightingManager.gd
+193:		performance_monitor = tree.root.get_node("UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_rendering/LODLightingManager.gd
+130:		performance_monitor = tree.root.get_node("UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_rendering/RealisticBrainMaterialManager.gd
+87:		performance_monitor = tree.root.get_node("UIThemeManager")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/debug/DebugSystem.gd
+221:		if not get_node("/root/" + autoload):
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/debug/DebugConsole.gd
+57:		var debug_system = get_node("/root/DebugSystem")
+291:		var debug_system = get_node("/root/DebugSystem")
+358:		var knowledge = get_node("/root/KnowledgeService")
+375:		var theme_manager = get_node("/root/UIThemeManager")
+392:		var knowledge = get_node("/root/KnowledgeService")
+465:		var debug_system = get_node("/root/DebugSystem")
+481:		"UnifiedColorManager": func(): return get_node("/root/UnifiedColorManager").get_current_theme() != null,
+482:		"UIThemeManager": func(): return get_node("/root/UIThemeManager").get_current_theme_mode() != null,
+483:		"CoreSystemManager": func(): return get_node("/root/CoreSystemManager").is_ready,
+484:		"UISystemManager": func(): return get_node("/root/UISystemManager").is_ready
+
+
+=== Resource Loading Without Validation ===
+
+Checking for unvalidated resource loads...
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/ui/MainMenu.gd
+4:const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/3d/EnhancedExplorationScene.gd
+4:const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+622:	var NeuroVisionTheme = preload("res://src/ui_atomic/themes/utilities/apply_neurovision_theme.gd")
+1230:	var BrainInteractionController = preload("res://src/systems/3d_interaction/ImprovedBrainInteractionController.gd")
+1733:	var ModelLoader = preload("res://src/systems/3d_interaction/ModelLoader.gd")
+1740:	var CameraPresetManager = preload("res://src/systems/3d_interaction/CameraPresetManager.gd")
+1746:	var AnnotationSystem = preload("res://src/systems/3d_interaction/AnnotationSystem.gd")
+1754:	var QuizPanelScene = preload("res://src/ui_atomic/organisms/QuizPanel.tscn")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/tools/scripts/setup_unified_colors.gd
+166:	var migration_script = load("res://src/ui/themes/ColorSystemMigration.gd")
+226:	var preset_script = load("res://src/ui/themes/ThemePresetManager.gd")
+249:	var validator_script = load("res://src/ui/themes/ColorSystemValidator.gd")
+279:	var test_script = load("res://tests/test_unified_color_system.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/runtime_test.gd
+102:    var exploration_scene = load("res://scenes/3d/EnhancedExplorationScene.tscn")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/simple_phase4_test.gd
+7:	var generator_script = preload("res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd")
+11:	var shader_manager_script = preload("res://src/ui_atomic/themes/utilities/PerformanceAwareShaderManager.gd")
+15:	var color_generator_script = preload("res://src/ui_atomic/themes/utilities/ContextualColorGenerator.gd")
+19:	var M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/quick_test.gd
+4:	var M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/test_phase4_material3.gd
+17:	var generator = preload("res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd").new()
+54:	var shader_manager = preload("res://src/ui_atomic/themes/utilities/PerformanceAwareShaderManager.gd").new()
+85:	var color_generator = preload("res://src/ui_atomic/themes/utilities/ContextualColorGenerator.gd").new()
+126:	var generator = preload("res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd").new()
+187:	var M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/utils/launch_app.gd
+11:	var menu_scene = load("res://src/ui/screens/MainMenu.tscn")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/materials/MedicalGlassMaterial.gd
+36:	shader = preload("res://src/ui_atomic/effects/shaders/medical_glass.gdshader")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/ThemeEffectsManager.gd
+13:const GLASS_MORPHISM_SHADER = preload("res://src/ui/effects/shaders/glass_morphism_ui.gdshader")
+15:# const THEME_TRANSITION_SHADER = preload("res://src/ui/effects/shaders/theme_transition.gdshader")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/M3AnimationHelper.gd
+11:const M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/M3ComponentIntegrator.gd
+4:const ButtonMotionHandler = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/ShaderColorAdapter.gd
+289:	# material.shader = load("res://src/ui/effects/shaders/glass_panel_v1.gdshader")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/M3PerformanceIntegration.gd
+11:const M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+12:const PerformanceAdapter = preload("res://src/ui_atomic/themes/utilities/PerformanceThemeAdapter.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/ContextualColorGenerator.gd
+32:var M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/utilities/PerformanceAwareShaderManager.gd
+213:	var M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/generators/GenerateNeuroVisionThemes.gd
+396:	var Validator = preload("res://src/ui/themes/validation/M3AccessibilityValidator.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/generators/Material3ThemeGenerator.gd
+15:var M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+428:	var M3Performance = preload("res://src/ui_atomic/themes/utilities/M3PerformanceIntegration.gd")
+546:	var Validator = preload("res://src/ui_atomic/themes/validation/M3AccessibilityValidator.gd")
+573:	var Validator = preload("res://src/ui_atomic/themes/validation/M3AccessibilityValidator.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/validation/M3AccessibilityValidator.gd
+11:const M3Tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/QuizPanel.gd
+4:const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/StructureInfoPanel.gd
+3:const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UIAdaptationManager.gd
+431:	const Material3Generator = preload("res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UIThemeManager.gd
+23:const Material3Generator = preload("res://src/ui_atomic/themes/generators/Material3ThemeGenerator.gd")
+1071:	const design_tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/ProgressTracker.gd
+31:const SimplePersistenceClass = preload("res://src/systems/persistence/SimplePersistence.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/OnboardingManager.gd
+228:	var tutorial_scene = load("res://src/ui/components/TutorialOverlay.tscn")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/HighlightStateMachine.gd
+9:const HighlightState = preload("res://src/systems/3d_interaction/HighlightMaterialManager.gd").HighlightState
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/GPUDetector.gd
+4:const PerformanceMonitor = preload("res://src/autoload/PerformanceMonitor.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/HighlightSystemIntegration.gd
+23:		_highlight_manager = preload("res://src/systems/3d_interaction/HighlightMaterialManager.gd").new()
+122:		var StateMachine = preload("res://src/systems/3d_interaction/HighlightStateMachine.gd")
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/ModelLoader.gd
+4:const PerformanceMonitor = preload("res://src/autoload/PerformanceMonitor.gd")
+69:	var GPUDetectorScript = preload("res://src/systems/3d_interaction/GPUDetector.gd")
+
+
+=== Signal Connections Without Error Handling ===
+
+Checking for signal connections...
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/ui/MainMenu.gd
+174:	start_button.pressed.connect(_on_start_pressed)
+176:		professional_button.pressed.connect(_on_professional_pressed)
+177:	settings_button.pressed.connect(_on_settings_pressed)
+178:	quit_button.pressed.connect(_on_quit_pressed)
+189:	start_button.focus_entered.connect(func(): ButtonMotionHandlerScript.animate_button_focus(start_button))
+190:	start_button.focus_exited.connect(func(): ButtonMotionHandlerScript.animate_button_unfocus(start_button))
+192:	professional_button.focus_entered.connect(func(): ButtonMotionHandlerScript.animate_button_focus(professional_button))
+193:	professional_button.focus_exited.connect(func(): ButtonMotionHandlerScript.animate_button_unfocus(professional_button))
+195:	settings_button.focus_entered.connect(func(): ButtonMotionHandlerScript.animate_button_focus(settings_button))
+196:	settings_button.focus_exited.connect(func(): ButtonMotionHandlerScript.animate_button_unfocus(settings_button))
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/3d/EnhancedExplorationScene.gd
+488:		get_tree().node_configuration_warning_changed.connect(_on_node_warning_changed)
+593:	view_presets.item_selected.connect(_on_view_preset_selected)
+602:	label_toggle.toggled.connect(_on_labels_toggled)
+603:	quiz_button.pressed.connect(_on_quiz_pressed)
+604:	help_button.pressed.connect(_on_help_pressed)
+605:	help_close.pressed.connect(func(): help_overlay.visible = false)
+880:	_camera_collision_area.body_entered.connect(_on_camera_body_collision_detected)
+975:	info_panel.close_requested.connect(_on_info_panel_closed)
+976:	info_panel.quiz_requested.connect(_on_info_panel_quiz_requested)
+979:	quiz_close_button.pressed.connect(_on_quiz_close_pressed)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/managers/CoreSystemManager.gd
+231:	_performance_timer.timeout.connect(_update_performance_stats)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/managers/ResourceManager.gd
+195:	_cleanup_timer.timeout.connect(_periodic_cleanup)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/interaction/BrainStructureSelectionManager.gd
+287:	_hover_timer.timeout.connect(_show_tooltip)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/interaction/SelectionFeedbackManager.gd
+63:			accessibility.audio_cues_changed.connect(_on_audio_cues_changed)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/molecules/TutorialOverlay.gd
+123:	next_button.pressed.connect(func(): next_pressed.emit())
+124:	skip_button.pressed.connect(func(): skip_pressed.emit())
+125:	previous_button.pressed.connect(func(): previous_pressed.emit())
+126:	close_button.pressed.connect(func(): skip_pressed.emit())
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd
+51:	button.mouse_entered.connect(func(): _animate_hover(button, true))
+52:	button.mouse_exited.connect(func(): _animate_hover(button, false))
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/core/M3DesignTokens.gd
+649:	control.gui_input.connect(func(event):
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/validation/ColorSystemValidator.gd
+439:		scene_tree.connect("node_added", _on_node_added)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/QuizPanel.gd
+115:		btn.pressed.connect(func(): _on_assessment_selected(assessment.id))
+400:	submit_button.pressed.connect(_on_submit_pressed)
+401:	skip_button.pressed.connect(_on_skip_pressed)
+402:	explanation_button.pressed.connect(_on_explanation_pressed)
+403:	close_button.pressed.connect(_on_close_pressed)
+404:	confidence_slider.value_changed.connect(_on_confidence_changed)
+473:		btn.toggled.connect(func(pressed): 
+551:		btn.toggled.connect(func(pressed): 
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/StructureInfoPanel.gd
+227:	_close_button.pressed.connect(_on_close_pressed)
+228:	_quiz_button.pressed.connect(_on_quiz_pressed)
+229:	_notes_button.pressed.connect(_on_notes_pressed)
+230:	_bookmark_button.pressed.connect(_on_bookmark_pressed)
+270:		_auto_hide_timer.timeout.connect(hide_panel)
+359:		structure_button.pressed.connect(_on_related_structure_pressed.bind(structure_name))
+502:	quiz_button.pressed.connect(_on_quiz_pressed)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/LearningProgressManager.gd
+351:	_auto_save_timer.timeout.connect(_save_progress_data)
+357:	_session_timer.timeout.connect(_check_session_timeout)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UIAdaptationManager.gd
+299:		settings_mgr.setting_changed.connect(_on_setting_changed)
+305:		accessibility_mgr.accessibility_mode_changed.connect(_on_accessibility_changed)
+309:	get_viewport().size_changed.connect(_on_window_size_changed)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/NetworkManager.gd
+44:	_sync_timer.timeout.connect(_process_sync_queue)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UIThemeManager.gd
+113:		settings_manager.setting_changed.connect(_on_setting_changed)
+118:		performance_monitor.quality_level_changed.connect(_on_quality_level_changed)
+596:	timer.timeout.connect(func():
+762:		get_tree().create_timer(theme_transition_duration * 0.5).timeout.connect(func():
+1111:	_performance_monitor_timer.timeout.connect(_monitor_performance_metrics)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/ProgressTracker.gd
+102:	_autosave_timer.timeout.connect(_on_autosave_timeout)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/LearningContentManager.gd
+93:		ui_mgr.learning_level_changed.connect(_on_learning_level_changed)
+100:		content_svc.content_ready.connect(_on_structure_content_ready)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/PerformanceMonitor.gd
+116:	_update_timer.timeout.connect(_update_metrics)
+122:	_quality_timer.timeout.connect(_check_and_adjust_quality)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UIPoolManager.gd
+358:	_cleanup_timer.timeout.connect(_on_cleanup_timer)
+365:	_metrics_timer.timeout.connect(_on_metrics_timer)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/OnboardingManager.gd
+245:	_tutorial_overlay.next_pressed.connect(next_step)
+246:	_tutorial_overlay.skip_pressed.connect(skip_onboarding)
+247:	_tutorial_overlay.previous_pressed.connect(previous_step)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UnifiedColorManager.gd
+336:			validation_failed.connect(_on_validation_failed)
+356:				theme_manager.theme_changed.connect(_on_theme_manager_changed)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/AuthenticationManager.gd
+55:	_session_timer.timeout.connect(_on_session_timeout)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/IntelOptimizer.gd
+222:	gc_timer.timeout.connect(_force_garbage_collection)
+240:		performance_monitor.performance_warning.connect(_on_performance_warning)
+242:		performance_monitor.performance_critical.connect(_on_performance_critical)
+257:	monitor_timer.timeout.connect(_check_intel_performance)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/HighlightMaterialManager.gd
+271:	tween.finished.connect(_on_transition_complete.bind(mesh, mat_state))
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/HighlightSystemIntegration.gd
+56:		_brain_interaction.structure_highlighted.connect(_on_structure_highlighted)
+59:		_brain_interaction.structure_selected.connect(_on_structure_selected)
+62:		_brain_interaction.selection_cleared.connect(_on_selection_cleared)
+126:		_state_machines[mesh].state_changed.connect(_on_state_changed.bind(mesh))
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/ModelLoader.gd
+625:		perf_monitor.quality_level_changed.connect(_on_quality_level_changed)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/accessibility/SimpleFocusManager.gd
+39:		control.focus_entered.connect(_on_control_focus_entered.bind(control))
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_rendering/ComprehensiveBrainRenderingSystem.gd
+170:		material_manager.material_applied.connect(_on_material_applied)
+171:		material_manager.quality_level_changed.connect(_on_material_quality_changed)
+175:		lighting_manager.lighting_preset_changed.connect(_on_lighting_preset_changed)
+176:		lighting_manager.quality_level_changed.connect(_on_lighting_quality_changed)
+180:		hdri_manager.environment_changed.connect(_on_environment_changed)
+181:		hdri_manager.reflection_quality_changed.connect(_on_reflection_quality_changed)
+185:		post_processing_manager.post_processing_quality_changed.connect(_on_post_processing_quality_changed)
+186:		post_processing_manager.performance_adjusted.connect(_on_post_processing_performance_adjusted)
+190:		lod_manager.lod_level_changed.connect(_on_lod_level_changed)
+191:		lod_manager.lighting_quality_adjusted.connect(_on_lod_performance_adjusted)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/debug/EnhancedDebugConsole.gd
+33:	get_tree().node_configuration_warning_changed.connect(_on_configuration_warning)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/debug/DebugSystem.gd
+69:	get_tree().node_added.connect(_on_node_added)
+70:	get_tree().node_removed.connect(_on_node_removed)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/debug/DebugConsole.gd
+58:		debug_system.debug_message.connect(_on_debug_message)
+59:		debug_system.error_detected.connect(_on_error_detected)
+84:	close_btn.pressed.connect(toggle_console)
+104:	console_input.text_submitted.connect(_on_command_submitted)
+105:	console_input.text_changed.connect(_on_input_changed)
+106:	console_input.gui_input.connect(_on_input_gui_event)
+114:	suggestions_panel.item_selected.connect(_on_suggestion_selected)
+
+
+=== Shader Issues ===
+
+Checking shader files...
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/assets/shaders/structure_highlight/fresnel_rim.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/assets/shaders/brain_tissue_advanced.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui/effects/shaders/glass_morphism_ui_lite.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui/effects/shaders/glass_morphism_ui.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/shaders/glass_morphism_ui_lite.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/shaders/medical_glass.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/shaders/theme_transition.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/shaders/glass_morphism_ui.gdshader
+  No obvious errors found
+
+Shader: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/shaders/glass_panel.gdshader
+  No obvious errors found
+
+
+=== Scene File Validation ===
+
+Checking scene files for broken dependencies...
+
+=== Autoload Usage Analysis ===
+
+Checking autoload dependencies...
+Autoload: UnifiedColorManager
+  Used in       12 files
+Autoload: CoreSystemManager
+  Used in        7 files
+Autoload: UISystemManager
+  Used in        9 files
+Autoload: EducationalPlatformManager
+  Used in        6 files
+Autoload: ResourceManager
+  Used in        6 files
+Autoload: KnowledgeService
+  Used in        2 files
+Autoload: ProgressTracker
+  Used in        7 files
+
+=== Performance Concerns ===
+
+Checking for potential performance issues...
+
+=== Potential Memory Leaks ===
+
+Checking for potential memory leaks...
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/3d/EnhancedExplorationScene.gd - new() calls: 33, free() calls: 4
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/molecules/TutorialOverlay.gd - new() calls: 9, free() calls: 1
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/ThemeEffectsManager.gd - new() calls: 6, free() calls: 3
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/QuizPanel.gd - new() calls: 22, free() calls: 4
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/StructureInfoPanel.gd - new() calls: 17, free() calls: 2
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/UIThemeManager.gd - new() calls: 12, free() calls: 2
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/ProgressTracker.gd - new() calls: 2, free() calls: 1
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/OnboardingManager.gd - new() calls: 2, free() calls: 1
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/AnnotationSystem.gd - new() calls: 6, free() calls: 2
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/SafeModelLoader.gd - new() calls: 6, free() calls: 1
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/systems/3d_interaction/ModelLoader.gd - new() calls: 5, free() calls: 2
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/debug/DebugSystem.gd - new() calls: 4, free() calls: 1
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/debug/DebugConsole.gd - new() calls: 12, free() calls: 1
+
+=== TODO/FIXME Comments ===
+
+Finding TODO and FIXME comments...
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/ui/MainMenu.gd
+245:	# TODO: Implement settings screen with Material 3 design
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/scenes/3d/EnhancedExplorationScene.gd
+3027:	# TODO: Implement comprehensive review mode
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/managers/CoreSystemManager.gd
+435:	# TODO: Implement model loading recovery
+440:	# TODO: Implement theme loading recovery
+445:	# TODO: Implement memory recovery (clear caches, etc.)
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/core/managers/UISystemManager.gd
+423:	# TODO: Load from SettingsManager when available
+428:	# TODO: Implement shader quality switching
+433:	# TODO: Implement high contrast theme modifications
+438:	# TODO: Implement colorblind-friendly theme modifications
+443:	# TODO: Implement font size adjustment
+448:	# TODO: Implement animation disabling
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/effects/ThemeEffectsManager.gd
+94:	# TODO: Restore shader-based transition when theme_transition.gdshader is available
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/themes/presets/ThemePresetManager.gd
+275:			# TODO: Enable validation when method is available
+294:	# TODO: Implement brain color intensity adjustment when API is available
+304:	# TODO: Implement glass morphism configuration when API is available
+314:	# TODO: Implement typography scaling when API is available
+327:	# TODO: Implement contrast boost when API is available
+337:	# TODO: Implement brand color overrides when API is available
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/QuizPanel.gd
+156:		# TODO: Load actual image
+269:		# TODO: Add streak icon when available
+477:				# TODO: Re-enable when AccessibilityManager is available
+555:				# TODO: Re-enable when AccessibilityManager is available
+627:	# TODO: Show detailed explanation
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/ui_atomic/organisms/StructureInfoPanel.gd
+369:		# TODO: Use _structure_id to load specific 3D model preview
+517:	# TODO: Implement notes functionality
+522:	# TODO: Implement bookmark functionality
+535:	# TODO: Emit signal to load related structure
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/NetworkManager.gd
+49:	# TODO: Implement actual connectivity check
+58:	# TODO: Implement actual sync logic
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/LearningContentManager.gd
+292:	# TODO: Implement priority-based filtering
+301:	# TODO: Implement complexity-based filtering
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/ContentManager.gd
+36:	# TODO: Implement preloading logic
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/AuthenticationManager.gd
+24:	# TODO: Implement actual authentication
+
+File: /Users/gagelaporta/Desktop/NeuroVision-Repo/src/autoload/AccessibilityManager.gd
+70:	# TODO: Load from SettingsManager when available
+75:	# TODO: Implement when UI system is ready
+
+
+=== Summary ===
+
+Total GDScript files:       83
+Total scenes:        7
+Total shaders:        9
+Total resources:       14

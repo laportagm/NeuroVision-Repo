@@ -8,16 +8,9 @@
             "name": "🔧 Launch Godot Editor (LSP)",
             "type": "node-terminal",
             "request": "launch",
-            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
-            "args": [
-                "--editor", 
-                "--path", 
-                "${workspaceFolder}",
-                "--lsp-port",
-                "6008"
-            ],
-            "console": "integratedTerminal",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot --editor --path ${workspaceFolder} --lsp-port 6008",
             "cwd": "${workspaceFolder}"
+
         },
         {
             // Main Application - Educational Main Menu
@@ -54,16 +47,23 @@
             "name": "📊 Run with Performance Monitor",
             "type": "node-terminal",
             "request": "launch",
-            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
-            "args": [
-                "--path",
-                "${workspaceFolder}",
-                "--print-fps",
-                "--verbose",
-                "--remote-debug",
-                "127.0.0.1:6008"
-            ],
-            "console": "integratedTerminal",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot --path ${workspaceFolder} --print-fps --verbose --remote-debug 127.0.0.1:6008",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            // Enhanced debugging with all flags
+            "name": "🐛 Enhanced Debug Mode",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot --path ${workspaceFolder} --verbose --debug --debug-collisions --debug-navigation --print-fps --gpu-validation --remote-debug 127.0.0.1:6008",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            // Debug with memory leak detection
+            "name": "💾 Debug Memory Leaks",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot --path ${workspaceFolder} --verbose --debug --dump-extension-api",
             "cwd": "${workspaceFolder}"
         },
         {
@@ -71,29 +71,15 @@
             "name": "🧪 Educational Content Validator",
             "type": "node-terminal",
             "request": "launch",
-            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
-            "args": [
-                "--path", 
-                "${workspaceFolder}",
-                "--script", 
-                "res://tools/scripts/quick_test.sh",
-                "--headless"
-            ],
-            "console": "integratedTerminal",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot --path ${workspaceFolder} --script res://tools/scripts/quick_test.sh --headless",
             "cwd": "${workspaceFolder}"
         },
         {
             // Test current main scene (node_3d)
-            "name": "🧠 Test Main Educational Scene", 
+            "name": "🧠 Test Main Educational Scene",
             "type": "node-terminal",
             "request": "launch",
-            "command": "/Applications/Godot.app/Contents/MacOS/Godot",
-            "args": [
-                "--path",
-                "${workspaceFolder}",
-                "res://scenes/main/node_3d.tscn"
-            ],
-            "console": "integratedTerminal",
+            "command": "/Applications/Godot.app/Contents/MacOS/Godot --path ${workspaceFolder} res://scenes/main/node_3d.tscn",
             "cwd": "${workspaceFolder}"
         }
     ]
@@ -133,7 +119,7 @@ The Godot VS Code extension only supports:
 
 📚 EDUCATIONAL TESTING SCENES:
 ├── Enhanced Exploration: src/scenes/EnhancedExplorationScene.tscn
-├── UI Components: src/ui/components/ThemePreviewPanel.tscn  
+├── UI Components: src/ui/components/ThemePreviewPanel.tscn
 ├── Quiz System: tests/test_quiz_accessibility.tscn
 ├── Progressive Disclosure: tests/demo_progressive_disclosure.tscn
 ├── Model Loading: tests/test_model_loading_scene.tscn

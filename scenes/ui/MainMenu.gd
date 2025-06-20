@@ -17,15 +17,15 @@ const M3_TEST_ENABLED = true  # Enable Material 3 testing
 const BUTTON_ENTRANCE_DELAY = 0.05  # Stagger delay for button animations
 
 # === NODES ===
-@onready var canvas_layer: CanvasLayer = $CanvasLayer
-@onready var color_rect: ColorRect = $CanvasLayer/ColorRect
-@onready var top_bar: PanelContainer = $CanvasLayer/TopBar
-@onready var start_button: Button = $CanvasLayer/CenterContainer/VBoxContainer/StartButton
-@onready var professional_button: Button = $CanvasLayer/CenterContainer/VBoxContainer/ProfessionalButton
-@onready var settings_button: Button = $CanvasLayer/CenterContainer/VBoxContainer/SettingsButton
-@onready var quit_button: Button = $CanvasLayer/CenterContainer/VBoxContainer/QuitButton
-@onready var title_label: Label = $CanvasLayer/CenterContainer/VBoxContainer/TitleLabel
-@onready var subtitle_label: Label = $CanvasLayer/CenterContainer/VBoxContainer/SubtitleLabel
+@onready var canvas_layer: CanvasLayer = $MenuCanvasLayer
+@onready var color_rect: ColorRect = $MenuCanvasLayer/BackgroundGradient
+@onready var top_bar: PanelContainer = $MenuCanvasLayer/ApplicationHeader
+@onready var start_button: Button = $MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer/BeginExplorationButton
+@onready var professional_button: Button = $MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer/ProfessionalUIThemeButton
+@onready var settings_button: Button = $MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer/ApplicationSettingsButton
+@onready var quit_button: Button = $MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer/ExitApplicationButton
+@onready var title_label: Label = $MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer/MainTitleLabel
+@onready var subtitle_label: Label = $MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer/EducationalSubtitleLabel
 
 # === PUBLIC METHODS ===
 
@@ -170,33 +170,59 @@ func _setup_ui() -> void:
 	print("[MainMenu] Using global theme management")
 
 func _connect_signals() -> void:
-	"""Connect button signals"""
-	start_button.pressed.connect(_on_start_pressed)
-	if professional_button:
+	## Connect button signals with error handling
+	if is_instance_valid(start_button) and not start_button.pressed.is_connected(_on_start_pressed):
+		start_button.pressed.connect(_on_start_pressed)
+	
+	if is_instance_valid(professional_button) and not professional_button.pressed.is_connected(_on_professional_pressed):
 		professional_button.pressed.connect(_on_professional_pressed)
-	settings_button.pressed.connect(_on_settings_pressed)
-	quit_button.pressed.connect(_on_quit_pressed)
+		
+	if is_instance_valid(settings_button) and not settings_button.pressed.is_connected(_on_settings_pressed):
+		settings_button.pressed.connect(_on_settings_pressed)
+		
+	if is_instance_valid(quit_button) and not quit_button.pressed.is_connected(_on_quit_pressed):
+		quit_button.pressed.connect(_on_quit_pressed)
 
 func _setup_animations() -> void:
-	"""Setup Material 3 motion animations for all buttons"""
+	## Setup Material 3 motion animations for all buttons with error handling
+	if not ButtonMotionHandlerScript:
+		push_error("[MainMenu] ButtonMotionHandlerScript not loaded")
+		return
+		
 	# Setup hover animations for all buttons
-	ButtonMotionHandlerScript.setup_button_hover_animation(start_button)
-	ButtonMotionHandlerScript.setup_button_hover_animation(professional_button)
-	ButtonMotionHandlerScript.setup_button_hover_animation(settings_button)
-	ButtonMotionHandlerScript.setup_button_hover_animation(quit_button)
+	if is_instance_valid(start_button):
+		ButtonMotionHandlerScript.setup_button_hover_animation(start_button)
+	if is_instance_valid(professional_button):
+		ButtonMotionHandlerScript.setup_button_hover_animation(professional_button)
+	if is_instance_valid(settings_button):
+		ButtonMotionHandlerScript.setup_button_hover_animation(settings_button)
+	if is_instance_valid(quit_button):
+		ButtonMotionHandlerScript.setup_button_hover_animation(quit_button)
 	
-	# Setup focus animations
-	start_button.focus_entered.connect(func(): ButtonMotionHandlerScript.animate_button_focus(start_button))
-	start_button.focus_exited.connect(func(): ButtonMotionHandlerScript.animate_button_unfocus(start_button))
-	
-	professional_button.focus_entered.connect(func(): ButtonMotionHandlerScript.animate_button_focus(professional_button))
-	professional_button.focus_exited.connect(func(): ButtonMotionHandlerScript.animate_button_unfocus(professional_button))
-	
-	settings_button.focus_entered.connect(func(): ButtonMotionHandlerScript.animate_button_focus(settings_button))
-	settings_button.focus_exited.connect(func(): ButtonMotionHandlerScript.animate_button_unfocus(settings_button))
-	
-	quit_button.focus_entered.connect(func(): ButtonMotionHandlerScript.animate_button_focus(quit_button))
-	quit_button.focus_exited.connect(func(): ButtonMotionHandlerScript.animate_button_unfocus(quit_button))
+	# Setup focus animations with safe connections
+	_setup_button_focus_animation(start_button)
+	_setup_button_focus_animation(professional_button)
+	_setup_button_focus_animation(settings_button)
+	_setup_button_focus_animation(quit_button)
+
+func _setup_button_focus_animation(button: Button) -> void:
+	## Safely setup focus animations for a button
+	if not is_instance_valid(button):
+		return
+		
+	if button.has_signal("focus_entered") and not button.focus_entered.is_connected(_on_button_focus_entered.bind(button)):
+		button.focus_entered.connect(_on_button_focus_entered.bind(button))
+		
+	if button.has_signal("focus_exited") and not button.focus_exited.is_connected(_on_button_focus_exited.bind(button)):
+		button.focus_exited.connect(_on_button_focus_exited.bind(button))
+
+func _on_button_focus_entered(button: Button) -> void:
+	if ButtonMotionHandlerScript:
+		ButtonMotionHandlerScript.animate_button_focus(button)
+
+func _on_button_focus_exited(button: Button) -> void:
+	if ButtonMotionHandlerScript:
+		ButtonMotionHandlerScript.animate_button_unfocus(button)
 
 func _animate_entrance() -> void:
 	"""Animate the main menu entrance with Material 3 motion"""

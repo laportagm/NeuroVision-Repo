@@ -22,20 +22,20 @@ static func _get_transition_duration() -> float:
 	return M3DesignTokens.M3_DURATION["medium1"] / 1000.0
 
 # === NODES ===
-@onready var progress_bar: ProgressBar = $MainContainer/ProgressHeader/ProgressBar
-@onready var score_display: Label = $MainContainer/ProgressHeader/ScoreDisplay
-@onready var streak_number: Label = $MainContainer/ProgressHeader/StreakCounter/StreakNumber
-@onready var streak_icon: TextureRect = $MainContainer/ProgressHeader/StreakCounter/StreakIcon
-@onready var question_text: RichTextLabel = $MainContainer/QuestionArea/QuestionText
-@onready var question_image: TextureRect = $MainContainer/QuestionArea/QuestionImage
-@onready var answer_container: VBoxContainer = $MainContainer/QuestionArea/AnswerContainer
-@onready var correct_feedback: PanelContainer = $MainContainer/FeedbackArea/CorrectFeedback
-@onready var incorrect_feedback: PanelContainer = $MainContainer/FeedbackArea/IncorrectFeedback
-@onready var confidence_slider: HSlider = $MainContainer/ConfidenceArea/ConfidenceSlider
-@onready var submit_button: Button = $MainContainer/ActionArea/SubmitButton
-@onready var skip_button: Button = $MainContainer/ActionArea/SkipButton
-@onready var explanation_button: Button = $MainContainer/ActionArea/ExplanationButton
-@onready var close_button: Button = $MainContainer/ActionArea/CloseButton
+@onready var progress_bar: ProgressBar = $QuizMainContainer/QuizProgressHeader/QuizProgressBar
+@onready var score_display: Label = $QuizMainContainer/QuizProgressHeader/QuizScoreDisplay
+@onready var streak_number: Label = $QuizMainContainer/QuizProgressHeader/CorrectStreakCounter/StreakNumberLabel
+@onready var streak_icon: TextureRect = $QuizMainContainer/QuizProgressHeader/CorrectStreakCounter/StreakIconDisplay
+@onready var question_text: RichTextLabel = $QuizMainContainer/AssessmentQuestionArea/QuizQuestionText
+@onready var question_image: TextureRect = $QuizMainContainer/AssessmentQuestionArea/AnatomicalQuestionImage
+@onready var answer_container: VBoxContainer = $QuizMainContainer/AssessmentQuestionArea/MultipleChoiceAnswerContainer
+@onready var correct_feedback: PanelContainer = $QuizMainContainer/EducationalFeedbackArea/CorrectAnswerFeedback
+@onready var incorrect_feedback: PanelContainer = $QuizMainContainer/EducationalFeedbackArea/IncorrectAnswerFeedback
+@onready var confidence_slider: HSlider = $QuizMainContainer/LearnerConfidenceArea/ConfidenceRatingSlider
+@onready var submit_button: Button = $QuizMainContainer/QuizActionArea/SubmitAnswerButton
+@onready var skip_button: Button = $QuizMainContainer/QuizActionArea/SkipQuestionButton
+@onready var explanation_button: Button = $QuizMainContainer/QuizActionArea/ShowExplanationButton
+@onready var close_button: Button = $QuizMainContainer/QuizActionArea/CloseQuizButton
 
 # === PRIVATE VARIABLES ===
 var _current_question: Dictionary = {}
@@ -733,7 +733,41 @@ func reset_performance_metrics() -> void:
 	print("[QuizPanel] Performance metrics reset")
 
 func _calculate_time_diff(start_time: Dictionary, end_time: Dictionary) -> float:
-	"""Calculate time difference in milliseconds"""
+	## Calculate time difference in milliseconds
 	var start_ms = start_time.hour * 3600000 + start_time.minute * 60000 + start_time.second * 1000
 	var end_ms = end_time.hour * 3600000 + end_time.minute * 60000 + end_time.second * 1000
 	return abs(end_ms - start_ms)
+
+func _exit_tree() -> void:
+	## Clean up resources to prevent memory leaks
+	# Clean up option buttons
+	for button in _option_buttons:
+		if is_instance_valid(button):
+			# Clear style overrides
+			button.remove_theme_stylebox_override("normal")
+			button.remove_theme_stylebox_override("hover")
+			button.remove_theme_stylebox_override("pressed")
+			button.remove_theme_stylebox_override("focus")
+			button.queue_free()
+	_option_buttons.clear()
+	
+	# Clean up assessment selection buttons
+	for button in answer_container.get_children():
+		if button is Button and button.pressed.is_connected(_on_assessment_selected):
+			button.pressed.disconnect(_on_assessment_selected)
+	
+	# Disconnect main UI signals
+	if submit_button and submit_button.pressed.is_connected(_on_submit_pressed):
+		submit_button.pressed.disconnect(_on_submit_pressed)
+	if skip_button and skip_button.pressed.is_connected(_on_skip_pressed):
+		skip_button.pressed.disconnect(_on_skip_pressed)
+	if explanation_button and explanation_button.pressed.is_connected(_on_explanation_pressed):
+		explanation_button.pressed.disconnect(_on_explanation_pressed)
+	if close_button and close_button.pressed.is_connected(_on_close_pressed):
+		close_button.pressed.disconnect(_on_close_pressed)
+	if confidence_slider and confidence_slider.value_changed.is_connected(_on_confidence_changed):
+		confidence_slider.value_changed.disconnect(_on_confidence_changed)
+	
+	# Clear cached references
+	_current_question = {}
+	_selected_answer = null

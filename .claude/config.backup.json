@@ -1,0 +1,693 @@
+{
+  "project_name": "NeuroVision",
+  "project_type": "professional_medical_education_platform",
+  "engine_version": "4.4.1",
+  "language": "gdscript",
+  "maturity_level": "production_ready_medical_platform",
+  "config_version": "2.2.0",
+  "last_updated": "2025-06-18",
+  "context_files": [
+    "docs/PROJECT_OUTLINE.md",
+    "docs/CLAUDE.md",
+    "docs/architecture/CLEAN_ARCHITECTURE.md",
+    "docs/dev/QUICK_REFERENCE.md",
+    "docs/architecture/PROJECT_STRUCTURE.md",
+    "docs/reports/PROFESSIONAL_UI_IMPLEMENTATION_REPORT.md",
+    "docs/migration/COLOR_SYSTEM_MIGRATION_COMPLETE.md",
+    "docs/reports/ARCHITECTURAL_IMPROVEMENTS_REPORT.md",
+    "docs/architecture/NEUROVISION_ARCHITECTURE_DIAGRAM.md",
+    "docs/migration/UNIFIED_COLOR_SYSTEM_STATUS.md",
+    "prompts/current_phase.md"
+  ],
+  "key_systems": [
+    "src/core/managers/CoreSystemManager.gd",
+    "src/core/managers/UISystemManager.gd", 
+    "src/core/managers/EducationalPlatformManager.gd",
+    "src/core/managers/ResourceManager.gd",
+    "src/autoload/UnifiedColorManager.gd",
+    "src/ui_atomic/themes/core/M3DesignTokens.gd",
+    "src/core/interaction/ImprovedBrainInteractionController.gd",
+    "src/systems/assessment/AssessmentService.gd",
+    "src/autoload/ProgressTracker.gd",
+    "src/systems/3d_interaction/HighlightMaterialManager.gd",
+    "src/systems/3d_interaction/SafeModelLoader.gd",
+    "src/core/config/ModelPaths.gd",
+    "src/systems/3d_rendering/EnvironmentManager.gd",
+    "src/systems/3d_rendering/ShaderParameterManager.gd",
+    "src/systems/3d_rendering/AdvancedBrainRenderer.gd"
+  ],
+  "prompt_engineering": {
+    "quick_reference": "docs/dev/QUICK_REFERENCE.md",
+    "current_phase": "prompts/current_phase.md",
+    "architecture_docs": "docs/architecture/CLEAN_ARCHITECTURE.md",
+    "development_guide": "docs/CLAUDE.md"
+  },
+  "development_approach": "mature_medical_platform_enhancement",
+  "current_phase": "phase_2_shader_enhancement_and_optimization",
+  "phase_1_status": "complete_exceeds_objectives",
+  "completed_systems": [
+    "unified_color_management_system",
+    "material_3_design_system",
+    "10_autoload_manager_architecture",
+    "professional_3d_brain_interaction",
+    "wcag_aaa_accessibility_framework",
+    "intel_uhd_620_performance_optimization",
+    "educational_content_pipeline",
+    "responsive_glass_morphism_ui",
+    "multi_theme_system",
+    "assessment_integration",
+    "progressive_disclosure_ui",
+    "dynamic_quality_management",
+    "ui_atomic_consolidation",
+    "directory_structure_optimization",
+    "error_handling_system",
+    "rid_leak_prevention",
+    "model_path_configuration",
+    "shader_compilation_fixes",
+    "brain_tissue_advanced_shader",
+    "hdri_environment_system",
+    "3d_rendering_system_architecture"
+  ],
+  "excluded_features": ["firebase", "cloud_sync", "google_oauth"],
+  "validation_on_commit": true,
+  "performance_achievements": {
+    "target_fps": 60,
+    "achieved_fps": "120+",
+    "performance_multiplier": "4x_exceeds_target",
+    "target_hardware": "Intel UHD 620",
+    "achieved_load_time": "<3.0s",
+    "memory_usage": "<500MB_stable",
+    "gpu_compatibility": "integrated_graphics_optimized",
+    "quality_levels": ["LOW", "MEDIUM", "HIGH", "ULTRA"],
+    "dynamic_adaptation": true
+  },
+  "accessibility_implementation": {
+    "wcag_compliance": "AAA_level_achieved",
+    "contrast_ratios": "7:1+_all_elements",
+    "touch_targets": "44px+_minimum",
+    "keyboard_navigation": "full_implementation",
+    "screen_reader": "semantic_markup_complete",
+    "colorblind_support": "4_theme_variants",
+    "ui_response_time": "<100ms_interactions"
+  },
+  "educational_platform_features": {
+    "target_audience": "medical_students_and_healthcare_professionals",
+    "content_accuracy": "medical_textbook_grade",
+    "brain_structures": "21+_interactive_models",
+    "assessment_types": ["interactive_3d", "multiple_choice", "progressive_disclosure"],
+    "learning_modes": ["guided_exploration", "self_paced", "assessment_driven"],
+    "offline_capability": "complete_standalone_operation",
+    "progress_tracking": "comprehensive_analytics",
+    "clinical_relevance": "pathology_integrated"
+  },
+  "ui_design_system": {
+    "framework": "Material_3_Professional",
+    "color_management": "unified_theme_aware_system",
+    "theme_variants": ["enhanced_student", "minimal_clinical", "high_contrast_accessibility", "colorblind_safe"],
+    "glass_morphism": "medical_grade_readability",
+    "responsive_breakpoints": "adaptive_screen_sizes",
+    "animation_system": "performance_optimized_transitions",
+    "component_library": "progressive_disclosure_panels"
+  },
+  "architecture_patterns": [
+    "10_core_autoload_managers",
+    "unified_color_management_system",
+    "material_3_design_tokens",
+    "professional_3d_brain_interaction",
+    "wcag_aaa_accessibility_framework",
+    "progressive_disclosure_ui_components",
+    "dynamic_performance_optimization",
+    "theme_aware_component_system",
+    "medical_grade_content_pipeline",
+    "educational_analytics_integration",
+    "atomic_design_ui_system",
+    "consolidated_directory_structure"
+  ],
+  "development_workflow": {
+    "launch_script": "launch_helper.sh",
+    "project_runner": "run_project.sh", 
+    "testing_framework": "scripts/setup_gut.sh",
+    "progress_tracker": "scripts/update_progress.sh",
+    "unified_color_setup": "tools/scripts/setup_unified_colors.gd",
+    "theme_generation": "src/ui_atomic/themes/generators/GenerateThemeResources.gd"
+  },
+  "testing_framework": {
+    "primary": "GUT",
+    "test_runner": "addons/gut/gut_cmdln.gd",
+    "manual_checklist": "docs/guides/MANUAL_TEST_CHECKLIST.md"
+  },
+  "content_structure": {
+    "brain_database": "assets/data/anatomical_data.json",
+    "assessments": "content/assessments/",
+    "learning_paths": "content/learning_paths/",
+    "progress_tracking": "docs/status/PROJECT_PROGRESS.md"
+  },
+  "educational_features": {
+    "brain_structures": 5,
+    "assessment_types": ["multiple_choice", "interactive_3d"],
+    "learning_objectives": true,
+    "clinical_relevance": true
+  },
+  "asset_management": {
+    "3d_models": "assets/3d_models/",
+    "model_paths": "src/core/config/ModelPaths.gd",
+    "model_optimization": "LOD_system_with_performance_tiers",
+    "default_model": "Internal_Structures_LOD/Internal-Structures_low.glb",
+    "shaders": "assets/shaders/",
+    "ui_resources": "src/ui_atomic/resources/",
+    "themes": "src/ui_atomic/themes/",
+    "hdri_environments": "assets/hdri/",
+    "hdri_files": ["surgical_suite_2k.hdr", "medical_lab_2k.hdr", "anatomy_classroom_2k.hdr"]
+  },
+  "shader_system": {
+    "medical_visualization": "assets/shaders/medical_visualization.gdshader",
+    "highlight_effects": "assets/shaders/structure_highlight/",
+    "ui_effects": "src/ui_atomic/effects/shaders/",
+    "brain_tissue_advanced": "assets/shaders/brain_tissue_advanced.gdshader",
+    "subsurface_scattering": "enabled_for_brain_tissue",
+    "shader_compilation_status": "all_errors_resolved"
+  },
+  "data_management": {
+    "sqlite_integration": "sqlite_mcp_server.db",
+    "content_format": "JSON",
+    "progress_persistence": "SimplePersistence.gd",
+    "user_data": "local_storage_only"
+  },
+  "quality_assurance": {
+    "accessibility_validation": "src/ui_atomic/themes/validation/M3AccessibilityValidator.gd",
+    "performance_monitoring": "src/autoload/PerformanceMonitor.gd",
+    "color_system_validation": "src/ui_atomic/themes/validation/ColorSystemValidator.gd",
+    "gpu_compatibility": "src/systems/3d_interaction/GPUDetector.gd"
+  },
+  "deployment": {
+    "export_platforms": ["Windows", "macOS", "Linux"],
+    "launch_modes": ["standard", "enhanced_explorer", "performance_test", "debug"],
+    "distribution_method": "standalone_executable",
+    "hardware_requirements": "Intel_UHD_620_minimum"
+  },
+  "documentation_hierarchy": {
+    "developer_guides": "docs/dev/",
+    "api_documentation": "docs/api/",
+    "architecture": "docs/architecture/CLEAN_ARCHITECTURE.md",
+    "quick_reference": "docs/dev/QUICK_REFERENCE.md",
+    "performance_optimization": "docs/INTEL_UHD_620_PERFORMANCE_OPTIMIZATION.md",
+    "accessibility": "docs/ACCESSIBILITY_IMPLEMENTATION.md"
+  },
+  "environment_setup": {
+    "godot_version": "4.4.1",
+    "required_features": ["GL_Compatibility", "Metal_support"],
+    "development_scripts": "scripts/",
+    "editor_configuration": "Godot/editor_settings-4.4.tres"
+  },
+  "error_management": {
+    "recovery_system": "src/autoload/ErrorRecoveryManager.gd",
+    "model_loader": "src/systems/3d_interaction/SafeModelLoader.gd",
+    "logging": "Godot/app_userdata/NeuroVis/logs/",
+    "graceful_degradation": true,
+    "user_feedback": "integrated_error_reporting",
+    "rid_leak_prevention": "implemented_in_autoloads"
+  },
+  "performance_metrics": {
+    "target_fps": 60,
+    "achieved_fps": 120,
+    "memory_limit": "2GB",
+    "dynamic_quality": true,
+    "hardware_detection": "automatic",
+    "optimization_levels": ["LOW", "MEDIUM", "HIGH", "ULTRA"]
+  },
+  "autoload_architecture": {
+    "core_managers": [
+      "UnifiedColorManager",
+      "CoreSystemManager", 
+      "UISystemManager",
+      "EducationalPlatformManager",
+      "ResourceManager"
+    ],
+    "specialized_services": [
+      "AuthenticationManager",
+      "NetworkManager", 
+      "AssessmentService",
+      "HighlightMaterialManager",
+      "ProgressTracker"
+    ],
+    "ui_enhancement_services": [
+      "UIThemeManager",
+      "AccessibilityManager",
+      "PerformanceMonitor",
+      "UIAdaptationManager",
+      "UIPoolManager"
+    ],
+    "educational_platform_services": [
+      "LearningContentManager",
+      "LearningProgressManager",
+      "ContentManager",
+      "OnboardingManager"
+    ]
+  },
+  "input_configuration": {
+    "3d_interaction": "left_click_select",
+    "camera_controls": "right_click_rotate",
+    "zoom": "mouse_wheel",
+    "accessibility": "full_keyboard_navigation"
+  },
+  "rendering_optimization": {
+    "anti_aliasing": "MSAA_3D_with_TAA", 
+    "texture_compression": "ETC2_ASTC",
+    "anisotropic_filtering": "4x",
+    "screen_space_aa": "enabled",
+    "debanding": "enabled",
+    "intel_uhd_620_optimization": "complete_implementation",
+    "dynamic_quality_scaling": "gpu_adaptive",
+    "medical_visualization_shaders": "professional_grade"
+  },
+  "content_management": {
+    "brain_structures_database": "assets/data/anatomical_data.json",
+    "3d_models": "assets/3d_models/processed/",
+    "model_configuration": "src/core/config/ModelPaths.gd",
+    "lod_system": "performance_optimized",
+    "assessment_content": "content/assessments/",
+    "learning_paths": "content/learning_paths/",
+    "progress_persistence": "src/systems/persistence/SimplePersistence.gd"
+  },
+  "shader_framework": {
+    "medical_visualization": "assets/shaders/medical_visualization.gdshader",
+    "highlight_system": "assets/shaders/structure_highlight/",
+    "ui_glass_morphism": "src/ui_atomic/effects/shaders/glass_morphism_ui.gdshader",
+    "theme_transitions": "src/ui_atomic/effects/shaders/theme_transition.gdshader",
+    "cross_sectional": "assets/shaders/cross_section.gdshader",
+    "brain_tissue_advanced": "assets/shaders/brain_tissue_advanced.gdshader",
+    "environment_mapping": "hdri_based_lighting",
+    "rendering_system": "src/systems/3d_rendering/"
+  },
+  "quality_gates": {
+    "accessibility_validation": "src/ui_atomic/themes/validation/M3AccessibilityValidator.gd",
+    "performance_monitoring": "src/autoload/PerformanceMonitor.gd",
+    "color_system_validation": "src/ui_atomic/themes/validation/ColorSystemValidator.gd",
+    "gpu_compatibility_check": "src/systems/3d_interaction/GPUDetector.gd",
+    "unified_color_compliance": "automatic_theme_validation"
+  },
+  "development_standards": {
+    "code_quality": "medical_grade_standards",
+    "accessibility_compliance": "wcag_aaa_mandatory",
+    "performance_requirements": "60fps_minimum_120fps_achieved",
+    "color_system": "unified_theme_aware_only",
+    "ui_components": "material_3_progressive_disclosure",
+    "documentation": "comprehensive_inline_and_external"
+  },
+  "recent_improvements": {
+    "architecture_cleanup": {
+      "ui_consolidation": "3_systems_to_1_atomic_system",
+      "directory_flattening": "6+_levels_to_3-4_levels",
+      "documentation_organization": "scattered_to_organized",
+      "scene_separation": "scripts_and_scenes_separated"
+    },
+    "error_handling": {
+      "safe_model_loader": "fallback_and_placeholder_support",
+      "model_path_configuration": "centralized_path_management",
+      "error_reporting": "clear_user_feedback",
+      "shader_compilation_fixes": "all_errors_resolved"
+    },
+    "performance_optimization": {
+      "rid_leak_prevention": "autoload_cleanup_methods",
+      "resource_management": "centralized_caching",
+      "memory_cleanup": "proper_exit_tree_implementation",
+      "shader_optimization": "advanced_brain_tissue_rendering"
+    },
+    "developer_experience": {
+      "clean_architecture_docs": "comprehensive_system_documentation",
+      "quick_reference": "developer_convenience_guide",
+      "test_improvements": "runtime_validation_scripts"
+    },
+    "rendering_enhancements": {
+      "brain_tissue_shader": "advanced_subsurface_scattering",
+      "hdri_environments": "medical_themed_lighting",
+      "3d_rendering_system": "organized_architecture",
+      "shader_parameter_management": "centralized_control"
+    }
+  },
+  "ai_guidance": {
+    "preferred_patterns": {
+      "error_handling": "Always use push_error() with [ModuleName] prefix",
+      "resource_loading": "Use ResourceManager for all asset loading",
+      "ui_creation": "Use atomic components from ui_atomic/",
+      "cleanup": "Always implement _exit_tree() for resource cleanup",
+      "model_loading": "Use SafeModelLoader for error-tolerant loading",
+      "color_access": "Use UnifiedColorManager.get_color() for all colors",
+      "progress_tracking": "Use ProgressTracker for all user progress",
+      "accessibility": "Include accessible_name and accessible_role metadata"
+    },
+    "anti_patterns": {
+      "avoid": [
+        "Direct file loading without ResourceManager",
+        "Creating UI without atomic components",
+        "Using legacy KB instead of KnowledgeService",
+        "Hardcoding paths instead of using ModelPaths",
+        "Manual color values instead of theme system",
+        "Direct theme_override without cleanup",
+        "Free() instead of queue_free()",
+        "Missing _exit_tree() in custom nodes"
+      ]
+    },
+    "code_generation_rules": {
+      "always_include": ["docstrings", "error_handling", "type_hints", "signal documentation"],
+      "naming_format": "snake_case for files, PascalCase for classes",
+      "max_function_length": 50,
+      "max_file_length": 500,
+      "comment_style": "## for class docs, # for inline",
+      "organization": "signals → enums → constants → exports → onready → private vars → public methods → private methods"
+    }
+  },
+  "common_tasks": {
+    "add_new_brain_structure": {
+      "steps": [
+        "1. Add entry to assets/data/anatomical_data.json",
+        "2. Add model path to ModelPaths.gd BRAIN_MODELS dict",
+        "3. Place model files in assets/3d_models/processed/",
+        "4. Test with 'knowledge structure_name' in debug console",
+        "5. Verify in EnhancedExplorationScene"
+      ],
+      "files_to_modify": [
+        "assets/data/anatomical_data.json",
+        "src/core/config/ModelPaths.gd"
+      ],
+      "example_entry": {
+        "id": "structure_id",
+        "displayName": "Structure Name",
+        "shortDescription": "Brief educational description",
+        "functions": ["Function 1", "Function 2"],
+        "clinicalRelevance": "Medical importance"
+      }
+    },
+    "add_ui_component": {
+      "steps": [
+        "1. Create atom in ui_atomic/atoms/category/ComponentName.gd",
+        "2. Extend appropriate base (Control, Button, Panel, etc)",
+        "3. Include accessibility metadata exports",
+        "4. Implement theme support via UnifiedColorManager",
+        "5. Add to appropriate molecule/organism if needed",
+        "6. Create .tscn if complex component"
+      ],
+      "required_features": ["WCAG compliance", "theme support", "responsive", "_exit_tree cleanup"],
+      "template": "See code_templates.ui_component"
+    },
+    "fix_performance_issue": {
+      "checklist": [
+        "Run GPUDetector to identify hardware",
+        "Check LOD level with ModelLoader",
+        "Verify shader complexity in ui_atomic/effects/shaders/",
+        "Monitor with PerformanceMonitor (F1 → performance)",
+        "Test on Intel UHD 620 equivalent",
+        "Use Godot profiler for bottlenecks",
+        "Check for RID leaks in console"
+      ],
+      "common_solutions": [
+        "Force LOW LOD for Intel GPUs",
+        "Reduce shader passes",
+        "Implement object pooling",
+        "Add _exit_tree() cleanup"
+      ]
+    },
+    "add_new_theme": {
+      "steps": [
+        "1. Add theme variant to M3DesignTokens.gd",
+        "2. Define color palette following Material 3",
+        "3. Ensure WCAG AAA contrast ratios",
+        "4. Test with M3AccessibilityValidator",
+        "5. Add to theme cycle in UIThemeManager"
+      ],
+      "validation": "Run 'test ui_safety' after adding"
+    }
+  },
+  "system_dependencies": {
+    "UnifiedColorManager": {
+      "depends_on": ["M3DesignTokens", "UnifiedColorSystem"],
+      "used_by": ["all UI components", "theme system", "shaders"],
+      "critical_for": ["theme switching", "accessibility", "visual consistency"],
+      "initialization": "autoload (early in order)"
+    },
+    "KnowledgeService": {
+      "depends_on": ["anatomical_data.json"],
+      "used_by": ["info panels", "quiz system", "AI assistant", "structure selection"],
+      "replaces": ["AnatomicalKnowledgeDatabase (legacy KB)"],
+      "api": "get_structure(), search_structures(), get_all_structures()"
+    },
+    "SafeModelLoader": {
+      "depends_on": ["ModelPaths", "ResourceManager"],
+      "used_by": ["EnhancedExplorationScene", "model preview systems"],
+      "fallback": ["creates error placeholder on failure"],
+      "modes": ["BLOCKING", "ASYNC", "BACKGROUND"]
+    },
+    "ProgressTracker": {
+      "depends_on": ["SimplePersistence"],
+      "used_by": ["assessment system", "UI panels", "achievements"],
+      "persistence": "user://progress_save.dat",
+      "autosave": "every 30 seconds"
+    },
+    "ResourceManager": {
+      "depends_on": [],
+      "used_by": ["all systems loading resources"],
+      "cache_policies": ["PERMANENT", "TEMPORARY", "SESSION"],
+      "max_cache": "256MB"
+    }
+  },
+  "quick_validation": {
+    "test_commands": {
+      "full_system": "./tools/scripts/quick_test.sh",
+      "ui_only": "test ui_safety",
+      "autoloads": "test autoloads",
+      "infrastructure": "test infrastructure",
+      "specific_scene": "godot --headless scenes/ui/MainMenu.tscn",
+      "runtime_test": "godot --headless runtime_test.gd",
+      "performance": "godot scenes/3d/EnhancedExplorationScene.tscn"
+    },
+    "debug_shortcuts": {
+      "open_console": "F1",
+      "check_memory": "memory",
+      "test_knowledge": "knowledge hippocampus",
+      "search_knowledge": "kb search memory",
+      "performance_stats": "performance",
+      "model_list": "models",
+      "scene_tree": "tree UI_Layer",
+      "clear_debug": "clear_debug"
+    },
+    "common_issues": {
+      "rid_leaks": {
+        "symptom": "RID leak warnings on exit",
+        "solution": "Add _exit_tree() to custom nodes, use remove_theme_*_override()",
+        "check": "grep -r 'add_theme_.*_override' --include='*.gd'"
+      },
+      "model_not_found": {
+        "symptom": "Model file not found errors",
+        "solution": "Verify ModelPaths.gd configuration and file exists",
+        "check": "ls assets/3d_models/processed/"
+      },
+      "ui_not_showing": {
+        "symptom": "UI panels not visible",
+        "solution": "Check InfoPanelFactory, verify scene tree, check theme",
+        "check": "tree UI_Layer in debug console"
+      },
+      "autoload_errors": {
+        "symptom": "Script errors on startup",
+        "solution": "Check project.godot autoload paths",
+        "check": "Verify all autoload scripts exist and parse correctly"
+      },
+      "shader_compilation": {
+        "symptom": "Shader compilation errors in console",
+        "solution": "Check for proper vec3/vec4 conversions, use COLOR.rgb for vec3",
+        "check": "Look for brain_tissue_advanced.gdshader errors",
+        "fixed_in": "brain_tissue_advanced.gdshader v2.0"
+      },
+      "missing_hdri": {
+        "symptom": "Environment looks flat or missing reflections",
+        "solution": "Verify HDRI files exist in assets/hdri/",
+        "check": "ls assets/hdri/*.hdr"
+      }
+    }
+  },
+  "feature_flags": {
+    "development": {
+      "debug_overlays": true,
+      "performance_monitoring": true,
+      "verbose_logging": true,
+      "force_low_quality": false,
+      "show_fps_counter": true,
+      "enable_debug_console": true,
+      "validation_mode": true
+    },
+    "production": {
+      "debug_overlays": false,
+      "performance_monitoring": false,
+      "verbose_logging": false,
+      "auto_quality_detection": true,
+      "show_fps_counter": false,
+      "enable_debug_console": false,
+      "validation_mode": false
+    },
+    "experimental": {
+      "ai_tutoring": false,
+      "multiplayer_sessions": false,
+      "cloud_sync": false,
+      "advanced_shaders": false,
+      "volumetric_rendering": false,
+      "haptic_feedback": false
+    },
+    "accessibility_overrides": {
+      "force_high_contrast": false,
+      "screen_reader_mode": false,
+      "simplified_graphics": false,
+      "large_text_mode": false
+    }
+  },
+  "performance_constraints": {
+    "memory_limits": {
+      "total_ram": "2GB max",
+      "texture_memory": "500MB",
+      "model_cache": "256MB",
+      "ui_resources": "100MB",
+      "shader_cache": "50MB"
+    },
+    "complexity_limits": {
+      "max_vertices_per_model": 50000,
+      "max_concurrent_models": 5,
+      "max_ui_elements": 200,
+      "max_shader_instructions": 100,
+      "max_texture_size": 2048,
+      "max_draw_calls": 100
+    },
+    "target_metrics": {
+      "scene_load_time": "<3s",
+      "ui_response": "<100ms",
+      "model_switch": "<500ms",
+      "theme_change": "<200ms",
+      "structure_selection": "<50ms",
+      "panel_animation": "<300ms"
+    },
+    "intel_uhd_620_limits": {
+      "force_lod": "LOW",
+      "disable_effects": ["volumetric", "complex_shaders", "realtime_shadows"],
+      "texture_compression": "required",
+      "max_resolution": "1920x1080"
+    }
+  },
+  "code_templates": {
+    "new_autoload": {
+      "template": "extends Node\\n\\n## Autoload service description\\n\\nsignal example_signal()\\n\\n# === CONSTANTS ===\\nconst EXAMPLE_CONST = 'value'\\n\\n# === PRIVATE VARIABLES ===\\nvar _internal_state = {}\\n\\nfunc _ready() -> void:\\n\\tprint('[ServiceName] Initializing...')\\n\\t# Setup code here\\n\\tprint('[ServiceName] Ready')\\n\\nfunc _exit_tree() -> void:\\n\\t# Cleanup code here\\n\\tpass",
+      "required_methods": ["_ready", "_exit_tree"],
+      "naming": "PascalCaseManager or PascalCaseService"
+    },
+    "ui_component": {
+      "template": "class_name ComponentName\\nextends Control\\n\\n## Component description\\n\\n# === EXPORTS ===\\n@export var accessible_name: String = ''\\n@export var accessible_role: String = 'button'\\n\\nfunc _ready() -> void:\\n\\t_apply_theme()\\n\\t_setup_accessibility()\\n\\nfunc _apply_theme() -> void:\\n\\tvar color = UnifiedColorManager.get_color('primary')\\n\\t# Apply theme\\n\\nfunc _setup_accessibility() -> void:\\n\\tset_meta('accessible_name', accessible_name)\\n\\tset_meta('accessible_role', accessible_role)\\n\\nfunc _exit_tree() -> void:\\n\\t# Clean up theme overrides\\n\\tpass",
+      "required_exports": ["@export var accessible_name: String"],
+      "must_extend": "Control or Node3D"
+    },
+    "example_snippets": {
+      "load_model": "var loader = SafeModelLoader.new()\\nvar model = loader.load_brain_model('Internal-Structures', 'low')",
+      "get_color": "var primary = UnifiedColorManager.get_color('primary')\\nvar surface = UnifiedColorManager.get_color('surface')",
+      "track_progress": "ProgressTracker.update_progress('hippocampus', 0.75)\\nProgressTracker.achievement_unlocked('first_structure')",
+      "show_info": "var panel = preload('res://src/ui_atomic/organisms/StructureInfoPanel.tscn').instantiate()\\npanel.display_structure_info(structure_data)",
+      "error_handling": "if not resource:\\n\\tpush_error('[ModuleName] Failed to load resource')\\n\\treturn",
+      "cleanup_pattern": "func _exit_tree() -> void:\\n\\tif _timer:\\n\\t\\t_timer.stop()\\n\\t\\t_timer.queue_free()\\n\\t_cache.clear()"
+    }
+  },
+  "migration_guides": {
+    "from_legacy_kb": {
+      "old": "KB.get_structure_info(name)",
+      "new": "KnowledgeService.get_structure(name)",
+      "data_changes": "Returns Dictionary instead of String",
+      "fields_map": {
+        "old_name": "displayName",
+        "old_description": "shortDescription",
+        "old_clinical": "clinicalRelevance"
+      }
+    },
+    "from_old_ui": {
+      "old": "scenes/ui_info_panel.gd",
+      "new": "ui_atomic/organisms/StructureInfoPanel.tscn",
+      "breaking_changes": ["Different method names", "New signal signatures", "Atomic component structure"],
+      "update_guide": "docs/migration/UI_MIGRATION_GUIDE.md"
+    },
+    "theme_system": {
+      "old": "Direct color values Color(0.2, 0.3, 0.4)",
+      "new": "UnifiedColorManager.get_color('surface')",
+      "benefits": "Automatic theme switching, accessibility compliance"
+    },
+    "model_loading": {
+      "old": "load('res://models/brain.glb')",
+      "new": "SafeModelLoader.new().load_brain_model('brain', 'low')",
+      "benefits": "Error handling, LOD support, fallbacks"
+    }
+  },
+  "external_integrations": {
+    "mcp_servers": {
+      "godot-mcp": {
+        "purpose": "Godot engine integration",
+        "commands": ["run_scene", "test_project", "get_node_tree"],
+        "setup": "npm install -g @godot/mcp-server"
+      },
+      "sqlite-mcp": {
+        "purpose": "Local data persistence",
+        "database": "neurovision.db",
+        "tables": ["progress", "achievements", "settings"]
+      }
+    },
+    "future_integrations": {
+      "lms_connector": {
+        "purpose": "Learning Management System API",
+        "protocols": ["SCORM", "xAPI", "LTI"],
+        "status": "planned"
+      },
+      "analytics_api": {
+        "purpose": "Educational analytics platform",
+        "metrics": ["time_on_structure", "quiz_performance", "learning_path_progress"],
+        "status": "designed"
+      },
+      "cloud_backup": {
+        "purpose": "Progress synchronization",
+        "providers": ["AWS", "Google Cloud", "Azure"],
+        "status": "research"
+      }
+    },
+    "plugin_system": {
+      "location": "addons/",
+      "current": ["gut (testing)"],
+      "planned": ["accessibility_validator", "performance_profiler"]
+    }
+  },
+  "troubleshooting_tree": {
+    "app_wont_start": {
+      "check": "Godot console for parse errors",
+      "then": "Verify project.godot autoload paths exist",
+      "then2": "Check for circular dependencies in autoloads",
+      "then3": "Run './tools/scripts/quick_test.sh' for validation",
+      "finally": "Delete .godot/ folder and reimport"
+    },
+    "poor_performance": {
+      "check": "F1 → performance (should show 60+ FPS)",
+      "then": "F1 → models (check LOD levels)",
+      "then2": "Verify GPU with GPUDetector.gd output",
+      "then3": "Force LOW quality in settings",
+      "finally": "Disable shaders in project settings"
+    },
+    "ui_not_responsive": {
+      "check": "F1 → tree UI_Layer (verify structure)",
+      "then": "Check if theme is loaded (UnifiedColorManager)",
+      "then2": "Verify atomic components are instantiated",
+      "then3": "Check for blocking operations in _process()",
+      "finally": "Enable debug overlays for UI bounds"
+    },
+    "models_not_loading": {
+      "check": "Verify files exist in assets/3d_models/",
+      "then": "Check ModelPaths.gd configuration",
+      "then2": "Test with SafeModelLoader in isolation",
+      "then3": "Check ResourceManager cache status",
+      "finally": "Try loading raw model directly"
+    },
+    "theme_issues": {
+      "check": "UnifiedColorManager initialization in console",
+      "then": "Verify M3DesignTokens loaded",
+      "then2": "Check for theme override conflicts",
+      "then3": "Test theme switching with F10",
+      "finally": "Reset to default theme"
+    }
+  }
+}

@@ -2,24 +2,30 @@
 
 [ext_resource type="Script" path="res://src/ui_atomic/molecules/TutorialOverlay.gd" id="1_tutorial"]
 
-[node name="TutorialOverlay" type="Control"]
+[node name="EducationalTutorialOverlay" type="Control" groups=["tutorial_system", "educational_onboarding", "accessibility_critical"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("1_tutorial")
+metadata/accessibility_role = "dialog"
+metadata/accessibility_label = "Interactive tutorial overlay"
+metadata/educational_type = "guided_learning"
 
-[node name="OverlayRect" type="ColorRect" parent="."]
+[node name="TutorialBackgroundOverlay" type="ColorRect" parent="." groups=["visual_overlay"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="HighlightContainer" type="Control" parent="."]
+[node name="InteractiveHighlightContainer" type="Control" parent="." groups=["highlight_system"]]
+metadata/description = "Container for highlighting UI elements during tutorial"
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="TooltipPanel" type="PanelContainer" parent="."]
+[node name="TutorialTooltipPanel" type="PanelContainer" parent="." groups=["tutorial_content"]]
+metadata/accessibility_role = "complementary"
+metadata/accessibility_label = "Tutorial instruction panel"
 custom_minimum_size = Vector2(400, 200)
 offset_left = 440.0
 offset_top = 260.0
@@ -27,23 +33,27 @@ offset_right = 840.0
 offset_bottom = 460.0
 mouse_filter = 1
 
-[node name="Content" type="MarginContainer" parent="TooltipPanel"]
+[node name="TutorialContentMargin" type="MarginContainer" parent="TutorialTooltipPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBox" type="VBoxContainer" parent="TooltipPanel/Content"]
+[node name="TutorialContentContainer" type="VBoxContainer" parent="TutorialTooltipPanel/TutorialContentMargin" groups=["tutorial_elements"]]
+metadata/description = "Main container for tutorial content and controls"
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="TitleLabel" type="Label" parent="TooltipPanel/Content/VBox"]
+[node name="TutorialStepTitle" type="Label" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer"]
+metadata/accessibility_role = "heading"
+metadata/accessibility_level = 3
 layout_mode = 2
 text = "Tutorial Title"
 theme_override_font_sizes/font_size = 24
 
-[node name="DescriptionLabel" type="RichTextLabel" parent="TooltipPanel/Content/VBox"]
+[node name="TutorialStepDescription" type="RichTextLabel" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer"]
+metadata/educational_content_type = "instructional"
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
@@ -51,40 +61,52 @@ text = "Tutorial description goes here"
 fit_content = true
 autowrap_mode = 2
 
-[node name="ProgressContainer" type="HBoxContainer" parent="TooltipPanel/Content/VBox"]
+[node name="TutorialProgressContainer" type="HBoxContainer" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer" groups=["progress_indicator"]]
+metadata/accessibility_label = "Tutorial progress"
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="ProgressBar" type="ProgressBar" parent="TooltipPanel/Content/VBox/ProgressContainer"]
+[node name="TutorialProgressBar" type="ProgressBar" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer/TutorialProgressContainer"]
+metadata/accessibility_label = "Tutorial completion progress"
 layout_mode = 2
 size_flags_horizontal = 3
 value = 50.0
 show_percentage = false
 
-[node name="ProgressLabel" type="Label" parent="TooltipPanel/Content/VBox/ProgressContainer"]
+[node name="TutorialProgressLabel" type="Label" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer/TutorialProgressContainer"]
+metadata/accessibility_live = "polite"
 layout_mode = 2
 text = "Step 1 of 8"
 theme_override_font_sizes/font_size = 12
 
-[node name="ButtonContainer" type="HBoxContainer" parent="TooltipPanel/Content/VBox"]
+[node name="TutorialNavigationButtons" type="HBoxContainer" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer" groups=["tutorial_navigation"]]
+metadata/accessibility_role = "toolbar"
+metadata/accessibility_label = "Tutorial navigation controls"
 layout_mode = 2
 alignment = 2
 theme_override_constants/separation = 10
 
-[node name="PreviousButton" type="Button" parent="TooltipPanel/Content/VBox/ButtonContainer"]
+[node name="TutorialPreviousButton" type="Button" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer/TutorialNavigationButtons"]
+metadata/accessibility_label = "Go to previous tutorial step"
+metadata/keyboard_shortcut = "Left"
 layout_mode = 2
 text = "Previous"
 disabled = true
 
-[node name="SkipButton" type="Button" parent="TooltipPanel/Content/VBox/ButtonContainer"]
+[node name="SkipTutorialButton" type="Button" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer/TutorialNavigationButtons"]
+metadata/accessibility_label = "Skip the tutorial"
 layout_mode = 2
 text = "Skip Tutorial"
 
-[node name="NextButton" type="Button" parent="TooltipPanel/Content/VBox/ButtonContainer"]
+[node name="TutorialNextButton" type="Button" parent="TutorialTooltipPanel/TutorialContentMargin/TutorialContentContainer/TutorialNavigationButtons"]
+metadata/accessibility_label = "Go to next tutorial step"
+metadata/keyboard_shortcut = "Right"
 layout_mode = 2
 text = "Next"
 
-[node name="CloseButton" type="Button" parent="TooltipPanel/Content"]
+[node name="CloseTutorialButton" type="Button" parent="TutorialTooltipPanel/TutorialContentMargin"]
+metadata/accessibility_label = "Close tutorial"
+metadata/keyboard_shortcut = "Escape"
 layout_mode = 2
 anchor_left = 1.0
 anchor_right = 1.0

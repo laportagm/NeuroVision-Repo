@@ -4,6 +4,8 @@
   "engine_version": "4.4.1",
   "language": "gdscript",
   "maturity_level": "production_ready_medical_platform",
+  "config_version": "2.3.0",
+  "last_updated": "2025-06-19",
   "context_files": [
     "docs/PROJECT_OUTLINE.md",
     "docs/CLAUDE.md",
@@ -15,7 +17,8 @@
     "docs/reports/ARCHITECTURAL_IMPROVEMENTS_REPORT.md",
     "docs/architecture/NEUROVISION_ARCHITECTURE_DIAGRAM.md",
     "docs/migration/UNIFIED_COLOR_SYSTEM_STATUS.md",
-    "prompts/current_phase.md"
+    "prompts/current_phase.md",
+    "DEBUG_GUIDE.md"
   ],
   "key_systems": [
     "src/core/managers/CoreSystemManager.gd",
@@ -29,7 +32,12 @@
     "src/autoload/ProgressTracker.gd",
     "src/systems/3d_interaction/HighlightMaterialManager.gd",
     "src/systems/3d_interaction/SafeModelLoader.gd",
-    "src/core/config/ModelPaths.gd"
+    "src/core/config/ModelPaths.gd",
+    "src/systems/3d_rendering/EnvironmentManager.gd",
+    "src/systems/3d_rendering/ShaderParameterManager.gd",
+    "src/systems/3d_rendering/AdvancedBrainRenderer.gd",
+    "src/debug/DebugSystem.gd",
+    "src/debug/DebugConsole.gd"
   ],
   "prompt_engineering": {
     "quick_reference": "docs/dev/QUICK_REFERENCE.md",
@@ -38,7 +46,7 @@
     "development_guide": "docs/CLAUDE.md"
   },
   "development_approach": "mature_medical_platform_enhancement",
-  "current_phase": "phase_2_educational_features_enhancement",
+  "current_phase": "phase_2_shader_enhancement_and_optimization",
   "phase_1_status": "complete_exceeds_objectives",
   "completed_systems": [
     "unified_color_management_system",
@@ -57,7 +65,14 @@
     "directory_structure_optimization",
     "error_handling_system",
     "rid_leak_prevention",
-    "model_path_configuration"
+    "model_path_configuration",
+    "shader_compilation_fixes",
+    "brain_tissue_advanced_shader",
+    "hdri_environment_system",
+    "3d_rendering_system_architecture",
+    "comprehensive_debug_system",
+    "in_game_debug_console",
+    "error_detection_scripts"
   ],
   "excluded_features": ["firebase", "cloud_sync", "google_oauth"],
   "validation_on_commit": true,
@@ -120,7 +135,9 @@
     "testing_framework": "scripts/setup_gut.sh",
     "progress_tracker": "scripts/update_progress.sh",
     "unified_color_setup": "tools/scripts/setup_unified_colors.gd",
-    "theme_generation": "src/ui_atomic/themes/generators/GenerateThemeResources.gd"
+    "theme_generation": "src/ui_atomic/themes/generators/GenerateThemeResources.gd",
+    "debug_script": "debug_neurovision_enhanced.sh",
+    "error_check": "tools/scripts/comprehensive_error_check.sh"
   },
   "testing_framework": {
     "primary": "GUT",
@@ -146,12 +163,17 @@
     "default_model": "Internal_Structures_LOD/Internal-Structures_low.glb",
     "shaders": "assets/shaders/",
     "ui_resources": "src/ui_atomic/resources/",
-    "themes": "src/ui_atomic/themes/"
+    "themes": "src/ui_atomic/themes/",
+    "hdri_environments": "assets/hdri/",
+    "hdri_files": ["surgical_suite_2k.hdr", "medical_lab_2k.hdr", "anatomy_classroom_2k.hdr"]
   },
   "shader_system": {
     "medical_visualization": "assets/shaders/medical_visualization.gdshader",
     "highlight_effects": "assets/shaders/structure_highlight/",
-    "ui_effects": "src/ui_atomic/effects/shaders/"
+    "ui_effects": "src/ui_atomic/effects/shaders/",
+    "brain_tissue_advanced": "assets/shaders/brain_tissue_advanced.gdshader",
+    "subsurface_scattering": "enabled_for_brain_tissue",
+    "shader_compilation_status": "all_errors_resolved"
   },
   "data_management": {
     "sqlite_integration": "sqlite_mcp_server.db",
@@ -163,7 +185,9 @@
     "accessibility_validation": "src/ui_atomic/themes/validation/M3AccessibilityValidator.gd",
     "performance_monitoring": "src/autoload/PerformanceMonitor.gd",
     "color_system_validation": "src/ui_atomic/themes/validation/ColorSystemValidator.gd",
-    "gpu_compatibility": "src/systems/3d_interaction/GPUDetector.gd"
+    "gpu_compatibility": "src/systems/3d_interaction/GPUDetector.gd",
+    "debug_system": "src/debug/DebugSystem.gd",
+    "debug_console": "src/debug/DebugConsole.gd"
   },
   "deployment": {
     "export_platforms": ["Windows", "macOS", "Linux"],
@@ -191,7 +215,9 @@
     "logging": "Godot/app_userdata/NeuroVis/logs/",
     "graceful_degradation": true,
     "user_feedback": "integrated_error_reporting",
-    "rid_leak_prevention": "implemented_in_autoloads"
+    "rid_leak_prevention": "implemented_in_autoloads",
+    "debug_logging": "user://debug_log_[timestamp].txt",
+    "error_detection": "comprehensive_error_check.sh"
   },
   "performance_metrics": {
     "target_fps": 60,
@@ -214,7 +240,12 @@
       "NetworkManager", 
       "AssessmentService",
       "HighlightMaterialManager",
-      "ProgressTracker"
+      "ProgressTracker",
+      "IntelOptimizer"
+    ],
+    "debug_services": [
+      "DebugSystem",
+      "DebugConsoleAutoload"
     ],
     "ui_enhancement_services": [
       "UIThemeManager",
@@ -260,7 +291,10 @@
     "highlight_system": "assets/shaders/structure_highlight/",
     "ui_glass_morphism": "src/ui_atomic/effects/shaders/glass_morphism_ui.gdshader",
     "theme_transitions": "src/ui_atomic/effects/shaders/theme_transition.gdshader",
-    "cross_sectional": "assets/shaders/cross_section.gdshader"
+    "cross_sectional": "assets/shaders/cross_section.gdshader",
+    "brain_tissue_advanced": "assets/shaders/brain_tissue_advanced.gdshader",
+    "environment_mapping": "hdri_based_lighting",
+    "rendering_system": "src/systems/3d_rendering/"
   },
   "quality_gates": {
     "accessibility_validation": "src/ui_atomic/themes/validation/M3AccessibilityValidator.gd",
@@ -287,17 +321,33 @@
     "error_handling": {
       "safe_model_loader": "fallback_and_placeholder_support",
       "model_path_configuration": "centralized_path_management",
-      "error_reporting": "clear_user_feedback"
+      "error_reporting": "clear_user_feedback",
+      "shader_compilation_fixes": "all_errors_resolved"
     },
     "performance_optimization": {
       "rid_leak_prevention": "autoload_cleanup_methods",
       "resource_management": "centralized_caching",
-      "memory_cleanup": "proper_exit_tree_implementation"
+      "memory_cleanup": "proper_exit_tree_implementation",
+      "shader_optimization": "advanced_brain_tissue_rendering"
     },
     "developer_experience": {
       "clean_architecture_docs": "comprehensive_system_documentation",
       "quick_reference": "developer_convenience_guide",
       "test_improvements": "runtime_validation_scripts"
+    },
+    "rendering_enhancements": {
+      "brain_tissue_shader": "advanced_subsurface_scattering",
+      "hdri_environments": "medical_themed_lighting",
+      "3d_rendering_system": "organized_architecture",
+      "shader_parameter_management": "centralized_control"
+    },
+    "debug_enhancements": {
+      "comprehensive_debug_system": "DebugSystem autoload with real-time monitoring",
+      "in_game_console": "Press ` for 40+ debug commands",
+      "error_detection_scripts": "comprehensive_error_check.sh finds common issues",
+      "debug_overlay": "Real-time FPS, memory, error display",
+      "profiling_tools": "Built-in function profiling",
+      "log_management": "Automatic debug log files with rotation"
     }
   },
   "ai_guidance": {
@@ -437,13 +487,18 @@
     },
     "debug_shortcuts": {
       "open_console": "F1",
+      "toggle_debug_console": "`",
       "check_memory": "memory",
       "test_knowledge": "knowledge hippocampus",
       "search_knowledge": "kb search memory",
       "performance_stats": "performance",
       "model_list": "models",
       "scene_tree": "tree UI_Layer",
-      "clear_debug": "clear_debug"
+      "clear_debug": "clear_debug",
+      "error_summary": "errors",
+      "autoload_status": "autoloads",
+      "fps_check": "fps",
+      "run_tests": "test all"
     },
     "common_issues": {
       "rid_leaks": {
@@ -465,6 +520,17 @@
         "symptom": "Script errors on startup",
         "solution": "Check project.godot autoload paths",
         "check": "Verify all autoload scripts exist and parse correctly"
+      },
+      "shader_compilation": {
+        "symptom": "Shader compilation errors in console",
+        "solution": "Check for proper vec3/vec4 conversions, use COLOR.rgb for vec3",
+        "check": "Look for brain_tissue_advanced.gdshader errors",
+        "fixed_in": "brain_tissue_advanced.gdshader v2.0"
+      },
+      "missing_hdri": {
+        "symptom": "Environment looks flat or missing reflections",
+        "solution": "Verify HDRI files exist in assets/hdri/",
+        "check": "ls assets/hdri/*.hdr"
       }
     }
   },
@@ -652,6 +718,87 @@
       "then2": "Check for theme override conflicts",
       "then3": "Test theme switching with F10",
       "finally": "Reset to default theme"
+    }
+  },
+  "debug_tools": {
+    "external_scripts": {
+      "enhanced_debug": {
+        "path": "./debug_neurovision_enhanced.sh",
+        "options": ["quick_scan", "verbose_run", "log_analysis", "comprehensive_test", "file_check", "real_time_monitor"],
+        "purpose": "External debugging with multiple analysis modes"
+      },
+      "error_check": {
+        "path": "./tools/scripts/comprehensive_error_check.sh",
+        "detects": ["python_syntax", "missing_nodes", "resource_loading", "signal_connections", "memory_leaks", "TODOs"],
+        "output": "error_report_[timestamp].txt"
+      }
+    },
+    "in_game_systems": {
+      "debug_system": {
+        "autoload": "DebugSystem",
+        "features": ["performance_monitoring", "memory_tracking", "error_logging", "debug_overlay", "profiling"],
+        "overlay_position": "top_right",
+        "log_file": "user://debug_log_[timestamp].txt"
+      },
+      "debug_console": {
+        "autoload": "DebugConsoleAutoload",
+        "toggle_key": "`",
+        "commands": {
+          "system": ["help", "clear", "exit"],
+          "debug": ["fps", "memory", "nodes", "errors", "autoloads", "performance"],
+          "scene": ["scene", "reload", "screenshot"],
+          "educational": ["brain", "theme", "knowledge", "validate"],
+          "testing": ["test", "stress", "profile"]
+        },
+        "features": ["autocomplete", "history", "suggestions", "color_output"]
+      }
+    },
+    "debug_commands": {
+      "performance": {
+        "fps": "Show current FPS",
+        "memory": "Display memory usage (static + dynamic)",
+        "performance": "Comprehensive performance metrics",
+        "profile [function]": "Profile function execution time"
+      },
+      "validation": {
+        "autoloads": "Check all autoload status",
+        "validate": "Validate educational systems",
+        "test [component]": "Run component tests",
+        "errors": "Show error summary"
+      },
+      "educational": {
+        "brain [structure]": "Show brain structure info",
+        "knowledge [query]": "Search knowledge base",
+        "theme [name]": "Change UI theme"
+      },
+      "stress_testing": {
+        "stress nodes": "Create 1000 test nodes",
+        "stress memory": "Allocate test memory",
+        "stress rendering": "Test rendering performance"
+      }
+    },
+    "error_detection": {
+      "syntax_patterns": ["try:", "except:", "finally:"],
+      "node_patterns": ["get_node(", "has node:"],
+      "resource_patterns": ["load(\"res://", "preload(\"res://"],
+      "signal_patterns": [".connect("],
+      "memory_patterns": [".new()", "queue_free()", "free()"],
+      "performance_monitors": {
+        "MEMORY_STATIC": "Static memory usage",
+        "MEMORY_MESSAGE_BUFFER_MAX": "Dynamic memory approximation",
+        "RENDER_TOTAL_DRAW_CALLS_IN_FRAME": "Draw calls per frame",
+        "RENDER_TOTAL_PRIMITIVES_IN_FRAME": "Vertex count"
+      }
+    },
+    "debug_configuration": {
+      "overlay_enabled": true,
+      "log_to_file": true,
+      "performance_monitoring": true,
+      "memory_tracking": true,
+      "error_stacktrace": true,
+      "fps_warning_threshold": 30,
+      "memory_warning_threshold": 536870912,
+      "frame_time_warning_ms": 33.33
     }
   }
 }

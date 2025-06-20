@@ -23,7 +23,7 @@ var _is_enabled: bool = true
 # === PUBLIC METHODS ===
 
 func register_control(control: Control, label: String = "") -> void:
-	"""Register a control for focus management"""
+	## Register a control for focus management
 	if control in _focus_registry:
 		return
 		
@@ -43,7 +43,7 @@ func register_control(control: Control, label: String = "") -> void:
 		control.focus_mode = Control.FOCUS_ALL
 
 func unregister_control(control: Control) -> void:
-	"""Remove a control from focus management"""
+	## Remove a control from focus management
 	var index = _focus_registry.find(control)
 	if index >= 0:
 		_focus_registry.remove_at(index)
@@ -58,7 +58,7 @@ func unregister_control(control: Control) -> void:
 			_current_focus_index -= 1
 
 func clear_registry() -> void:
-	"""Clear all registered controls"""
+	## Clear all registered controls
 	for control in _focus_registry:
 		if control.focus_entered.is_connected(_on_control_focus_entered):
 			control.focus_entered.disconnect(_on_control_focus_entered)
@@ -68,7 +68,7 @@ func clear_registry() -> void:
 	_current_focus_index = -1
 
 func focus_next() -> void:
-	"""Move focus to the next control in the registry"""
+	## Move focus to the next control in the registry
 	if _focus_registry.is_empty():
 		return
 		
@@ -82,7 +82,7 @@ func focus_next() -> void:
 		focus_next()
 
 func focus_previous() -> void:
-	"""Move focus to the previous control in the registry"""
+	## Move focus to the previous control in the registry
 	if _focus_registry.is_empty():
 		return
 		
@@ -99,30 +99,30 @@ func focus_previous() -> void:
 		focus_previous()
 
 func set_focus_to_control(control: Control) -> void:
-	"""Set focus to a specific control if it's registered"""
+	## Set focus to a specific control if it's registered
 	var index = _focus_registry.find(control)
 	if index >= 0:
 		_current_focus_index = index
 		control.grab_focus()
 
 func get_current_focus() -> Control:
-	"""Get the currently focused control"""
+	## Get the currently focused control
 	if _current_focus_index >= 0 and _current_focus_index < _focus_registry.size():
 		return _focus_registry[_current_focus_index]
 	return null
 
 func enable() -> void:
-	"""Enable focus management"""
+	## Enable focus management
 	_is_enabled = true
 
 func disable() -> void:
-	"""Disable focus management"""
+	## Disable focus management
 	_is_enabled = false
 
 # === PRIVATE METHODS ===
 
 func _on_control_focus_entered(control: Control) -> void:
-	"""Handle when a registered control gains focus"""
+	## Handle when a registered control gains focus
 	if not _is_enabled:
 		return
 		
@@ -140,7 +140,7 @@ func _on_control_focus_entered(control: Control) -> void:
 			accessibility_mgr.announce(label)
 
 func _get_control_label(control: Control) -> String:
-	"""Generate a default label for a control"""
+	## Generate a default label for a control
 	if control is Button:
 		return control.text
 	elif control is LineEdit:
@@ -157,7 +157,7 @@ func _get_control_label(control: Control) -> String:
 		return control.get_class()
 
 func create_focus_style() -> StyleBoxFlat:
-	"""Create a consistent focus indicator style"""
+	## Create a consistent focus indicator style
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.2, 0.2, 0.3, 0.3)
 	style.border_color = FOCUS_RING_COLOR

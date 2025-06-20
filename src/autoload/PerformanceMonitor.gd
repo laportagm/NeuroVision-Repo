@@ -16,8 +16,8 @@ enum QualityLevel {
 }
 
 # === CONSTANTS ===
-const FPS_WARNING_THRESHOLD: float = 30.0
-const FPS_CRITICAL_THRESHOLD: float = 20.0
+const FPS_WARNING_THRESHOLD: float = 50.0  # Raised for 60 FPS target
+const FPS_CRITICAL_THRESHOLD: float = 30.0  # Raised for better performance
 const MEMORY_WARNING_THRESHOLD: float = 500.0  # MB
 const MEMORY_CRITICAL_THRESHOLD: float = 800.0  # MB
 const UPDATE_INTERVAL: float = 1.0
@@ -25,8 +25,8 @@ const QUALITY_CHECK_INTERVAL: float = 5.0
 const FPS_HISTORY_SIZE: int = 10
 
 # Quality adjustment thresholds
-const QUALITY_UP_FPS_THRESHOLD: float = 50.0
-const QUALITY_DOWN_FPS_THRESHOLD: float = 25.0
+const QUALITY_UP_FPS_THRESHOLD: float = 65.0  # Need consistent 65+ FPS to upgrade quality
+const QUALITY_DOWN_FPS_THRESHOLD: float = 55.0  # Downgrade if below 55 FPS
 const QUALITY_STABILITY_THRESHOLD: float = 5.0  # FPS variance
 
 # === PRIVATE VARIABLES ===

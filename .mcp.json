@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/specification/main/schema/mcp_config_schema.json",
-  "description": "MCP configuration for NeuroVision educational neuroscience platform",
-  "version": "1.1.0",
+  "description": "MCP configuration for NeuroVision educational neuroscience platform with advanced code analysis",
+  "version": "1.2.0",
   "mcpServers": {
     "godot": {
       "description": "🎮 Godot 4.4.1 engine integration for NeuroVision educational platform - PRIMARY DEVELOPMENT TOOL",
@@ -30,11 +30,66 @@
       "priority": 1,
       "capabilities": [
         "scene_creation",
-        "node_management", 
+        "node_management",
         "3d_model_loading",
         "educational_ui_development",
         "performance_testing",
         "brain_visualization"
+      ]
+    },
+    "code-analysis-neurovision": {
+      "description": "🔍 Advanced code analysis for NeuroVision GDScript and project architecture",
+      "type": "stdio",
+      "command": "uv",
+      "cwd": "/Users/gagelaporta/Desktop/NeuroVision-Repo",
+      "args": [
+        "--directory",
+        "/Users/gagelaporta/mcp-servers/code-analysis-mcp",
+        "run",
+        "code_analysis.py"
+      ],
+      "env": {
+        "CODE_ANALYSIS_PROJECT": "NeuroVision",
+        "ANALYSIS_FOCUS": "educational_platform,godot_gdscript,3d_visualization,accessibility",
+        "PROJECT_TYPE": "educational_neuroscience",
+        "FRAMEWORK": "godot_4.4.1",
+        "EDUCATIONAL_CONTEXT": "medical_students,neuroanatomy_learning",
+        "PERFORMANCE_TARGETS": "60fps,memory_optimization,offline_capability",
+        "MCP_USAGE_HINT": "Use for codebase analysis, architecture review, educational pattern detection"
+      },
+      "tags": ["code-analysis", "gdscript", "educational", "architecture", "debugging"],
+      "priority": 2,
+      "capabilities": [
+        "codebase_exploration",
+        "architectural_analysis",
+        "performance_bottleneck_detection",
+        "educational_pattern_recognition",
+        "accessibility_code_review",
+        "godot_specific_analysis"
+      ]
+    },
+    "code-review-educational": {
+      "description": "📋 Specialized code review for educational platform best practices",
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/gagelaporta/mcp-servers/mcp-code-review-server/dist/index.js"
+      ],
+      "env": {
+        "LLM_PROVIDER": "ANTHROPIC",
+        "PROJECT_TYPE": "educational_platform",
+        "REVIEW_FOCUS": "medical_accuracy,accessibility,performance,educational_effectiveness",
+        "GODOT_VERSION": "4.4.1",
+        "EDUCATIONAL_STANDARDS": "wcag_aa,medical_education_compliance"
+      },
+      "tags": ["code-review", "educational", "medical", "accessibility", "quality"],
+      "priority": 3,
+      "capabilities": [
+        "educational_code_review",
+        "medical_accuracy_validation",
+        "accessibility_compliance_check",
+        "performance_optimization_review",
+        "godot_best_practices"
       ]
     },
     "filesystem-core": {
@@ -77,12 +132,13 @@
         "-y",
         "@modelcontextprotocol/server-filesystem",
         "/Users/gagelaporta/Desktop/NeuroVision-Repo/.vscode",
-        "/Users/gagelaporta/Desktop/NeuroVision-Repo/tools"
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/tools",
+        "/Users/gagelaporta/Desktop/NeuroVision-Repo/tests"
       ],
       "env": {
         "FILESYSTEM_DESCRIPTION": "Development configuration and tools"
       },
-      "tags": ["config", "development", "tools"],
+      "tags": ["config", "development", "tools", "testing"],
       "priority": 4
     },
     "memory-educational": {
@@ -162,26 +218,68 @@
   "profiles": {
     "development": {
       "description": "Full development environment with all educational tools",
-      "servers": ["godot", "filesystem-core", "filesystem-assets", "filesystem-config", "memory-educational", "sequential-thinking"],
-      "priority": 1
-    },
-    "testing": {
-      "description": "🧪 Testing and debugging profile for NeuroVision educational platform",
-      "servers": ["godot", "filesystem-core", "memory-educational", "sequential-thinking"],
+      "servers": ["godot", "code-analysis-neurovision", "filesystem-core", "filesystem-assets", "filesystem-config", "memory-educational", "sequential-thinking"],
       "priority": 1,
-      "testing_capabilities": [
-        "automated_scene_testing",
-        "performance_profiling", 
-        "educational_workflow_validation",
-        "accessibility_compliance_testing",
-        "brain_model_loading_verification",
-        "ui_component_testing"
+      "development_capabilities": [
+        "full_codebase_analysis",
+        "educational_pattern_detection",
+        "performance_optimization",
+        "accessibility_compliance_checking",
+        "medical_accuracy_validation"
+      ]
+    },
+    "debugging": {
+      "description": "🐛 Comprehensive debugging profile for NeuroVision issues",
+      "servers": ["godot", "code-analysis-neurovision", "filesystem-core", "memory-educational", "sequential-thinking"],
+      "priority": 1,
+      "debugging_capabilities": [
+        "codebase_architecture_analysis",
+        "performance_bottleneck_detection",
+        "educational_workflow_debugging",
+        "3d_interaction_troubleshooting",
+        "accessibility_issue_identification",
+        "memory_usage_analysis"
       ],
       "debug_hints": [
+        "Use 'code-analysis-neurovision' for deep architectural analysis",
         "Use 'gdtest [scene]' for educational scene testing",
-        "Use 'gddebug [issue]' for Godot-specific debugging", 
+        "Use 'gddebug [issue]' for Godot-specific debugging",
         "Use 'gdperformance' for 60fps validation",
-        "Use 'gdmemory' for educational content memory analysis"
+        "Use 'gdmemory' for educational content memory analysis",
+        "Combine multiple servers for comprehensive debugging workflows"
+      ]
+    },
+    "testing": {
+      "description": "🧪 Testing and quality assurance profile for NeuroVision educational platform",
+      "servers": ["godot", "code-analysis-neurovision", "code-review-educational", "filesystem-core", "memory-educational", "sequential-thinking"],
+      "priority": 1,
+      "testing_capabilities": [
+        "automated_code_review",
+        "educational_effectiveness_validation",
+        "performance_profiling",
+        "accessibility_compliance_testing",
+        "brain_model_loading_verification",
+        "ui_component_testing",
+        "medical_accuracy_verification"
+      ],
+      "quality_assurance": [
+        "wcag_aa_compliance_check",
+        "educational_workflow_validation",
+        "cross_platform_compatibility",
+        "medical_content_accuracy",
+        "performance_benchmarking"
+      ]
+    },
+    "code-review": {
+      "description": "📝 Focused code review and analysis profile",
+      "servers": ["code-analysis-neurovision", "code-review-educational", "filesystem-core", "sequential-thinking"],
+      "priority": 2,
+      "review_capabilities": [
+        "architectural_analysis",
+        "educational_best_practices_check",
+        "godot_pattern_validation",
+        "accessibility_code_review",
+        "performance_optimization_suggestions"
       ]
     },
     "educational-content": {
@@ -194,6 +292,75 @@
       "servers": ["filesystem-core", "memory-educational"],
       "priority": 3
     }
+  },
+  "workflows": {
+    "bug-investigation": {
+      "description": "Complete workflow for investigating and fixing NeuroVision bugs",
+      "steps": [
+        "Use code-analysis-neurovision to understand codebase structure",
+        "Use sequential-thinking to plan debugging approach",
+        "Use godot MCP for scene-specific testing",
+        "Use filesystem-core to examine related files",
+        "Use memory-educational to track investigation progress"
+      ],
+      "servers": ["code-analysis-neurovision", "sequential-thinking", "godot", "filesystem-core", "memory-educational"]
+    },
+    "performance-optimization": {
+      "description": "Systematic approach to optimizing NeuroVision performance",
+      "steps": [
+        "Use code-analysis-neurovision to identify bottlenecks",
+        "Use godot MCP for performance profiling",
+        "Use sequential-thinking for optimization strategy",
+        "Use code-review-educational for validation"
+      ],
+      "servers": ["code-analysis-neurovision", "godot", "sequential-thinking", "code-review-educational"]
+    },
+    "accessibility-enhancement": {
+      "description": "Workflow for improving educational accessibility",
+      "steps": [
+        "Use code-analysis-neurovision to scan for accessibility issues",
+        "Use code-review-educational for WCAG compliance check",
+        "Use godot MCP for UI accessibility testing",
+        "Use sequential-thinking for comprehensive improvement plan"
+      ],
+      "servers": ["code-analysis-neurovision", "code-review-educational", "godot", "sequential-thinking"]
+    }
+  },
+  "setup_instructions": {
+    "code_analysis_mcp": {
+      "description": "Installation instructions for code-analysis-mcp",
+      "steps": [
+        "git clone https://github.com/saiprashanths/code-analysis-mcp.git /Users/gagelaporta/mcp-servers/code-analysis-mcp",
+        "cd /Users/gagelaporta/mcp-servers/code-analysis-mcp",
+        "uv sync",
+        "Test with: uv --directory /Users/gagelaporta/mcp-servers/code-analysis-mcp run code_analysis.py"
+      ]
+    },
+    "code_review_server": {
+      "description": "Installation instructions for code review server",
+      "steps": [
+        "git clone https://github.com/crazyrabbitLTC/mcp-code-review-server.git /Users/gagelaporta/mcp-servers/mcp-code-review-server",
+        "cd /Users/gagelaporta/mcp-servers/mcp-code-review-server",
+        "npm install && npm run build",
+        "Configure .env with ANTHROPIC_API_KEY"
+      ]
+    }
+  },
+  "claude_code_usage": {
+    "examples": [
+      {
+        "command": "claude execute --mcp-server code-analysis-neurovision --prompt 'Analyze NeuroVision codebase structure and identify educational patterns'",
+        "description": "Comprehensive codebase analysis"
+      },
+      {
+        "command": "claude execute --mcp-server code-analysis-neurovision,sequential-thinking --prompt 'Plan debugging strategy for 3D brain interaction performance issues'",
+        "description": "Multi-server debugging workflow"
+      },
+      {
+        "command": "claude execute --mcp-server code-review-educational --prompt 'Review recent changes for educational best practices and accessibility compliance'",
+        "description": "Educational-focused code review"
+      }
+    ]
   },
   "metadata": {
     "project": "NeuroVision Educational Platform",
@@ -212,6 +379,11 @@
       "wcag_compliance": "2.1_AA",
       "screen_reader_support": true,
       "keyboard_navigation": true
+    },
+    "code_analysis": {
+      "primary_languages": ["gdscript", "csharp", "glsl"],
+      "analysis_focus": ["educational_patterns", "accessibility", "performance", "medical_accuracy"],
+      "quality_gates": ["wcag_compliance", "performance_targets", "educational_effectiveness"]
     }
   }
 }

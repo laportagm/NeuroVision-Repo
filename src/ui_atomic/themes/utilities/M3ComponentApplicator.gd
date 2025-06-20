@@ -100,8 +100,9 @@ static func apply_m3_panel_styling(panel: Control, variant: PanelVariant = Panel
 	# Apply to control
 	if panel is Panel or panel is PanelContainer:
 		panel.add_theme_stylebox_override("panel", style)
-	else:
-		push_warning("[M3ComponentApplicator] Control is not a Panel type, styling may not apply correctly")
+	elif panel.has_method("add_theme_stylebox_override"):
+		# Try to apply even if not a Panel - some controls support panel override
+		panel.add_theme_stylebox_override("panel", style)
 
 # === BUTTON STYLING ===
 

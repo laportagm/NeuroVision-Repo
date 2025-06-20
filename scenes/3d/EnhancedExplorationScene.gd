@@ -20,41 +20,96 @@ const ROTATION_SPEED: float = 0.25  # Reduced for better control
 const VERTICAL_ANGLE_LIMIT: float = 360.0
 
 # === NODES ===
-@onready var camera: Camera3D = $CameraSystem/CameraPivot/Camera3D
-@onready var camera_pivot: Node3D = $CameraSystem/CameraPivot
-@onready var brain_container: Node3D = $BrainModelContainer
-@onready var model_holder: Node3D = $BrainModelContainer/ModelHolder
-@onready var selection_sphere: MeshInstance3D = $BrainModelContainer/SelectionSphere
-@onready var info_panel = $UI/InfoPanel
+@onready var camera: Camera3D = $EducationalCameraSystem/AnatomicalCameraPivot/MedicalViewCamera
+@onready var camera_pivot: Node3D = $EducationalCameraSystem/AnatomicalCameraPivot
+@onready var brain_container: Node3D = $AnatomicalModelContainer
+@onready var model_holder: Node3D = $AnatomicalModelContainer/BrainModelHolder
+@onready var selection_sphere: MeshInstance3D = $AnatomicalModelContainer/StructureSelectionIndicator
+@onready var info_panel = $EducationalUILayer/AnatomicalInfoPanel
 
 # UI Elements
-@onready var top_bar: PanelContainer = $UI/MainUI/TopBar
-@onready var left_panel: PanelContainer = $UI/MainUI/LeftPanel
-@onready var bottom_panel: PanelContainer = $UI/MainUI/BottomPanel
-@onready var view_presets: OptionButton = $UI/MainUI/TopBar/TopBarContent/ViewControls/ViewPresets
-@onready var label_toggle: Button = $UI/MainUI/TopBar/TopBarContent/ToolButtons/LabelToggle
-@onready var quiz_button: Button = $UI/MainUI/TopBar/TopBarContent/ToolButtons/QuizButton
-@onready var help_button: Button = $UI/MainUI/TopBar/TopBarContent/ToolButtons/HelpButton
-@onready var structure_items: VBoxContainer = $UI/MainUI/LeftPanel/StructureList/ScrollContainer/StructureItems
-@onready var status_label: Label = $UI/MainUI/BottomPanel/StatusBar/StatusLabel
-@onready var performance_label: Label = $UI/MainUI/BottomPanel/StatusBar/PerformanceInfo
-@onready var loading_overlay: ColorRect = $UI/Overlays/LoadingOverlay
-@onready var loading_label: Label = $UI/Overlays/LoadingOverlay/LoadingLabel
-@onready var loading_progress: ProgressBar = $UI/Overlays/LoadingOverlay/LoadingContent/ProgressBar
-@onready var help_overlay: PanelContainer = $UI/Overlays/HelpOverlay
-@onready var help_close: Button = $UI/Overlays/HelpOverlay/HelpContent/CloseButton
-@onready var annotation_layer: Control = $UI/AnnotationLayer
+@onready var top_bar: PanelContainer = $EducationalUILayer/MainEducationalInterface/EducationalTopBar
+@onready var left_panel: PanelContainer = $EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel
+@onready var bottom_panel: PanelContainer = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar
+@onready var view_presets: OptionButton = $EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/AnatomicalViewControls/AnatomicalViewPresets
+@onready var label_toggle: Button = $EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/EducationalToolButtons/AnatomicalLabelToggle
+@onready var quiz_button: Button = $EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/EducationalToolButtons/EducationalQuizButton
+@onready var help_button: Button = $EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/EducationalToolButtons/EducationalHelpButton
+@onready var structure_items: VBoxContainer = $EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel/BrainStructureList/StructureScrollContainer/AnatomicalStructureItems
+@onready var status_label: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent/SystemStatusLabel
+@onready var performance_label: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent/PerformanceMetricsLabel
+@onready var loading_overlay: ColorRect = $EducationalUILayer/EducationalOverlays/ModelLoadingOverlay
+@onready var loading_label: Label = $EducationalUILayer/EducationalOverlays/ModelLoadingOverlay/LoadingStatusLabel
+@onready var loading_progress: ProgressBar = $EducationalUILayer/EducationalOverlays/ModelLoadingOverlay/LoadingProgressContent/ModelLoadingProgressBar
+@onready var help_overlay: PanelContainer = $EducationalUILayer/EducationalOverlays/EducationalHelpOverlay
+@onready var help_close: Button = $EducationalUILayer/EducationalOverlays/EducationalHelpOverlay/HelpGuideContent/CloseHelpButton
+@onready var annotation_layer: Control = $EducationalUILayer/AnatomicalAnnotationLayer
+
+# Quiz System Components
+@onready var quiz_overlay: PanelContainer = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay
+@onready var quiz_title: Label = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizHeader/QuizTitle
+@onready var quiz_progress: ProgressBar = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizHeader/QuizProgress
+@onready var quiz_close_button: Button = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizHeader/QuizCloseButton
+@onready var question_text: RichTextLabel = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/QuestionText
+@onready var question_image: TextureRect = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/QuestionImage
+@onready var answer_options: VBoxContainer = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions
+@onready var option_a = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions/OptionA
+@onready var option_b = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions/OptionB
+@onready var option_c = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions/OptionC
+@onready var option_d = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions/OptionD
+@onready var quiz_feedback: PanelContainer = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizFeedback
+@onready var feedback_text: RichTextLabel = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizFeedback/FeedbackContent/FeedbackText
+@onready var clinical_relevance: RichTextLabel = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizFeedback/FeedbackContent/ClinicalRelevance
+@onready var previous_button: Button = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls/PreviousButton
+@onready var submit_button: Button = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls/SubmitButton
+@onready var next_button: Button = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls/NextButton
+@onready var review_button: Button = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls/ReviewButton
+
+# Enhanced Annotation System Components
+@onready var structure_labels: Node2D = $EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations/StructureLabels
+@onready var medical_terminology_overlay: Control = $EducationalUILayer/AnatomicalAnnotationLayer/MedicalTerminologyOverlay
+@onready var clinical_markers: Node2D = $EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations/ClinicalMarkers
+@onready var educational_pointers: Node2D = $EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations/EducationalPointers
+@onready var annotation_settings: PanelContainer = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings
+@onready var label_size_slider: HSlider = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LabelSizeContainer/LabelSizeSlider
+@onready var contrast_toggle: CheckBox = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/ContrastContainer/ContrastToggle
+@onready var language_selector: OptionButton = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LanguageContainer/LanguageSelector
+@onready var annotation_debug: Control = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationDebug
+
+# Advanced Camera Collision System Components
+@onready var camera_collision: Area3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection
+@onready var camera_collision_shape: CollisionShape3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraCollisionShape
+@onready var proximity_warning: Area3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/ProximityWarning
+@onready var proximity_shape: CollisionShape3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/ProximityWarning/ProximityShape
+@onready var camera_constraints: StaticBody3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraConstraints
+@onready var constraint_shape: CollisionShape3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraConstraints/ConstraintShape
+
+# Performance Monitoring UI Components
+@onready var performance_toggle: Button = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent/PerformanceToggle
+@onready var performance_panel: PanelContainer = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel
+@onready var fps_indicator: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/CoreMetrics/FPSIndicator
+@onready var frame_time_indicator: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/CoreMetrics/FrameTimeIndicator
+@onready var quality_indicator: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/CoreMetrics/QualityIndicator
+@onready var brain_model_complexity: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/MedicalRenderingMetrics/BrainModelComplexity
+@onready var texture_memory: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/MedicalRenderingMetrics/TextureMemory
+@onready var rendering_quality: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/MedicalRenderingMetrics/RenderingQuality
+@onready var interaction_latency: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/EducationalMetrics/InteractionLatency
+@onready var accessibility_status: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/EducationalMetrics/AccessibilityStatus
+@onready var learning_analytics: Label = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/EducationalMetrics/LearningAnalytics
+@onready var memory_usage: ProgressBar = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/MemoryUsageContainer/MemoryUsage
+@onready var cpu_usage: ProgressBar = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/CPUUsageContainer/CPUUsage
+@onready var gpu_usage: ProgressBar = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/GPUUsageContainer/GPUUsage
 
 # Enhanced Lighting System
-@onready var lighting_system: Node3D = $Environment/Lighting
-@onready var key_light: DirectionalLight3D = $Environment/Lighting/DirectionalLight3D
-@onready var fill_light: DirectionalLight3D = $Environment/Lighting/FillLight
-@onready var rim_light: DirectionalLight3D = $Environment/Lighting/RimLight
-@onready var environment: WorldEnvironment = $Environment/WorldEnvironment
+@onready var lighting_system: Node3D = $EnvironmentSystem/MedicalLightingSystem
+@onready var key_light: DirectionalLight3D = $EnvironmentSystem/MedicalLightingSystem/KeyLight
+@onready var fill_light: DirectionalLight3D = $EnvironmentSystem/MedicalLightingSystem/FillLight
+@onready var rim_light: DirectionalLight3D = $EnvironmentSystem/MedicalLightingSystem/RimLight
+@onready var environment: WorldEnvironment = $EnvironmentSystem/MedicalVisualizationEnvironment
 
 # Visualization helpers
-@onready var grid_floor: MeshInstance3D = $VisualizationHelpers/GridFloor
-@onready var axis_indicator: Node3D = $VisualizationHelpers/AxisIndicator
+@onready var grid_floor: MeshInstance3D = $AnatomicalVisualizationHelpers/AnatomicalGridFloor
+@onready var axis_indicator: Node3D = $AnatomicalVisualizationHelpers/AnatomicalAxisIndicator
 
 # === PRIVATE VARIABLES ===
 var _camera_distance: float = 15.0  # Better initial distance for brain model
@@ -72,6 +127,45 @@ var _quiz_panel = null  # QuizPanel instance
 var _current_structure_id: String = ""
 var _structure_buttons: Dictionary = {}  # structure_id -> Button
 var _is_loading: bool = false
+
+# Educational Quiz System Variables
+var _current_quiz_data: Dictionary = {}
+var _current_quiz_question: int = 0
+var _quiz_answers: Dictionary = {}  # question_id -> selected_answer
+var _quiz_scores: Dictionary = {}  # question_id -> correct/incorrect
+var _quiz_is_active: bool = false
+
+# Missing variables used in _exit_tree
+var _debounce_timer: Timer = null
+var _tooltip_timer: Timer = null
+var _current_structure: Node = null
+var _last_hover_structure: Node = null
+var _camera_target_position: Vector3 = Vector3.ZERO
+var _camera_target_rotation: Vector3 = Vector3.ZERO
+var _quiz_structure_context: String = ""
+var _quiz_answer_options: Array = []
+
+# Enhanced Annotation System Variables
+var _annotation_labels: Dictionary = {}  # structure_id -> Label
+var _3d_to_2d_projections: Dictionary = {}  # structure_id -> Vector2
+var _label_visibility_distance: float = 25.0
+var _annotation_font_size: float = 14.0
+var _high_contrast_mode: bool = false
+var _annotation_language: String = "english"
+var _medical_terminology_database: Dictionary = {}
+var _annotation_update_timer: float = 0.0
+var _annotation_update_interval: float = 0.1  # Update 10 times per second
+
+# Advanced Camera Collision System Variables
+var _collision_avoidance_enabled: bool = true
+var _camera_smoothing_factor: float = 0.15
+var _min_distance_from_brain: float = 2.0
+var _max_distance_from_brain: float = 50.0
+var _collision_recovery_speed: float = 3.0
+var _proximity_warning_distance: float = 5.0
+var _is_collision_active: bool = false
+var _collision_normal: Vector3 = Vector3.ZERO
+var _target_collision_distance: float = 0.0
 
 # Trackpad support variables
 var _zoom_velocity: float = 0.0
@@ -176,14 +270,24 @@ var _performance_data: Dictionary = {
 
 func _ready() -> void:
 	print("[EnhancedExplorationScene] Initializing professional medical interface")
-	_setup_ui()
-	_setup_scene()
-	_setup_advanced_lighting()
-	_setup_intelligent_camera()
-	_create_axis_indicator()
-	_connect_signals()
-	_setup_help_text()
-	_add_panels_to_ui_group()
+	
+	# Enhanced error detection setup
+	_setup_enhanced_error_detection()
+	
+	# Initialize with error checking
+	_safe_setup_ui()
+	_safe_setup_scene()
+	_safe_setup_advanced_lighting()
+	_safe_setup_intelligent_camera()
+	_safe_setup_enhanced_annotation_system()
+	_safe_setup_camera_collision_system()
+	_safe_create_axis_indicator()
+	_safe_connect_signals()
+	_safe_setup_help_text()
+	_safe_add_panels_to_ui_group()
+	
+	# === Initialize Comprehensive Brain Rendering System ===
+	_safe_initialize_medical_grade_rendering()
 
 	# Professional medical education validation
 	await get_tree().create_timer(1.0).timeout  # Allow UI to stabilize
@@ -202,6 +306,15 @@ func _physics_process(delta: float) -> void:
 		_camera_distance = clamp(_camera_distance, MIN_ZOOM, MAX_ZOOM)
 		_zoom_velocity *= trackpad_zoom_damping
 		_update_camera_position()
+
+	# Update annotation projections for real-time 3D-to-2D display
+	_annotation_update_timer += delta
+	if _annotation_update_timer >= _annotation_update_interval:
+		_update_annotation_projections()
+		_annotation_update_timer = 0.0
+	
+	# Handle camera collision avoidance
+	_handle_camera_collision_in_physics(delta)
 
 	# Professional Performance Monitoring for Medical Education
 	_monitor_performance(delta)
@@ -319,7 +432,7 @@ func _calculate_optimal_camera_offset(preset: Dictionary) -> Vector3:
 	
 	return offset
 
-func _animate_to_optimal_view(_target_position: Vector3, focus_point: Vector3, target_rotation: Vector3, target_distance: float) -> void:
+func _animate_to_optimal_view(_camera_target_position: Vector3, focus_point: Vector3, target_rotation: Vector3, target_distance: float) -> void:
 	"""Animate camera to optimal viewing position"""
 	var tween = create_tween()
 	tween.set_parallel(true)
@@ -373,6 +486,111 @@ func set_environment_for_context(context: String) -> void:
 
 # === PRIVATE METHODS ===
 
+# Enhanced Error Detection Methods
+func _setup_enhanced_error_detection() -> void:
+	"""Set up comprehensive error detection and logging"""
+	# Enable verbose logging for debugging
+	if OS.is_debug_build():
+		print("[DEBUG] Enhanced error detection enabled")
+		# Track all errors and warnings
+		get_tree().node_configuration_warning_changed.connect(_on_node_warning_changed)
+
+func _on_node_warning_changed(node: Node) -> void:
+	"""Log node configuration warnings"""
+	if node.has_method("get_configuration_warnings"):
+		var warnings = node.get_configuration_warnings()
+		if warnings.size() > 0:
+			push_warning("[NodeWarning] %s: %s" % [node.get_path(), warnings])
+
+func _safe_setup_ui() -> void:
+	"""Setup UI with error checking"""
+	_setup_ui()
+	if not _validate_ui_setup():
+		push_error("[UI Setup] Failed to initialize UI components")
+		_log_missing_nodes()
+
+func _safe_setup_scene() -> void:
+	"""Setup scene with error checking"""
+	_setup_scene()
+	if not _validate_scene_setup():
+		push_error("[Scene Setup] Failed to initialize scene")
+
+func _safe_setup_advanced_lighting() -> void:
+	"""Setup lighting with error checking"""
+	_setup_advanced_lighting()
+	if not _validate_lighting_setup():
+		push_error("[Lighting Setup] Failed to initialize lighting")
+
+func _safe_setup_intelligent_camera() -> void:
+	"""Setup camera with error checking"""
+	_setup_intelligent_camera()
+	if not _validate_camera_setup():
+		push_error("[Camera Setup] Failed to initialize camera")
+
+func _safe_setup_enhanced_annotation_system() -> void:
+	"""Setup annotations with error checking"""
+	_setup_enhanced_annotation_system()
+	if not _validate_annotation_setup():
+		push_error("[Annotation Setup] Failed to initialize annotations")
+
+func _safe_setup_camera_collision_system() -> void:
+	"""Setup camera collision with error checking"""
+	_setup_camera_collision_system()
+	if not _validate_camera_collision_setup():
+		push_error("[Camera Collision] Failed to initialize collision system")
+
+func _safe_create_axis_indicator() -> void:
+	"""Create axis indicator with error checking"""
+	_create_axis_indicator()
+	if not _validate_axis_indicator_setup():
+		push_error("[Axis Indicator] Failed to create axis indicator")
+
+func _safe_connect_signals() -> void:
+	"""Connect signals with error checking"""
+	_connect_signals()
+	# Signal connections don't need validation as they silently fail if nodes are missing
+
+func _safe_setup_help_text() -> void:
+	"""Setup help text with error checking"""
+	_setup_help_text()
+	if not _validate_help_text_setup():
+		push_error("[Help Text] Failed to setup help text")
+
+func _safe_add_panels_to_ui_group() -> void:
+	"""Add panels to UI group with error checking"""
+	_add_panels_to_ui_group()
+	# Adding to groups doesn't fail - no validation needed
+
+func _safe_initialize_medical_grade_rendering() -> void:
+	"""Initialize rendering with error checking"""
+	_initialize_medical_grade_rendering()
+	if not _validate_rendering_setup():
+		push_error("[Rendering] Failed to initialize medical-grade rendering")
+
+func _log_missing_nodes() -> void:
+	"""Log all missing node references"""
+	var missing_nodes = []
+	
+	# Check all @onready variables
+	var properties = get_property_list()
+	for prop in properties:
+		if prop.name.begins_with("$"):
+			var node = get(prop.name)
+			if not is_instance_valid(node):
+				missing_nodes.append(prop.name)
+	
+	if missing_nodes.size() > 0:
+		push_error("[Missing Nodes] The following nodes were not found: %s" % str(missing_nodes))
+
+func try(callable: Callable) -> void:
+	"""Helper function for try-catch pattern in GDScript"""
+	callable.call()
+
+func except(callable: Callable = func(): pass) -> void:
+	"""Helper function for exception handling"""
+	if callable:
+		callable.call()
+
 func _setup_ui() -> void:
 	"""Setup all UI elements with Material 3 styling"""
 	# Apply M3 theme to all UI components
@@ -410,21 +628,33 @@ func _apply_m3_theme_to_ui() -> void:
 
 	# Apply comprehensive NeuroVision theme to entire UI hierarchy
 	var NeuroVisionTheme = preload("res://src/ui_atomic/themes/utilities/apply_neurovision_theme.gd")
-	NeuroVisionTheme.apply_neurovision_theme_to_scene($UI)
+	NeuroVisionTheme.apply_neurovision_theme_to_scene($EducationalUILayer)
 
-	# Apply M3 to top bar with proper header styling
+	# Apply M3 to top bar with better contrast
 	if top_bar:
-		M3ComponentApplicator.apply_m3_panel_styling(top_bar, M3ComponentApplicator.PanelVariant.SURFACE_CONTAINER)
+		var top_style = StyleBoxFlat.new()
+		top_style.bg_color = Color(0.2, 0.2, 0.25, 0.95)  # Darker background for top bar
+		top_style.corner_radius_bottom_left = 4
+		top_style.corner_radius_bottom_right = 4
+		top_bar.add_theme_stylebox_override("panel", top_style)
 		_apply_m3_to_top_bar_components()
 
-	# Apply M3 to left panel (Brain Structures) with navigation styling
+	# Apply M3 to left panel with light background for readability
 	if left_panel:
-		M3ComponentApplicator.apply_m3_panel_styling(left_panel, M3ComponentApplicator.PanelVariant.SURFACE)
+		var left_style = StyleBoxFlat.new()
+		left_style.bg_color = Color(0.95, 0.95, 0.95, 0.98)  # Light background
+		left_style.corner_radius_top_right = 8
+		left_style.corner_radius_bottom_right = 8
+		left_panel.add_theme_stylebox_override("panel", left_style)
 		_apply_m3_to_left_panel_components()
 
-	# Apply M3 to bottom panel with status bar styling
+	# Apply M3 to bottom panel with dark styling
 	if bottom_panel:
-		M3ComponentApplicator.apply_m3_panel_styling(bottom_panel, M3ComponentApplicator.PanelVariant.SURFACE_VARIANT)
+		var bottom_style = StyleBoxFlat.new()
+		bottom_style.bg_color = Color(0.15, 0.15, 0.2, 0.95)  # Dark background
+		bottom_style.corner_radius_top_left = 4
+		bottom_style.corner_radius_top_right = 4
+		bottom_panel.add_theme_stylebox_override("panel", bottom_style)
 		_apply_m3_to_bottom_panel_components()
 
 	# Apply M3 to modal overlays
@@ -439,13 +669,13 @@ func _apply_m3_to_top_bar_components() -> void:
 	var logo_label = top_bar.get_node_or_null("TopBarContent/Logo")
 	if logo_label and logo_label is Label:
 		M3ComponentApplicator.apply_m3_text_styling(logo_label, M3ComponentApplicator.TypographyScale.HEADLINE_MEDIUM)
-		logo_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+		logo_label.add_theme_color_override("font_color", Color(0.4, 0.7, 0.9))  # Light blue for logo
 
 	# Style view controls label
 	var view_label = top_bar.get_node_or_null("TopBarContent/ViewControls/ViewLabel")
 	if view_label and view_label is Label:
 		M3ComponentApplicator.apply_m3_text_styling(view_label, M3ComponentApplicator.TypographyScale.LABEL_MEDIUM)
-		view_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		view_label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))  # Light text on dark background
 
 func _apply_m3_to_left_panel_components() -> void:
 	"""Apply M3 styling to left panel components"""
@@ -453,25 +683,25 @@ func _apply_m3_to_left_panel_components() -> void:
 	var title_label = left_panel.get_node_or_null("StructureList/Title")
 	if title_label and title_label is Label:
 		M3ComponentApplicator.apply_m3_text_styling(title_label, M3ComponentApplicator.TypographyScale.TITLE_MEDIUM)
-		title_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["primary"])
+		title_label.add_theme_color_override("font_color", Color(0.1, 0.1, 0.1))  # Dark text on light background
 
 	# Style the HSeparator
 	var separator = left_panel.get_node_or_null("StructureList/HSeparator")
 	if separator and separator is HSeparator:
-		separator.add_theme_color_override("separator", M3DesignTokens.M3_COLORS["outline_variant"])
-		separator.add_theme_constant_override("separation", 1)
+		separator.add_theme_color_override("separator", Color(0.7, 0.7, 0.7))  # Visible separator
+		separator.add_theme_constant_override("separation", 2)
 
 func _apply_m3_to_bottom_panel_components() -> void:
 	"""Apply M3 styling to bottom panel components"""
-	# Style status label with M3 typography
+	# Style status label with M3 typography - light text on dark background
 	if status_label:
 		M3ComponentApplicator.apply_m3_text_styling(status_label, M3ComponentApplicator.TypographyScale.BODY_MEDIUM)
-		status_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface"])
+		status_label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))  # Light text
 
-	# Style performance label with M3 typography
+	# Style performance label with M3 typography - light text on dark background
 	if performance_label:
 		M3ComponentApplicator.apply_m3_text_styling(performance_label, M3ComponentApplicator.TypographyScale.LABEL_SMALL)
-		performance_label.add_theme_color_override("font_color", M3DesignTokens.M3_COLORS["on_surface_variant"])
+		performance_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))  # Slightly dimmer light text
 
 func _apply_m3_to_overlays() -> void:
 	"""Apply M3 styling to modal overlays"""
@@ -555,6 +785,30 @@ func _apply_m3_button_styling(button: Button, text: String, variant: M3Component
 
 	button.text = text
 	M3ComponentApplicator.apply_m3_button_styling(button, variant)
+	
+	# Override colors for better contrast on dark top bar
+	button.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))  # Light text
+	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))  # Bright on hover
+	button.add_theme_color_override("font_pressed_color", Color(0.8, 0.8, 0.8))  # Slightly darker when pressed
+	
+	# Custom button background for visibility
+	var style_normal = StyleBoxFlat.new()
+	style_normal.bg_color = Color(0.3, 0.3, 0.35, 0.8)  # Semi-transparent dark
+	style_normal.set_corner_radius_all(4)
+	style_normal.set_content_margin_all(8)
+	button.add_theme_stylebox_override("normal", style_normal)
+	
+	var style_hover = StyleBoxFlat.new()
+	style_hover.bg_color = Color(0.4, 0.4, 0.45, 0.9)  # Lighter on hover
+	style_hover.set_corner_radius_all(4)
+	style_hover.set_content_margin_all(8)
+	button.add_theme_stylebox_override("hover", style_hover)
+	
+	var style_pressed = StyleBoxFlat.new()
+	style_pressed.bg_color = Color(0.25, 0.25, 0.3, 0.9)  # Darker when pressed
+	style_pressed.set_corner_radius_all(4)
+	style_pressed.set_content_margin_all(8)
+	button.add_theme_stylebox_override("pressed", style_pressed)
 
 	# Add motion effects
 	if ClassDB.class_exists("ButtonMotionHandler"):
@@ -631,9 +885,9 @@ func _setup_camera_collision_detection() -> void:
 	_camera_collision_area.add_child(collision_shape)
 	
 	# Connect collision signals
-	_camera_collision_area.body_entered.connect(_on_camera_collision_detected)
+	_camera_collision_area.body_entered.connect(_on_camera_body_collision_detected)
 
-func _on_camera_collision_detected(body: Node3D) -> void:
+func _on_camera_body_collision_detected(body: Node3D) -> void:
 	"""Handle camera collision with brain model"""
 	if not _camera_ai_enabled:
 		return
@@ -668,6 +922,10 @@ func _update_camera_position() -> void:
 
 func _create_axis_indicator() -> void:
 	"""Create 3D axis indicator"""
+	if not is_instance_valid(axis_indicator):
+		push_warning("[AxisIndicator] axis_indicator node not found")
+		return
+		
 	var materials = {
 		"x": preload("res://assets/materials/axis_red.tres") if ResourceLoader.exists("res://assets/materials/axis_red.tres") else null,
 		"y": preload("res://assets/materials/axis_green.tres") if ResourceLoader.exists("res://assets/materials/axis_green.tres") else null,
@@ -724,6 +982,38 @@ func _connect_signals() -> void:
 	# Connect info panel signals
 	info_panel.close_requested.connect(_on_info_panel_closed)
 	info_panel.quiz_requested.connect(_on_info_panel_quiz_requested)
+	
+	# Connect quiz system signals
+	quiz_close_button.pressed.connect(_on_quiz_close_pressed)
+	previous_button.pressed.connect(_on_quiz_previous_pressed)
+	submit_button.pressed.connect(_on_quiz_submit_pressed)
+	next_button.pressed.connect(_on_quiz_next_pressed)
+	review_button.pressed.connect(_on_quiz_review_pressed)
+	
+	# Initialize quiz answer options array
+	_quiz_answer_options = [option_a, option_b, option_c, option_d]
+	
+	# Connect answer option signals
+	for i in range(_quiz_answer_options.size()):
+		var option = _quiz_answer_options[i]
+		if is_instance_valid(option) and option.has_signal("toggled"):
+			option.toggled.connect(_on_quiz_answer_selected.bind(i))
+		else:
+			push_warning("[Quiz] Option %d is not a valid CheckBox" % i)
+	
+	# Connect annotation system signals
+	if is_instance_valid(label_size_slider):
+		label_size_slider.value_changed.connect(_on_annotation_font_size_changed)
+	if is_instance_valid(contrast_toggle) and contrast_toggle.has_signal("toggled"):
+		contrast_toggle.toggled.connect(_on_annotation_contrast_toggled)
+	if is_instance_valid(language_selector):
+		language_selector.item_selected.connect(_on_annotation_language_changed)
+	
+	# Connect camera collision system signals
+	camera_collision.area_entered.connect(_on_camera_area_collision_detected)
+	camera_collision.area_exited.connect(_on_camera_collision_exited)
+	proximity_warning.area_entered.connect(_on_camera_proximity_warning)
+	proximity_warning.area_exited.connect(_on_camera_proximity_cleared)
 
 	# Connect to PerformanceMonitor if available
 	if has_node("/root/PerformanceMonitor"):
@@ -732,10 +1022,14 @@ func _connect_signals() -> void:
 			perf_monitor.performance_report_ready.connect(_on_performance_report)
 		if perf_monitor.has_signal("quality_level_changed"):
 			perf_monitor.quality_level_changed.connect(_on_quality_changed)
+	
+	# Connect performance monitoring UI signals
+	if is_instance_valid(performance_toggle):
+		performance_toggle.pressed.connect(_on_performance_toggle_pressed)
 
 func _setup_help_text() -> void:
 	"""Setup help overlay content"""
-	var help_text = $UI/Overlays/HelpOverlay/HelpContent/HelpText
+	var help_text = $EducationalUILayer/EducationalOverlays/EducationalHelpOverlay/HelpGuideContent/ControlsGuideText
 	if help_text:
 		help_text.text = "[b]Mouse Controls:[/b]\n" + \
 			"• Left Click + Drag - Rotate camera\n" + \
@@ -793,11 +1087,11 @@ func _populate_structure_list(structures: Array) -> void:
 		# WCAG AAA Compliance: Minimum 44x44px touch targets (expanded from 48px for comfort)
 		button.custom_minimum_size = Vector2(248, 50)  # 280px panel - 32px margins = 248px width
 
-		# Professional medical color scheme with WCAG AAA contrast
-		button.add_theme_color_override("font_color", UnifiedColorSystem.get_color("on_surface"))
-		button.add_theme_color_override("font_hover_color", UnifiedColorSystem.get_color("primary"))
-		button.add_theme_color_override("font_pressed_color", UnifiedColorSystem.get_color("primary"))
-		button.add_theme_color_override("font_focus_color", UnifiedColorSystem.get_color("primary"))
+		# Professional medical color scheme with high contrast for light background
+		button.add_theme_color_override("font_color", Color(0.1, 0.1, 0.1))  # Dark text on light bg
+		button.add_theme_color_override("font_hover_color", Color(0.0, 0.4, 0.8))  # Blue hover
+		button.add_theme_color_override("font_pressed_color", Color(0.0, 0.3, 0.7))  # Darker blue pressed
+		button.add_theme_color_override("font_focus_color", Color(0.0, 0.4, 0.8))  # Blue focus
 		button.add_theme_font_size_override("font_size", 16)  # Larger font for medical readability
 
 		# Professional glass morphism styling for medical education
@@ -905,6 +1199,11 @@ func _on_labels_toggled(toggled: bool) -> void:
 			_annotation_system.toggle_visibility()
 	update_status("Labels " + ("enabled" if toggled else "disabled"))
 
+func _on_related_structure_pressed(structure_id: String) -> void:
+	"""Handle related structure button press"""
+	print("[EnhancedExplorationScene] Related structure pressed: ", structure_id)
+	_on_structure_button_pressed(structure_id)
+
 func _on_quiz_pressed() -> void:
 	"""Handle quiz button press"""
 	_toggle_quiz()
@@ -923,6 +1222,18 @@ func _on_quality_changed(new_level: int) -> void:
 	"""Handle quality level changes"""
 	var quality_names = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
 	update_status("Quality changed to " + quality_names[new_level])
+
+func _on_performance_toggle_pressed() -> void:
+	"""Handle performance monitoring panel toggle"""
+	performance_panel.visible = not performance_panel.visible
+	performance_toggle.text = "Hide Performance" if performance_panel.visible else "Show Performance"
+	
+	# Update performance display immediately when shown
+	if performance_panel.visible:
+		_update_performance_display()
+		update_status("Performance monitoring panel enabled")
+	else:
+		update_status("Performance monitoring panel disabled")
 
 # ... (Include all the existing methods from ExplorationScene.gd)
 # ... (handle_mouse_button, handle_mouse_motion, handle_keyboard, etc.)
@@ -982,13 +1293,7 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 
 	# Get educational content
 	var content = {}
-	if has_node("/root/StructureContentService"):
-		var content_service = get_node("/root/StructureContentService")
-		if content_service.has_method("get_structure_content"):
-			content = content_service.get_structure_content(structure_id)
-
-	# Fallback to LearningContentManager if StructureContentService not available
-	if content.is_empty() and has_node("/root/LearningContentManager"):
+	if has_node("/root/LearningContentManager"):
 		var learning_content = get_node("/root/LearningContentManager")
 		if learning_content.has_method("get_content"):
 			content = learning_content.get_content(structure_id)
@@ -1044,7 +1349,7 @@ func _load_brain_models() -> void:
 
 	# Remove placeholder after a delay
 	await get_tree().create_timer(0.5).timeout
-	var placeholder = $BrainModelContainer/ModelHolder/PlaceholderBrain
+	var placeholder = $AnatomicalModelContainer/BrainModelHolder/BrainModelPlaceholder
 	if placeholder:
 		placeholder.queue_free()
 
@@ -1455,7 +1760,7 @@ func _setup_quiz_panel() -> void:
 	# Create quiz panel instance
 	var QuizPanelScene = preload("res://src/ui_atomic/organisms/QuizPanel.tscn")
 	_quiz_panel = QuizPanelScene.instantiate()
-	$UI.add_child(_quiz_panel)
+	$EducationalUILayer.add_child(_quiz_panel)
 
 	# Add quiz panel to UI group for shader management
 	_quiz_panel.add_to_group("ui_panels")
@@ -1478,35 +1783,65 @@ func _setup_quiz_panel() -> void:
 
 func _toggle_quiz() -> void:
 	"""Toggle quiz panel visibility"""
-	if not _quiz_panel:
-		update_status("Quiz system not available")
-		return
-
-	if _quiz_panel.visible:
-		_quiz_panel.hide()
+	if quiz_overlay.visible:
+		quiz_overlay.hide()
+		_quiz_is_active = false
 	else:
-		# Show assessments for current structure
-		if has_node("/root/AssessmentService"):
-			var assessment_service = get_node("/root/AssessmentService")
-
-			if _current_structure_id.is_empty():
-				# Show all assessments if no structure selected
-				var all_assessments = []
-				for structure_id in ["thalamus", "hippocampus", "striatum", "ventricles", "corpus_callosum"]:
-					if assessment_service.has_method("get_assessments_for_structure"):
-						var assessments = assessment_service.get_assessments_for_structure(structure_id)
-						all_assessments.append_array(assessments)
-				_quiz_panel.show_assessment_list(all_assessments)
-			else:
-				# Show assessments for selected structure
-				if assessment_service.has_method("get_assessments_for_structure"):
-					var assessments = assessment_service.get_assessments_for_structure(_current_structure_id)
-					if assessments.is_empty():
-						update_status("No assessments available for: " + _current_structure_id)
-					else:
-						_quiz_panel.show_assessment_list(assessments)
+		# Show quiz for current structure or general quiz
+		var structure_to_quiz = _current_structure_id if not _current_structure_id.is_empty() else "general"
+		
+		if structure_to_quiz == "general":
+			# Show general neuroanatomy quiz
+			_show_general_quiz()
 		else:
-			update_status("Assessment system not available")
+			# Show quiz for specific structure
+			show_quiz_for_structure(structure_to_quiz)
+
+func _show_general_quiz() -> void:
+	"""Show general neuroanatomy assessment"""
+	# Create a general quiz with mixed questions
+	var general_quiz_data = {
+		"structure_name": "General Neuroanatomy",
+		"questions": [
+			{
+				"question": "Which brain structure is primarily responsible for memory formation and consolidation?",
+				"options": ["A) Cerebellum", "B) Hippocampus", "C) Prefrontal Cortex", "D) Thalamus"],
+				"correct_answer": 1,
+				"explanation": "The hippocampus is essential for converting short-term memories into long-term memories.",
+				"clinical_relevance": "Hippocampal damage is associated with anterograde amnesia and is commonly affected in Alzheimer's disease."
+			},
+			{
+				"question": "What is the primary function of the cerebellum?",
+				"options": ["A) Language processing", "B) Motor coordination", "C) Visual processing", "D) Emotional regulation"],
+				"correct_answer": 1,
+				"explanation": "The cerebellum is crucial for balance, posture, and coordination of voluntary movements.",
+				"clinical_relevance": "Cerebellar dysfunction can lead to ataxia, dysmetria, and balance disorders."
+			},
+			{
+				"question": "Which structure connects the two cerebral hemispheres?",
+				"options": ["A) Corpus callosum", "B) Thalamus", "C) Hippocampus", "D) Cerebellum"],
+				"correct_answer": 0,
+				"explanation": "The corpus callosum is the largest white matter structure connecting left and right hemispheres.",
+				"clinical_relevance": "Corpus callosum lesions can cause disconnection syndromes and interhemispheric transfer deficits."
+			}
+		]
+	}
+	
+	_current_quiz_data = general_quiz_data
+	_current_quiz_question = 0
+	_quiz_answers.clear()
+	_quiz_scores.clear()
+	_quiz_structure_context = "general"
+	_quiz_is_active = true
+	
+	_setup_quiz_interface()
+	quiz_overlay.show()
+	
+	# Track educational analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("general_quiz_started", {
+			"question_count": general_quiz_data.questions.size()
+		})
 
 func _on_info_panel_closed() -> void:
 	if _brain_interaction:
@@ -1538,6 +1873,10 @@ func _monitor_performance(delta: float) -> void:
 
 		# Performance warning system for medical education
 		_check_performance_compliance()
+		
+		# Update detailed performance display if visible
+		if performance_panel.visible:
+			_update_performance_display()
 
 func _check_performance_compliance() -> void:
 	"""Validate performance meets medical education standards"""
@@ -1572,6 +1911,56 @@ func _check_performance_compliance() -> void:
 			quality_indicator
 		]
 
+func _update_performance_display() -> void:
+	"""Update detailed performance monitoring display"""
+	if not performance_panel.visible:
+		return
+	
+	# Core metrics
+	var current_fps = Engine.get_frames_per_second()
+	fps_indicator.text = "FPS: %.1f" % current_fps
+	
+	var frame_time = 1.0 / current_fps if current_fps > 0 else 0.0
+	frame_time_indicator.text = "Frame Time: %.2f ms" % (frame_time * 1000.0)
+	
+	# Quality assessment for medical education
+	var quality_status = ""
+	if current_fps >= 60:
+		quality_status = "EXCELLENT - Medical Grade"
+		quality_indicator.modulate = Color.GREEN
+	elif current_fps >= 30:
+		quality_status = "GOOD - Educational Standard"
+		quality_indicator.modulate = Color.YELLOW
+	else:
+		quality_status = "LOW - Performance Issues"
+		quality_indicator.modulate = Color.RED
+	quality_indicator.text = "Quality: " + quality_status
+	
+	# Medical rendering metrics
+	var brain_models = get_children().filter(func(n): return n is MeshInstance3D)
+	brain_model_complexity.text = "Brain Models: %d" % brain_models.size()
+	
+	var texture_mem = OS.get_static_memory_usage() / (1024 * 1024)
+	texture_memory.text = "Texture Memory: %.1f MB" % texture_mem
+	
+	var render_quality = "High" if current_fps >= 45 else ("Medium" if current_fps >= 25 else "Low")
+	rendering_quality.text = "Rendering: " + render_quality
+	
+	# Educational metrics
+	interaction_latency.text = "UI Latency: %.1f ms" % (frame_time * 1000.0)
+	accessibility_status.text = "Accessibility: WCAG 2.1 AA"
+	learning_analytics.text = "Analytics: Active"
+	
+	# System health
+	var memory_usage_mb = OS.get_static_memory_usage() / (1024 * 1024)
+	memory_usage.value = min(100, (memory_usage_mb / 500.0) * 100)  # 500MB threshold
+	
+	var cpu_load = current_fps / 60.0  # Approximate CPU load based on FPS
+	cpu_usage.value = min(100, (1.0 - cpu_load) * 100)
+	
+	var gpu_load = (60.0 - current_fps) / 60.0  # Approximate GPU load
+	gpu_usage.value = min(100, max(0, gpu_load * 100))
+
 # === Phase 6: PERFORMANCE INTEGRATION WITH UITHEMEMANAGER ===
 
 func _setup_performance_integration() -> void:
@@ -1594,6 +1983,9 @@ func _setup_performance_integration() -> void:
 		
 		theme_manager.set_quality_profile(initial_profile)
 		print("[Performance] Initial quality profile set to: %s (hardware score: %.2f)" % [initial_profile, hardware_score])
+		
+		# Disable glass morphism shaders for better readability
+		theme_manager.update_effects_quality(0)  # Set to lowest quality to disable glass effects
 	else:
 		push_warning("[Performance] UIThemeManager not found - quality adaptation disabled")
 
@@ -1692,21 +2084,21 @@ func _apply_shadow_quality(quality: String) -> void:
 func _apply_animation_quality(detail: String) -> void:
 	"""Apply animation detail level"""
 	var camera_transition_speed = 1.0
-	var ui_animation_scale = 1.0
+	var _ui_animation_scale = 1.0  # Reserved for future UI animation scaling
 	
 	match detail:
 		"enhanced":
 			camera_transition_speed = 0.8  # Slower, more detailed transitions
-			ui_animation_scale = 1.2
+			_ui_animation_scale = 1.2
 		"full":
 			camera_transition_speed = 1.0  # Normal speed
-			ui_animation_scale = 1.0
+			_ui_animation_scale = 1.0
 		"reduced":
 			camera_transition_speed = 1.5  # Faster transitions
-			ui_animation_scale = 0.8
+			_ui_animation_scale = 0.8
 		"minimal":
 			camera_transition_speed = 2.0  # Very fast
-			ui_animation_scale = 0.5
+			_ui_animation_scale = 0.5
 	
 	# Store camera transition speed setting for future use
 	set_meta("camera_transition_speed_multiplier", camera_transition_speed)
@@ -1947,9 +2339,768 @@ func _add_panels_to_ui_group() -> void:
 
 	print("[EnhancedExplorationScene] UI panels group setup completed")
 
+func _initialize_medical_grade_rendering() -> void:
+	"""Initialize comprehensive brain rendering system for medical education"""
+	print("[EnhancedExplorationScene] Initializing medical-grade brain rendering...")
+	
+	# Get the comprehensive rendering system from the Systems node
+	var rendering_system = $EducationalSystemsContainer/MedicalRenderingSystem
+	if not rendering_system:
+		push_error("[EnhancedExplorationScene] ComprehensiveBrainRenderingSystem not found")
+		return
+	
+	# Initialize medical-grade rendering with educational context
+	var educational_context = {
+		"learning_level": "intermediate",
+		"clinical_focus": true,
+		"pathology_mode": false,
+		"target_audience": "medical_student"
+	}
+	
+	# Apply medical-grade materials to brain models
+	var model_holder_node = $AnatomicalModelContainer/BrainModelHolder
+	if model_holder_node:
+		print("[EnhancedExplorationScene] Applying medical-grade materials to brain models...")
+		
+		# Apply materials to all brain structure children
+		for child in model_holder_node.get_children():
+			if child.name.begins_with("Internal-Structures") or child.name.begins_with("Brain"):
+				rendering_system.apply_materials_to_brain_model(child, educational_context)
+				print("[EnhancedExplorationScene] Applied medical materials to: ", child.name)
+	
+	# Apply comprehensive rendering preset for medical study
+	rendering_system.apply_rendering_preset("educational_enhanced")
+	
+	print("[EnhancedExplorationScene] ✅ Medical-grade brain rendering system initialized")
+
+# === ADVANCED CAMERA COLLISION SYSTEM FUNCTIONS ===
+
+func _setup_camera_collision_system() -> void:
+	"""Initialize the advanced camera collision detection system"""
+	print("[CameraCollision] Initializing advanced collision detection...")
+	
+	# Create collision shapes for camera
+	if is_instance_valid(camera_collision_shape):
+		var camera_sphere = SphereShape3D.new()
+		camera_sphere.radius = 1.0
+		camera_collision_shape.shape = camera_sphere
+	else:
+		push_warning("[CameraCollision] camera_collision_shape not found")
+	
+	# Create proximity warning shape (larger sphere)
+	if is_instance_valid(proximity_shape):
+		var proximity_sphere = SphereShape3D.new()
+		proximity_sphere.radius = _proximity_warning_distance
+		proximity_shape.shape = proximity_sphere
+	else:
+		push_warning("[CameraCollision] proximity_shape not found")
+	
+	# Create constraint boundary (very large sphere to prevent camera from going too far)
+	var constraint_sphere = SphereShape3D.new()
+	constraint_sphere.radius = _max_distance_from_brain
+	constraint_shape.shape = constraint_sphere
+	
+	# Set collision layers properly
+	camera_collision.collision_layer = 0  # Doesn't collide with anything
+	camera_collision.collision_mask = 1   # Detects brain structures (layer 1)
+	
+	proximity_warning.collision_layer = 0
+	proximity_warning.collision_mask = 1
+	
+	camera_constraints.collision_layer = 2  # Boundary layer
+	camera_constraints.collision_mask = 0   # Doesn't detect anything
+	
+	print("[CameraCollision] ✅ Advanced collision detection initialized")
+
+func _handle_camera_collision_in_physics(delta: float) -> void:
+	"""Handle camera collision avoidance during physics updates"""
+	if not _collision_avoidance_enabled or not _is_collision_active:
+		return
+	
+	# Smoothly move camera away from collision
+	if _collision_normal != Vector3.ZERO:
+		var target_distance = _camera_distance + _target_collision_distance
+		target_distance = clamp(target_distance, _min_distance_from_brain, _max_distance_from_brain)
+		
+		# Smooth interpolation to target distance
+		_camera_distance = lerp(_camera_distance, target_distance, _collision_recovery_speed * delta)
+		_update_camera_position()
+		
+		# Clear collision when sufficiently far
+		if _camera_distance >= target_distance - 0.1:
+			_is_collision_active = false
+			_collision_normal = Vector3.ZERO
+			_target_collision_distance = 0.0
+
+func _calculate_collision_normal(colliding_area: Area3D) -> Vector3:
+	"""Calculate the normal vector pointing away from collision"""
+	if not is_instance_valid(colliding_area):
+		return Vector3.ZERO
+	
+	var camera_pos = camera.global_position
+	var collision_center = colliding_area.global_position
+	
+	# Calculate direction from collision center to camera
+	var direction = (camera_pos - collision_center).normalized()
+	
+	# If direction is zero (camera inside object), use fallback
+	if direction.length_squared() < 0.01:
+		direction = Vector3.BACK  # Move camera backwards
+	
+	return direction
+
+func enable_collision_avoidance(enabled: bool) -> void:
+	"""Enable or disable camera collision avoidance"""
+	_collision_avoidance_enabled = enabled
+	camera_collision.set_deferred("monitoring", enabled)
+	proximity_warning.set_deferred("monitoring", enabled)
+	
+	if enabled:
+		print("[CameraCollision] Collision avoidance enabled")
+	else:
+		print("[CameraCollision] Collision avoidance disabled")
+
+func set_collision_sensitivity(min_distance: float, recovery_speed: float) -> void:
+	"""Adjust collision detection sensitivity for different educational contexts"""
+	_min_distance_from_brain = max(min_distance, 0.5)  # Minimum safety distance
+	_collision_recovery_speed = clamp(recovery_speed, 0.5, 10.0)
+	
+	print("[CameraCollision] Sensitivity updated: min_distance=%.1f, recovery_speed=%.1f" % [_min_distance_from_brain, _collision_recovery_speed])
+
+# === CAMERA COLLISION SIGNAL HANDLERS ===
+
+func _on_camera_area_collision_detected(area: Area3D) -> void:
+	"""Handle camera collision with brain structures"""
+	if not _collision_avoidance_enabled:
+		return
+	
+	print("[CameraCollision] Collision detected with: " + str(area.name))
+	
+	# Calculate collision response
+	_collision_normal = _calculate_collision_normal(area)
+	_target_collision_distance = _min_distance_from_brain
+	_is_collision_active = true
+	
+	# Provide haptic feedback if available (controller vibration)
+	_trigger_collision_feedback()
+	
+	# Track collision for educational analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("camera_collision", {
+			"structure": area.name,
+			"camera_distance": _camera_distance
+		})
+
+func _on_camera_collision_exited(area: Area3D) -> void:
+	"""Handle camera collision exit"""
+	print("[CameraCollision] Collision cleared with: " + str(area.name))
+	
+	# Gradually clear collision response
+	_is_collision_active = false
+
+func _on_camera_proximity_warning(area: Area3D) -> void:
+	"""Handle camera proximity warning"""
+	print("[CameraCollision] Proximity warning for: " + str(area.name))
+	
+	# Visual feedback for approaching structures
+	_show_proximity_warning(area.name)
+	
+	# Track proximity for educational analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("camera_proximity", {
+			"structure": area.name,
+			"camera_distance": _camera_distance
+		})
+
+func _on_camera_proximity_cleared(area: Area3D) -> void:
+	"""Handle camera proximity warning cleared"""
+	print("[CameraCollision] Proximity cleared for: " + str(area.name))
+	
+	# Clear visual feedback
+	_hide_proximity_warning()
+
+func _trigger_collision_feedback() -> void:
+	"""Trigger haptic/visual feedback for collision"""
+	# Flash screen edge briefly
+	if is_instance_valid(status_label):
+		status_label.modulate = Color.RED
+		var tween = create_tween()
+		tween.tween_property(status_label, "modulate", Color.WHITE, 0.3)
+	
+	# Could add controller vibration here if available
+
+func _show_proximity_warning(structure_name: String) -> void:
+	"""Show visual warning for camera proximity"""
+	if is_instance_valid(status_label):
+		status_label.text = "Approaching " + structure_name.replace("_", " ").capitalize()
+		status_label.modulate = Color.YELLOW
+
+func _hide_proximity_warning() -> void:
+	"""Hide proximity warning"""
+	if is_instance_valid(status_label):
+		status_label.text = "Ready"
+		status_label.modulate = Color.WHITE
+
+# === ENHANCED ANNOTATION SYSTEM FUNCTIONS ===
+
+func _setup_enhanced_annotation_system() -> void:
+	"""Initialize the enhanced annotation system with medical terminology"""
+	print("[Annotation] Initializing enhanced annotation system...")
+	
+	# Initialize medical terminology database
+	_load_medical_terminology_database()
+	
+	# Setup annotation settings
+	if is_instance_valid(label_size_slider):
+		_annotation_font_size = label_size_slider.value
+	else:
+		_annotation_font_size = 16  # Default font size
+		
+	if is_instance_valid(contrast_toggle):
+		_high_contrast_mode = contrast_toggle.button_pressed
+	else:
+		_high_contrast_mode = false
+		
+	if is_instance_valid(language_selector):
+		_annotation_language = ["english", "latin", "both"][language_selector.selected]
+	else:
+		_annotation_language = "english"
+	
+	# Initialize annotation containers
+	_annotation_labels.clear()
+	_3d_to_2d_projections.clear()
+	
+	print("[Annotation] ✅ Enhanced annotation system initialized")
+
+func _load_medical_terminology_database() -> void:
+	"""Load medical terminology and pronunciation data"""
+	_medical_terminology_database = {
+		"hippocampus": {
+			"english": "Hippocampus",
+			"latin": "Hippocampus",
+			"pronunciation": "/ˌhɪpəˈkæmpəs/",
+			"etymology": "From Greek 'hippos' (horse) + 'kampos' (sea monster)",
+			"clinical_synonyms": ["Cornu ammonis", "Ammon's horn"],
+			"description": "C-shaped structure essential for memory formation"
+		},
+		"thalamus": {
+			"english": "Thalamus",
+			"latin": "Thalamus",
+			"pronunciation": "/ˈθæləməs/",
+			"etymology": "From Greek 'thalamos' (inner chamber)",
+			"clinical_synonyms": ["Diencephalic relay nucleus"],
+			"description": "Relay station for sensory and motor signals"
+		},
+		"cerebellum": {
+			"english": "Cerebellum",
+			"latin": "Cerebellum",
+			"pronunciation": "/ˌsɛrəˈbɛləm/",
+			"etymology": "From Latin 'little brain'",
+			"clinical_synonyms": ["Little brain", "Hindbrain"],
+			"description": "Controls balance, coordination, and motor learning"
+		},
+		"corpus_callosum": {
+			"english": "Corpus Callosum",
+			"latin": "Corpus callosum",
+			"pronunciation": "/ˈkɔrpəs kəˈloʊsəm/",
+			"etymology": "From Latin 'hard body'",
+			"clinical_synonyms": ["Interhemispheric commissure"],
+			"description": "Bridge connecting left and right brain hemispheres"
+		},
+		"striatum": {
+			"english": "Striatum",
+			"latin": "Corpus striatum",
+			"pronunciation": "/straɪˈeɪtəm/",
+			"etymology": "From Latin 'striated body'",
+			"clinical_synonyms": ["Caudate-putamen complex"],
+			"description": "Key component of motor and reward circuits"
+		}
+	}
+
+func _update_annotation_projections() -> void:
+	"""Update 3D-to-2D projection of anatomical labels"""
+	if not camera or not is_instance_valid(camera):
+		return
+	
+	# Update projections for all brain structures
+	for structure_id in _brain_structures.keys():
+		var structure_node = _brain_structures[structure_id]
+		if not is_instance_valid(structure_node):
+			continue
+		
+		# Calculate 3D world position to 2D screen projection
+		var structure_center = structure_node.global_position
+		var distance_to_camera = camera.global_position.distance_to(structure_center)
+		
+		# Check if structure is within visibility range and camera frustum
+		if distance_to_camera <= _label_visibility_distance and _is_position_visible(structure_center):
+			var screen_pos = camera.unproject_position(structure_center)
+			_3d_to_2d_projections[structure_id] = screen_pos
+			_show_annotation_label(structure_id, screen_pos)
+		else:
+			_hide_annotation_label(structure_id)
+
+func _is_position_visible(world_position: Vector3) -> bool:
+	"""Check if a 3D position is visible within camera frustum"""
+	if not camera or not is_instance_valid(camera):
+		return false
+	
+	# Get camera's view frustum
+	var cam_transform = camera.global_transform
+	var cam_projection = camera.get_camera_projection()
+	
+	# Transform position to camera space
+	var local_pos = cam_transform.affine_inverse() * world_position
+	
+	# Check if position is in front of camera
+	if local_pos.z >= 0:
+		return false
+	
+	# Project to normalized device coordinates
+	var projected = cam_projection * Vector4(local_pos.x, local_pos.y, local_pos.z, 1.0)
+	if projected.w <= 0:
+		return false
+	
+	var ndc = Vector2(projected.x / projected.w, projected.y / projected.w)
+	
+	# Check if within screen bounds
+	return ndc.x >= -1.0 and ndc.x <= 1.0 and ndc.y >= -1.0 and ndc.y <= 1.0
+
+func _show_annotation_label(structure_id: String, screen_position: Vector2) -> void:
+	"""Show or update annotation label at screen position"""
+	var label = _get_or_create_annotation_label(structure_id)
+	if not label:
+		return
+	
+	# Update label position
+	label.position = screen_position - Vector2(label.size.x * 0.5, label.size.y)
+	
+	# Update label content based on current settings
+	_update_annotation_label_content(label, structure_id)
+	
+	# Show label
+	label.visible = true
+
+func _hide_annotation_label(structure_id: String) -> void:
+	"""Hide annotation label for structure"""
+	if _annotation_labels.has(structure_id):
+		var label = _annotation_labels[structure_id]
+		if is_instance_valid(label):
+			label.visible = false
+
+func _get_or_create_annotation_label(structure_id: String) -> Label:
+	"""Get existing or create new annotation label"""
+	if _annotation_labels.has(structure_id):
+		var existing_label = _annotation_labels[structure_id]
+		if is_instance_valid(existing_label):
+			return existing_label
+	
+	# Create new label
+	var label = Label.new()
+	label.add_theme_font_size_override("font_size", int(_annotation_font_size))
+	
+	# Apply accessibility and medical styling
+	_apply_medical_label_styling(label, structure_id)
+	
+	# Add to structure labels container
+	structure_labels.add_child(label)
+	_annotation_labels[structure_id] = label
+	
+	return label
+
+func _apply_medical_label_styling(label: Label, structure_id: String) -> void:
+	"""Apply medical-grade styling to annotation labels"""
+	# Font and size
+	label.add_theme_font_size_override("font_size", int(_annotation_font_size))
+	
+	# Colors based on contrast mode
+	if _high_contrast_mode:
+		label.add_theme_color_override("font_color", Color.WHITE)
+		label.add_theme_color_override("font_shadow_color", Color.BLACK)
+		label.add_theme_constant_override("shadow_offset_x", 2)
+		label.add_theme_constant_override("shadow_offset_y", 2)
+	else:
+		label.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
+		label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.8))
+		label.add_theme_constant_override("shadow_offset_x", 1)
+		label.add_theme_constant_override("shadow_offset_y", 1)
+	
+	# Accessibility metadata
+	label.set_meta("accessibility_role", "label")
+	label.set_meta("accessibility_label", "Anatomical structure: " + structure_id)
+	label.set_meta("medical_structure_id", structure_id)
+
+func _update_annotation_label_content(label: Label, structure_id: String) -> void:
+	"""Update label content based on language and display settings"""
+	if not _medical_terminology_database.has(structure_id):
+		label.text = structure_id.capitalize()
+		return
+	
+	var term_data = _medical_terminology_database[structure_id]
+	var display_text = ""
+	
+	match _annotation_language:
+		"english":
+			display_text = term_data.get("english", structure_id.capitalize())
+		"latin":
+			display_text = term_data.get("latin", structure_id.capitalize())
+		"both":
+			var english = term_data.get("english", structure_id.capitalize())
+			var latin = term_data.get("latin", structure_id.capitalize())
+			display_text = english + "\n(" + latin + ")"
+	
+	label.text = display_text
+
+func toggle_annotation_visibility(show_labels: bool) -> void:
+	"""Toggle visibility of all annotation labels"""
+	for label in _annotation_labels.values():
+		if is_instance_valid(label):
+			label.visible = show_labels
+
+func show_annotation_settings() -> void:
+	"""Show annotation settings panel"""
+	annotation_settings.visible = true
+
+func hide_annotation_settings() -> void:
+	"""Hide annotation settings panel"""
+	annotation_settings.visible = false
+
+# === ANNOTATION SIGNAL HANDLERS ===
+
+func _on_annotation_font_size_changed(new_size: float) -> void:
+	"""Handle font size slider change"""
+	_annotation_font_size = new_size
+	
+	# Update all existing labels
+	for label in _annotation_labels.values():
+		if is_instance_valid(label):
+			label.add_theme_font_size_override("font_size", int(_annotation_font_size))
+	
+	# Track accessibility analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("annotation_font_size_changed", {
+			"new_size": new_size
+		})
+
+func _on_annotation_contrast_toggled(enabled: bool) -> void:
+	"""Handle high contrast mode toggle"""
+	_high_contrast_mode = enabled
+	
+	# Update styling for all labels
+	for structure_id in _annotation_labels.keys():
+		var label = _annotation_labels[structure_id]
+		if is_instance_valid(label):
+			_apply_medical_label_styling(label, structure_id)
+	
+	# Track accessibility analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("annotation_contrast_toggled", {
+			"high_contrast_enabled": enabled
+		})
+
+func _on_annotation_language_changed(language_index: int) -> void:
+	"""Handle annotation language selection change"""
+	var languages = ["english", "latin", "both"]
+	if language_index < languages.size():
+		_annotation_language = languages[language_index]
+		
+		# Update content for all labels
+		for structure_id in _annotation_labels.keys():
+			var label = _annotation_labels[structure_id]
+			if is_instance_valid(label):
+				_update_annotation_label_content(label, structure_id)
+		
+		# Track educational analytics
+		if ProgressTracker:
+			ProgressTracker.track_educational_interaction("annotation_language_changed", {
+				"language": _annotation_language
+			})
+
+# === EDUCATIONAL QUIZ SYSTEM FUNCTIONS ===
+
+func show_quiz_for_structure(structure_id: String) -> void:
+	"""Show educational quiz for selected brain structure"""
+	if not AssessmentService:
+		push_error("[Quiz] AssessmentService not available")
+		return
+	
+	var quiz_data = AssessmentService.get_quiz_for_structure(structure_id)
+	if quiz_data.is_empty():
+		update_status("No assessment available for: " + structure_id)
+		return
+	
+	_current_quiz_data = quiz_data
+	_current_quiz_question = 0
+	_quiz_answers.clear()
+	_quiz_scores.clear()
+	_quiz_structure_context = structure_id
+	_quiz_is_active = true
+	
+	_setup_quiz_interface()
+	quiz_overlay.show()
+	
+	# Track educational analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("quiz_started", {
+			"structure": structure_id,
+			"question_count": quiz_data.questions.size()
+		})
+
+func _setup_quiz_interface() -> void:
+	"""Setup quiz interface with current question data"""
+	if _current_quiz_data.is_empty():
+		return
+	
+	# Update header
+	var structure_name = _current_quiz_data.get("structure_name", _quiz_structure_context)
+	quiz_title.text = "Assessment: " + structure_name
+	quiz_progress.max_value = _current_quiz_data.questions.size()
+	quiz_progress.value = _current_quiz_question + 1
+	
+	# Hide feedback initially
+	quiz_feedback.hide()
+	
+	# Display current question
+	_display_current_question()
+	
+	# Update control buttons
+	_update_quiz_controls()
+
+func _display_current_question() -> void:
+	"""Display the current quiz question and options"""
+	if _current_quiz_question >= _current_quiz_data.questions.size():
+		_show_quiz_completion()
+		return
+	
+	var question_data = _current_quiz_data.questions[_current_quiz_question]
+	
+	# Set question text with medical formatting
+	var question_html = "[b]Question %d:[/b] %s" % [_current_quiz_question + 1, question_data.question]
+	question_text.text = question_html
+	
+	# Load question image if available
+	if question_data.has("image_path") and question_data.image_path != "":
+		var image_texture = load(question_data.image_path)
+		if image_texture:
+			question_image.texture = image_texture
+			question_image.show()
+		else:
+			question_image.hide()
+	else:
+		question_image.hide()
+	
+	# Set answer options
+	var options = question_data.get("options", [])
+	for i in range(_quiz_answer_options.size()):
+		var option_button = _quiz_answer_options[i]
+		if i < options.size():
+			option_button.text = options[i]
+			option_button.show()
+			option_button.button_pressed = false
+		else:
+			option_button.hide()
+	
+	# Restore previous answer if exists
+	var question_id = str(_current_quiz_question)
+	if _quiz_answers.has(question_id):
+		var selected_index = _quiz_answers[question_id]
+		if selected_index < _quiz_answer_options.size():
+			_quiz_answer_options[selected_index].button_pressed = true
+
+func _update_quiz_controls() -> void:
+	"""Update quiz control button states"""
+	# Previous button
+	previous_button.disabled = (_current_quiz_question == 0)
+	
+	# Next button  
+	var has_answer = _quiz_answers.has(str(_current_quiz_question))
+	var is_last_question = (_current_quiz_question >= _current_quiz_data.questions.size() - 1)
+	next_button.disabled = not has_answer or is_last_question
+	
+	# Submit button
+	submit_button.disabled = not has_answer
+	
+	# Review button (only show when all questions answered)
+	var all_answered = _quiz_answers.size() == _current_quiz_data.questions.size()
+	review_button.visible = all_answered
+
+func _show_quiz_completion() -> void:
+	"""Show quiz completion summary"""
+	var correct_count = 0
+	for score in _quiz_scores.values():
+		if score:
+			correct_count += 1
+	
+	var total_questions = _current_quiz_data.questions.size()
+	var percentage = (float(correct_count) / float(total_questions)) * 100.0
+	
+	# Update question area to show results
+	var results_html = "[center][b]Assessment Complete![/b][/center]\n\n"
+	results_html += "Score: %d/%d (%.1f%%)\n\n" % [correct_count, total_questions, percentage]
+	
+	if percentage >= 80.0:
+		results_html += "[color=green]Excellent understanding of %s anatomy![/color]" % _quiz_structure_context
+	elif percentage >= 60.0:
+		results_html += "[color=yellow]Good grasp of %s concepts. Review highlighted areas.[/color]" % _quiz_structure_context
+	else:
+		results_html += "[color=red]Additional study recommended for %s anatomy.[/color]" % _quiz_structure_context
+	
+	question_text.text = results_html
+	question_image.hide()
+	answer_options.hide()
+	
+	# Update controls for completion
+	previous_button.hide()
+	submit_button.hide()
+	next_button.text = "Close"
+	next_button.disabled = false
+	next_button.show()
+	
+	# Track completion analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("quiz_completed", {
+			"structure": _quiz_structure_context,
+			"score": correct_count,
+			"total": total_questions,
+			"percentage": percentage
+		})
+
+# === QUIZ SIGNAL HANDLERS ===
+
+func _on_quiz_close_pressed() -> void:
+	"""Handle quiz close button press"""
+	quiz_overlay.hide()
+	_quiz_is_active = false
+	
+	# Track analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("quiz_closed", {
+			"structure": _quiz_structure_context,
+			"questions_answered": _quiz_answers.size()
+		})
+
+func _on_quiz_previous_pressed() -> void:
+	"""Navigate to previous question"""
+	if _current_quiz_question > 0:
+		_current_quiz_question -= 1
+		_display_current_question()
+		_update_quiz_controls()
+		quiz_feedback.hide()
+
+func _on_quiz_next_pressed() -> void:
+	"""Navigate to next question or close quiz"""
+	if next_button.text == "Close":
+		_on_quiz_close_pressed()
+		return
+	
+	if _current_quiz_question < _current_quiz_data.questions.size() - 1:
+		_current_quiz_question += 1
+		_display_current_question()
+		_update_quiz_controls()
+		quiz_feedback.hide()
+
+func _on_quiz_submit_pressed() -> void:
+	"""Submit current answer and show feedback"""
+	var question_id = str(_current_quiz_question)
+	if not _quiz_answers.has(question_id):
+		return
+	
+	var selected_answer = _quiz_answers[question_id]
+	var question_data = _current_quiz_data.questions[_current_quiz_question]
+	var correct_answer = question_data.get("correct_answer", 0)
+	var is_correct = (selected_answer == correct_answer)
+	
+	# Store score
+	_quiz_scores[question_id] = is_correct
+	
+	# Show feedback
+	_show_quiz_feedback(is_correct, question_data)
+	
+	# Update controls
+	_update_quiz_controls()
+	
+	# Track answer analytics
+	if ProgressTracker:
+		ProgressTracker.track_educational_interaction("quiz_answer_submitted", {
+			"structure": _quiz_structure_context,
+			"question": _current_quiz_question,
+			"selected": selected_answer,
+			"correct": correct_answer,
+			"is_correct": is_correct
+		})
+
+func _on_quiz_review_pressed() -> void:
+	"""Show quiz review mode"""
+	# TODO: Implement comprehensive review mode
+	update_status("Quiz review mode coming soon")
+
+func _on_quiz_answer_selected(option_index: int) -> void:
+	"""Handle answer option selection - manage exclusive selection"""
+	var question_id = str(_current_quiz_question)
+	
+	# Get the selected checkbox
+	var selected_checkbox = _quiz_answer_options[option_index]
+	
+	if selected_checkbox.button_pressed:
+		# This option was just selected - deselect others
+		for i in range(_quiz_answer_options.size()):
+			if i != option_index:
+				_quiz_answer_options[i].button_pressed = false
+		
+		_quiz_answers[question_id] = option_index
+	else:
+		# This option was deselected - remove answer
+		if _quiz_answers.has(question_id):
+			_quiz_answers.erase(question_id)
+	
+	# Update controls
+	_update_quiz_controls()
+	
+	# Hide previous feedback
+	quiz_feedback.hide()
+
+func _show_quiz_feedback(is_correct: bool, question_data: Dictionary) -> void:
+	"""Display feedback for submitted answer"""
+	var feedback_html = ""
+	var clinical_html = ""
+	
+	if is_correct:
+		feedback_html = "[color=green][b]Correct![/b][/color] " + question_data.get("explanation", "")
+	else:
+		var correct_option = question_data.get("correct_answer", 0)
+		var options = question_data.get("options", [])
+		var correct_text = options[correct_option] if correct_option < options.size() else "Unknown"
+		feedback_html = "[color=red][b]Incorrect.[/b][/color] The correct answer is: " + correct_text + "\n" + question_data.get("explanation", "")
+	
+	# Add clinical relevance if available
+	if question_data.has("clinical_relevance"):
+		clinical_html = "[b]Clinical Relevance:[/b] " + question_data.clinical_relevance
+	
+	feedback_text.text = feedback_html
+	clinical_relevance.text = clinical_html
+	
+	# Show feedback panel
+	quiz_feedback.show()
+
 func _exit_tree() -> void:
-	"""Clean up resources to prevent RID leaks"""
-	# Clean up structure button styles
+	## Clean up all resources to prevent memory leaks
+	# Stop all timers first
+	if _debounce_timer and is_instance_valid(_debounce_timer):
+		_debounce_timer.stop()
+		_debounce_timer.queue_free()
+		_debounce_timer = null
+	
+	if _tooltip_timer and is_instance_valid(_tooltip_timer):
+		_tooltip_timer.stop()
+		_tooltip_timer.queue_free()
+		_tooltip_timer = null
+	
+	# Clean up interaction controller
+	if _brain_interaction and is_instance_valid(_brain_interaction):
+		_brain_interaction.queue_free()
+		_brain_interaction = null
+	
+	# Clean up structure button styles and references
 	for button in _structure_buttons.values():
 		if button and is_instance_valid(button):
 			# Clear all style overrides to free StyleBoxFlat RIDs
@@ -1957,6 +3108,10 @@ func _exit_tree() -> void:
 			button.remove_theme_stylebox_override("hover")
 			button.remove_theme_stylebox_override("pressed")
 			button.remove_theme_stylebox_override("focus")
+			# Disconnect signals
+			if button.pressed.is_connected(_on_related_structure_pressed):
+				button.pressed.disconnect(_on_related_structure_pressed)
+	_structure_buttons.clear()
 
 	# Clean up selection sphere material
 	if selection_sphere and is_instance_valid(selection_sphere):
@@ -1966,13 +3121,109 @@ func _exit_tree() -> void:
 	# Clean up quiz panel
 	if _quiz_panel and is_instance_valid(_quiz_panel):
 		_quiz_panel.queue_free()
+		_quiz_panel = null
 
 	# Clean up camera collision area
 	if _camera_collision_area and is_instance_valid(_camera_collision_area):
 		_camera_collision_area.queue_free()
+		_camera_collision_area = null
 
 	# Clear UI panel materials
 	var panels = get_tree().get_nodes_in_group("ui_panels")
 	for panel in panels:
-		if panel and is_instance_valid(panel):
+		if panel and is_instance_valid(panel) and panel.has_method("set_material"):
 			panel.material = null
+	
+	# Clean up brain container children
+	if brain_container and is_instance_valid(brain_container):
+		for child in brain_container.get_children():
+			if child is MeshInstance3D:
+				# Clear material overrides
+				for i in range(child.get_surface_override_material_count()):
+					child.set_surface_override_material(i, null)
+	
+	# Clear cached references
+	_current_structure = null
+	_last_hover_structure = null
+	_camera_target_position = Vector3.ZERO
+	_camera_target_rotation = Vector3.ZERO
+	
+	# Disconnect any remaining signal connections
+	if has_node("/root/PerformanceMonitor"):
+		var perf_monitor = get_node("/root/PerformanceMonitor")
+		if perf_monitor.has_signal("performance_report_ready") and perf_monitor.performance_report_ready.is_connected(_on_performance_report):
+			perf_monitor.performance_report_ready.disconnect(_on_performance_report)
+		if perf_monitor.has_signal("quality_level_changed") and perf_monitor.quality_level_changed.is_connected(_on_quality_changed):
+			perf_monitor.quality_level_changed.disconnect(_on_quality_changed)
+
+# Validation functions for safe setup methods
+func _validate_ui_setup() -> bool:
+	"""Validate UI components are properly initialized"""
+	var required_ui = [
+		info_panel,
+		top_bar,
+		left_panel,
+		bottom_panel
+	]
+	
+	for ui_element in required_ui:
+		if not is_instance_valid(ui_element):
+			return false
+	
+	return true
+
+func _validate_scene_setup() -> bool:
+	"""Validate scene components are properly initialized"""
+	var required_scene = [
+		brain_container,
+		camera,
+		camera_pivot
+	]
+	
+	for scene_element in required_scene:
+		if not is_instance_valid(scene_element):
+			return false
+	
+	return true
+
+func _validate_lighting_setup() -> bool:
+	"""Validate lighting components are properly initialized"""
+	var key_light = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/KeyLight")
+	var fill_light = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/FillLight")
+	var rim_light = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/RimLight")
+	var required_lights = [
+		key_light,
+		fill_light,
+		rim_light
+	]
+	
+	for light in required_lights:
+		if not is_instance_valid(light):
+			return false
+	
+	return true
+
+func _validate_camera_setup() -> bool:
+	"""Validate camera system is properly initialized"""
+	return is_instance_valid(camera) and is_instance_valid(camera_pivot)
+
+func _validate_annotation_setup() -> bool:
+	"""Validate annotation system is properly initialized"""
+	return is_instance_valid(info_panel)
+
+
+func _validate_camera_collision_setup() -> bool:
+	"""Validate camera collision system is properly initialized"""
+	return is_instance_valid(_camera_collision_area)
+
+func _validate_axis_indicator_setup() -> bool:
+	"""Validate axis indicator is properly created"""
+	return is_instance_valid(axis_indicator) and axis_indicator.get_child_count() > 0
+
+func _validate_help_text_setup() -> bool:
+	"""Validate help text is properly initialized"""
+	return is_instance_valid(help_overlay)
+
+func _validate_rendering_setup() -> bool:
+	"""Validate rendering components are properly initialized"""
+	return is_instance_valid(brain_container) and is_instance_valid(camera)

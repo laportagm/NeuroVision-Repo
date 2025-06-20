@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://b7nqm4jvtxcd2"]
+[gd_scene load_steps=21 format=3 uid="uid://b7nqm4jvtxcd2"]
 
 [ext_resource type="Script" uid="uid://em5jvu7wm51t" path="res://scenes/3d/EnhancedExplorationScene.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c4olnrbjeqmk6" path="res://src/ui_atomic/organisms/StructureInfoPanel.tscn" id="2_panel"]
 [ext_resource type="Shader" uid="uid://dqk0ra5nbr0in" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="3_glass"]
+[ext_resource type="Script" uid="uid://bdppch6urx77v" path="res://src/systems/3d_rendering/ComprehensiveBrainRenderingSystem.gd" id="5_rendering_system"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -15,6 +16,14 @@ ssao_intensity = 0.6
 ssao_horizon = 0.15
 glow_enabled = true
 glow_bloom = 0.3
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2"]
+radius = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(10, 10, 10)
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
 
@@ -87,76 +96,135 @@ border_color = Color(0.3, 0.6, 1, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 
-[node name="ExplorationScene" type="Node3D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0prj0"]
+shader = ExtResource("3_glass")
+shader_parameter/blur_amount = 6.0
+shader_parameter/tint_color = Color(0.12, 0.15, 0.18, 0.95)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4"]
+content_margin_left = 32.0
+content_margin_top = 24.0
+content_margin_right = 32.0
+content_margin_bottom = 24.0
+bg_color = Color(0.12, 0.14, 0.16, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.6, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 8
+
+[node name="EducationalBrainExplorationScene" type="Node3D" groups=["educational_scene", "medical_visualization"]]
 script = ExtResource("1_script")
+metadata/accessibility_role = "main_exploration_view"
+metadata/medical_accuracy_level = "professional"
+metadata/educational_context = "neuroanatomy_3d_exploration"
 
-[node name="Environment" type="Node" parent="."]
+[node name="EnvironmentSystem" type="Node" parent="." groups=["rendering_system"]]
+metadata/description = "Manages lighting, environment, and visual quality for medical visualization"
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+[node name="MedicalVisualizationEnvironment" type="WorldEnvironment" parent="EnvironmentSystem"]
 process_priority = 1
 environment = SubResource("Environment_1")
 
-[node name="Lighting" type="Node3D" parent="Environment"]
+[node name="MedicalLightingSystem" type="Node3D" parent="EnvironmentSystem" groups=["lighting_system"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.96354, 0)
+metadata/description = "Three-point lighting optimized for anatomical visualization"
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment/Lighting"]
+[node name="KeyLight" type="DirectionalLight3D" parent="EnvironmentSystem/MedicalLightingSystem"]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
+visible = false
 light_color = Color(0.95, 0.95, 1, 1)
 light_energy = 0.8
 shadow_enabled = true
 directional_shadow_mode = 1
 
-[node name="FillLight" type="DirectionalLight3D" parent="Environment/Lighting"]
-transform = Transform3D(-0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, 0.5, -0.5, 0, 3, 0)
+[node name="FillLight" type="DirectionalLight3D" parent="EnvironmentSystem/MedicalLightingSystem"]
+transform = Transform3D(-0.707107, 0.5, -0.5, 0.697211, 0.375116, -0.610889, -0.117887, -0.780569, -0.613852, 0, -8.37956, 0)
 light_color = Color(0.8, 0.85, 0.9, 1)
 light_energy = 0.3
 
-[node name="RimLight" type="DirectionalLight3D" parent="Environment/Lighting"]
-transform = Transform3D(-1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0)
+[node name="RimLight" type="DirectionalLight3D" parent="EnvironmentSystem/MedicalLightingSystem"]
+transform = Transform3D(-1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1.59496, 0)
+visible = false
 light_color = Color(0.7, 0.8, 0.9, 1)
 light_energy = 0.2
 
-[node name="CameraSystem" type="Node3D" parent="."]
+[node name="EducationalCameraSystem" type="Node3D" parent="." groups=["accessibility_critical", "camera_system"]]
+metadata/description = "Medical-grade camera system with preset views for anatomical study"
 
-[node name="CameraPivot" type="Node3D" parent="CameraSystem"]
+[node name="AnatomicalCameraPivot" type="Node3D" parent="EducationalCameraSystem"]
 
-[node name="Camera3D" type="Camera3D" parent="CameraSystem/CameraPivot"]
+[node name="MedicalViewCamera" type="Camera3D" parent="EducationalCameraSystem/AnatomicalCameraPivot" groups=["main_camera"]]
 transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 3, 3, 3)
 fov = 60.0
 near = 0.1
 far = 1000.0
+metadata/accessibility_label = "Main 3D view camera for brain exploration"
 
-[node name="CameraEffects" type="Node" parent="CameraSystem/CameraPivot/Camera3D"]
+[node name="MedicalCameraEffects" type="Node" parent="EducationalCameraSystem/AnatomicalCameraPivot/MedicalViewCamera"]
+physics_interpolation_mode = 2
 
-[node name="BrainModelContainer" type="Node3D" parent="."]
+[node name="CameraCollisionDetection" type="Area3D" parent="EducationalCameraSystem/AnatomicalCameraPivot"]
+collision_layer = 0
+metadata/description = "Collision detection for smooth camera navigation around brain models"
 
-[node name="ModelHolder" type="Node3D" parent="BrainModelContainer"]
+[node name="CameraCollisionShape" type="CollisionShape3D" parent="EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection"]
+shape = SubResource("SphereShape3D_1")
 
-[node name="PlaceholderBrain" type="MeshInstance3D" parent="BrainModelContainer/ModelHolder"]
-visible = false
+[node name="ProximityWarning" type="Area3D" parent="EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection"]
+collision_layer = 0
+metadata/description = "Early warning system for camera proximity to brain structures"
+
+[node name="ProximityShape" type="CollisionShape3D" parent="EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/ProximityWarning"]
+shape = SubResource("SphereShape3D_2")
+
+[node name="CameraConstraints" type="StaticBody3D" parent="EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection"]
+collision_layer = 2
+collision_mask = 0
+metadata/description = "Hard boundaries for camera movement"
+
+[node name="ConstraintShape" type="CollisionShape3D" parent="EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraConstraints"]
+shape = SubResource("BoxShape3D_1")
+
+[node name="AnatomicalModelContainer" type="Node3D" parent="." groups=["3d_visualization", "medical_content"]]
+metadata/description = "Container for medically accurate brain models and anatomical structures"
+
+[node name="BrainModelHolder" type="Node3D" parent="AnatomicalModelContainer"]
+
+[node name="BrainModelPlaceholder" type="MeshInstance3D" parent="AnatomicalModelContainer/BrainModelHolder"]
 mesh = SubResource("BoxMesh_1")
 surface_material_override/0 = SubResource("StandardMaterial3D_1")
 
-[node name="SelectionSphere" type="MeshInstance3D" parent="BrainModelContainer"]
+[node name="StructureSelectionIndicator" type="MeshInstance3D" parent="AnatomicalModelContainer" groups=["interaction_feedback"]]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
 visible = false
 mesh = SubResource("SphereMesh_1")
 surface_material_override/0 = SubResource("StandardMaterial3D_2")
+metadata/description = "Visual indicator for selected brain structures"
 
-[node name="VisualizationHelpers" type="Node3D" parent="."]
+[node name="AnatomicalVisualizationHelpers" type="Node3D" parent="." groups=["visualization_aids"]]
+metadata/description = "Helper objects for spatial orientation and scale reference"
 
-[node name="GridFloor" type="MeshInstance3D" parent="VisualizationHelpers"]
+[node name="AnatomicalGridFloor" type="MeshInstance3D" parent="AnatomicalVisualizationHelpers"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
 visible = false
 mesh = SubResource("QuadMesh_1")
 surface_material_override/0 = SubResource("StandardMaterial3D_3")
 
-[node name="AxisIndicator" type="Node3D" parent="VisualizationHelpers"]
+[node name="AnatomicalAxisIndicator" type="Node3D" parent="AnatomicalVisualizationHelpers"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -8, -4, 0)
+visible = false
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="EducationalUILayer" type="CanvasLayer" parent="." groups=["accessibility_critical", "educational_ui"]]
+metadata/description = "Main UI layer for educational interface components"
 
-[node name="MainUI" type="Control" parent="UI"]
+[node name="MainEducationalInterface" type="Control" parent="EducationalUILayer"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -167,7 +235,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TopBar" type="PanelContainer" parent="UI/MainUI"]
+[node name="EducationalTopBar" type="PanelContainer" parent="EducationalUILayer/MainEducationalInterface" groups=["ui_navigation"]]
 material = SubResource("ShaderMaterial_1")
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 1
@@ -177,35 +245,38 @@ offset_bottom = 80.0
 grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+metadata/accessibility_role = "navigation"
+metadata/accessibility_label = "Main navigation and view controls"
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
-[node name="TopBarContent" type="HBoxContainer" parent="UI/MainUI/TopBar"]
+[node name="NavigationContent" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar"]
 layout_mode = 2
 theme_override_constants/separation = 30
 
-[node name="Logo" type="Label" parent="UI/MainUI/TopBar/TopBarContent"]
+[node name="ApplicationLogo" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3451, 0.651, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "NeuroVision"
 
-[node name="Spacer" type="Control" parent="UI/MainUI/TopBar/TopBarContent"]
+[node name="NavigationSpacer" type="Control" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ViewControls" type="HBoxContainer" parent="UI/MainUI/TopBar/TopBarContent"]
+[node name="AnatomicalViewControls" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent" groups=["view_controls"]]
 layout_mode = 2
+metadata/accessibility_label = "Anatomical view selection controls"
 metadata/_edit_group_ = true
 
-[node name="ViewLabel" type="Label" parent="UI/MainUI/TopBar/TopBarContent/ViewControls"]
+[node name="ViewSelectionLabel" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/AnatomicalViewControls"]
 modulate = Color(0.7882, 0.8196, 0.8509, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "View:"
 
-[node name="ViewPresets" type="OptionButton" parent="UI/MainUI/TopBar/TopBarContent/ViewControls"]
+[node name="AnatomicalViewPresets" type="OptionButton" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/AnatomicalViewControls"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
@@ -229,31 +300,36 @@ popup/item_7/text = "Clinical 2"
 popup/item_7/id = 7
 popup/item_8/text = "Free Orbit"
 popup/item_8/id = 8
+metadata/accessibility_label = "Select anatomical view angle"
 
-[node name="ToolButtons" type="HBoxContainer" parent="UI/MainUI/TopBar/TopBarContent"]
+[node name="EducationalToolButtons" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent" groups=["educational_tools"]]
 layout_mode = 2
 theme_override_constants/separation = 15
+metadata/accessibility_label = "Educational tool buttons"
 
-[node name="LabelToggle" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
+[node name="AnatomicalLabelToggle" type="Button" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/EducationalToolButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 toggle_mode = true
 text = "Labels"
+metadata/accessibility_label = "Toggle anatomical structure labels"
 
-[node name="QuizButton" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
+[node name="EducationalQuizButton" type="Button" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/EducationalToolButtons"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Quiz"
+metadata/accessibility_label = "Open educational quiz"
 
-[node name="HelpButton" type="Button" parent="UI/MainUI/TopBar/TopBarContent/ToolButtons"]
+[node name="EducationalHelpButton" type="Button" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/EducationalToolButtons"]
 custom_minimum_size = Vector2(50, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "?"
+metadata/accessibility_label = "Open help and controls guide"
 
-[node name="LeftPanel" type="PanelContainer" parent="UI/MainUI"]
+[node name="AnatomicalStructurePanel" type="PanelContainer" parent="EducationalUILayer/MainEducationalInterface" groups=["structure_navigation"]]
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -265,31 +341,35 @@ offset_bottom = -59.0
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2")
+metadata/accessibility_role = "complementary"
+metadata/accessibility_label = "Brain structure navigation panel"
 metadata/_edit_group_ = true
 
-[node name="StructureList" type="VBoxContainer" parent="UI/MainUI/LeftPanel"]
+[node name="BrainStructureList" type="VBoxContainer" parent="EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Title" type="Label" parent="UI/MainUI/LeftPanel/StructureList"]
+[node name="StructureListTitle" type="Label" parent="EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel/BrainStructureList"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 24
 text = "Brain Structures"
 
-[node name="HSeparator" type="HSeparator" parent="UI/MainUI/LeftPanel/StructureList"]
+[node name="StructureListSeparator" type="HSeparator" parent="EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel/BrainStructureList"]
 layout_mode = 2
+theme_override_constants/separation = 8
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/MainUI/LeftPanel/StructureList"]
+[node name="StructureScrollContainer" type="ScrollContainer" parent="EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel/BrainStructureList"]
 layout_mode = 2
 size_flags_vertical = 3
+metadata/accessibility_label = "Scrollable list of brain structures"
 
-[node name="StructureItems" type="VBoxContainer" parent="UI/MainUI/LeftPanel/StructureList/ScrollContainer"]
+[node name="AnatomicalStructureItems" type="VBoxContainer" parent="EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel/BrainStructureList/StructureScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="BottomPanel" type="PanelContainer" parent="UI/MainUI"]
+[node name="EducationalStatusBar" type="PanelContainer" parent="EducationalUILayer/MainEducationalInterface" groups=["status_display"]]
 layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -297,35 +377,192 @@ anchor_bottom = 1.0
 offset_top = -60.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3")
+metadata/accessibility_role = "status"
+metadata/accessibility_label = "Application status and performance information"
 metadata/_edit_group_ = true
 
-[node name="StatusBar" type="HBoxContainer" parent="UI/MainUI/BottomPanel"]
+[node name="StatusBarContent" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar"]
 layout_mode = 2
 
-[node name="StatusLabel" type="Label" parent="UI/MainUI/BottomPanel/StatusBar"]
+[node name="SystemStatusLabel" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent"]
 modulate = Color(0.7882, 0.8196, 0.8509, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Ready"
 
-[node name="Spacer" type="Control" parent="UI/MainUI/BottomPanel/StatusBar"]
+[node name="StatusBarSpacer" type="Control" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PerformanceInfo" type="Label" parent="UI/MainUI/BottomPanel/StatusBar"]
+[node name="PerformanceMetricsLabel" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent"]
 modulate = Color(0.7882, 0.8196, 0.8509, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "FPS: 60 | Quality: HIGH"
+metadata/accessibility_label = "Performance metrics display"
 
-[node name="InfoPanel" parent="UI" instance=ExtResource("2_panel")]
+[node name="PerformanceToggle" type="Button" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent"]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Metrics"
+metadata/accessibility_label = "Toggle detailed performance monitoring"
+
+[node name="PerformanceMonitoringPanel" type="PanelContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2")
+metadata/accessibility_role = "region"
+metadata/accessibility_label = "Detailed performance monitoring"
+
+[node name="PerformanceContent" type="VBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PerformanceTitle" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3451, 0.651, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Medical-Grade Performance Monitor"
+horizontal_alignment = 1
+
+[node name="CoreMetrics" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="FPSIndicator" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/CoreMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "FPS: 60"
+metadata/accessibility_label = "Frames per second"
+
+[node name="FrameTimeIndicator" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/CoreMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Frame: 16.7ms"
+metadata/accessibility_label = "Frame render time"
+
+[node name="QualityIndicator" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/CoreMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Quality: HIGH"
+metadata/accessibility_label = "Rendering quality level"
+
+[node name="MedicalRenderingMetrics" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="BrainModelComplexity" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/MedicalRenderingMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Polygons: 847K"
+metadata/accessibility_label = "Brain model complexity"
+
+[node name="TextureMemory" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/MedicalRenderingMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "VRAM: 245MB"
+metadata/accessibility_label = "Video memory usage"
+
+[node name="RenderingQuality" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/MedicalRenderingMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Medical Grade"
+metadata/accessibility_label = "Medical rendering accuracy"
+
+[node name="EducationalMetrics" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="InteractionLatency" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/EducationalMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Response: 12ms"
+metadata/accessibility_label = "UI interaction latency"
+
+[node name="AccessibilityStatus" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/EducationalMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "A11y: WCAG AA"
+metadata/accessibility_label = "Accessibility compliance status"
+
+[node name="LearningAnalytics" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/EducationalMetrics"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Session: 15min"
+metadata/accessibility_label = "Learning session duration"
+
+[node name="SystemHealth" type="HBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="MemoryUsageContainer" type="VBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MemoryLabel" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/MemoryUsageContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Memory"
+
+[node name="MemoryUsage" type="ProgressBar" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/MemoryUsageContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 35.0
+show_percentage = false
+metadata/accessibility_label = "Memory usage percentage"
+
+[node name="CPUUsageContainer" type="VBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CPULabel" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/CPUUsageContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "CPU"
+
+[node name="CPUUsage" type="ProgressBar" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/CPUUsageContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 65.0
+show_percentage = false
+metadata/accessibility_label = "CPU usage percentage"
+
+[node name="GPUUsageContainer" type="VBoxContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GPULabel" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/GPUUsageContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "GPU"
+
+[node name="GPUUsage" type="ProgressBar" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar/PerformanceMonitoringPanel/PerformanceContent/SystemHealth/GPUUsageContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 45.0
+show_percentage = false
+metadata/accessibility_label = "GPU usage percentage"
+
+[node name="AnatomicalInfoPanel" parent="EducationalUILayer" groups=["educational_panels"] instance=ExtResource("2_panel")]
+material = SubResource("ShaderMaterial_0prj0")
 anchor_left = 0.939062
 offset_left = -316.0
 offset_top = 133.0
 offset_right = 31.0
 offset_bottom = 4.0
+metadata/accessibility_label = "Detailed anatomical information panel"
 
-[node name="Overlays" type="Control" parent="UI"]
+[node name="EducationalOverlays" type="Control" parent="EducationalUILayer" groups=["overlay_system"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -333,15 +570,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/description = "Container for modal overlays and loading screens"
 
-[node name="LoadingOverlay" type="ColorRect" parent="UI/Overlays"]
+[node name="ModelLoadingOverlay" type="ColorRect" parent="EducationalUILayer/EducationalOverlays" groups=["loading_ui"]]
 visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0.0549, 0.0667, 0.0902, 0.95)
+metadata/accessibility_role = "progressbar"
+metadata/accessibility_label = "Brain model loading indicator"
 
-[node name="LoadingLabel" type="Label" parent="UI/Overlays/LoadingOverlay"]
+[node name="LoadingStatusLabel" type="Label" parent="EducationalUILayer/EducationalOverlays/ModelLoadingOverlay"]
 layout_mode = 2
 offset_left = 1143.0
 offset_top = 535.0
@@ -351,7 +591,7 @@ theme_override_font_sizes/font_size = 24
 text = "Loading Brain Model..."
 horizontal_alignment = 1
 
-[node name="LoadingContent" type="VBoxContainer" parent="UI/Overlays/LoadingOverlay"]
+[node name="LoadingProgressContent" type="VBoxContainer" parent="EducationalUILayer/EducationalOverlays/ModelLoadingOverlay"]
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -362,11 +602,177 @@ offset_top = -50.0
 offset_right = 100.0
 offset_bottom = 50.0
 
-[node name="ProgressBar" type="ProgressBar" parent="UI/Overlays/LoadingOverlay/LoadingContent"]
+[node name="ModelLoadingProgressBar" type="ProgressBar" parent="EducationalUILayer/EducationalOverlays/ModelLoadingOverlay/LoadingProgressContent"]
 custom_minimum_size = Vector2(200, 20)
 layout_mode = 2
 
-[node name="HelpOverlay" type="PanelContainer" parent="UI/Overlays"]
+[node name="EducationalQuizOverlay" type="PanelContainer" parent="EducationalUILayer/EducationalOverlays" groups=["educational_assessment", "quiz_system"]]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_4")
+metadata/accessibility_role = "dialog"
+metadata/accessibility_label = "Educational neuroanatomy assessment"
+metadata/medical_context = "assessment_dialog"
+metadata/_edit_group_ = true
+
+[node name="QuizPanelContent" type="VBoxContainer" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="QuizHeader" type="HBoxContainer" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="QuizTitle" type="Label" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.3451, 0.651, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Neuroanatomy Assessment"
+metadata/accessibility_label = "Quiz title"
+
+[node name="QuizProgress" type="ProgressBar" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizHeader"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+max_value = 10.0
+value = 1.0
+show_percentage = false
+metadata/accessibility_role = "progressbar"
+metadata/accessibility_label = "Quiz progress indicator"
+
+[node name="QuizCloseButton" type="Button" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizHeader"]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "✕"
+metadata/accessibility_label = "Close quiz assessment"
+
+[node name="QuizHeaderSeparator" type="HSeparator" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent"]
+layout_mode = 2
+
+[node name="QuizQuestionArea" type="VBoxContainer" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="QuestionText" type="RichTextLabel" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Question 1:[/b] Which brain structure is primarily responsible for memory formation and consolidation?"
+fit_content = true
+metadata/accessibility_role = "text"
+metadata/accessibility_label = "Quiz question text"
+
+[node name="QuestionImage" type="TextureRect" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+metadata/accessibility_label = "Anatomical diagram for question"
+
+[node name="AnswerOptions" type="VBoxContainer" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="OptionA" type="CheckBox" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions"]
+physics_interpolation_mode = 0
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "A) Cerebellum"
+metadata/accessibility_label = "Answer option A"
+
+[node name="OptionB" type="CheckBox" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions"]
+physics_interpolation_mode = 0
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "B) Hippocampus"
+metadata/accessibility_label = "Answer option B"
+
+[node name="OptionC" type="CheckBox" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions"]
+physics_interpolation_mode = 0
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "C) Prefrontal Cortex"
+metadata/accessibility_label = "Answer option C"
+
+[node name="OptionD" type="CheckBox" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizQuestionArea/AnswerOptions"]
+physics_interpolation_mode = 0
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "D) Thalamus"
+metadata/accessibility_label = "Answer option D"
+
+[node name="QuizFeedback" type="PanelContainer" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2")
+
+[node name="FeedbackContent" type="VBoxContainer" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizFeedback"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="FeedbackText" type="RichTextLabel" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizFeedback/FeedbackContent"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=green][b]Correct![/b][/color] The hippocampus is essential for memory formation and consolidation."
+fit_content = true
+metadata/accessibility_label = "Answer feedback"
+
+[node name="ClinicalRelevance" type="RichTextLabel" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizFeedback/FeedbackContent"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Clinical Relevance:[/b] Hippocampal damage is associated with anterograde amnesia and is commonly affected in Alzheimer's disease."
+fit_content = true
+metadata/accessibility_label = "Clinical relevance information"
+
+[node name="QuizControls" type="HBoxContainer" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="PreviousButton" type="Button" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "← Previous"
+metadata/accessibility_label = "Go to previous question"
+
+[node name="QuizControlsSpacer" type="Control" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SubmitButton" type="Button" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Submit"
+metadata/accessibility_label = "Submit current answer"
+
+[node name="NextButton" type="Button" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Next →"
+metadata/accessibility_label = "Go to next question"
+
+[node name="ReviewButton" type="Button" parent="EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Review"
+metadata/accessibility_label = "Review all answers"
+
+[node name="EducationalHelpOverlay" type="PanelContainer" parent="EducationalUILayer/EducationalOverlays" groups=["help_system"]]
 visible = false
 layout_mode = 0
 anchor_left = 0.5
@@ -377,21 +783,20 @@ offset_left = -200.0
 offset_top = -150.0
 offset_right = 200.0
 offset_bottom = 150.0
+metadata/accessibility_role = "dialog"
+metadata/accessibility_label = "Help and controls guide"
 metadata/_edit_group_ = true
 
-[node name="HelpContent" type="VBoxContainer" parent="UI/Overlays/HelpOverlay"]
+[node name="HelpGuideContent" type="VBoxContainer" parent="EducationalUILayer/EducationalOverlays/EducationalHelpOverlay"]
 layout_mode = 2
 
-[node name="HelpTitle" type="Label" parent="UI/Overlays/HelpOverlay/HelpContent"]
+[node name="HelpGuideTitle" type="Label" parent="EducationalUILayer/EducationalOverlays/EducationalHelpOverlay/HelpGuideContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Controls"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="UI/Overlays/HelpOverlay/HelpContent"]
-layout_mode = 2
-
-[node name="HelpText" type="RichTextLabel" parent="UI/Overlays/HelpOverlay/HelpContent"]
+[node name="ControlsGuideText" type="RichTextLabel" parent="EducationalUILayer/EducationalOverlays/EducationalHelpOverlay/HelpGuideContent"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 bbcode_enabled = true
@@ -407,12 +812,18 @@ text = "[b]Mouse Controls:[/b]
 • Q - Open quiz
 • R - Reset camera
 • ESC - Return to menu"
+metadata/accessibility_label = "Keyboard and mouse controls guide"
 
-[node name="CloseButton" type="Button" parent="UI/Overlays/HelpOverlay/HelpContent"]
+[node name="HelpContentSeparator" type="HSeparator" parent="EducationalUILayer/EducationalOverlays/EducationalHelpOverlay/HelpGuideContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CloseHelpButton" type="Button" parent="EducationalUILayer/EducationalOverlays/EducationalHelpOverlay/HelpGuideContent"]
 layout_mode = 2
 text = "Close"
+metadata/accessibility_label = "Close help dialog"
 
-[node name="AnnotationLayer" type="Control" parent="UI"]
+[node name="AnatomicalAnnotationLayer" type="Control" parent="EducationalUILayer" groups=["annotation_system"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -422,16 +833,129 @@ offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/description = "Layer for 3D-to-2D anatomical label projections"
 
-[node name="Annotations" type="Node2D" parent="UI/AnnotationLayer"]
+[node name="AnatomicalAnnotations" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer"]
 position = Vector2(17, 23)
+metadata/description = "Container for all structure labels"
 
-[node name="Systems" type="Node" parent="."]
+[node name="StructureLabels" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations"]
+metadata/description = "3D-to-2D projected anatomical structure labels"
 
-[node name="InteractionSystem" type="Node" parent="Systems"]
+[node name="ClinicalMarkers" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations"]
+metadata/description = "Clinical relevance and pathology indicators"
 
-[node name="AnimationSystem" type="Node" parent="Systems"]
+[node name="EducationalPointers" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations"]
+metadata/description = "Interactive learning arrows and connection lines"
 
-[node name="AudioSystem" type="Node" parent="Systems"]
+[node name="MedicalTerminologyOverlay" type="Control" parent="EducationalUILayer/AnatomicalAnnotationLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/description = "Medical terminology and pronunciation guides"
 
-[node name="AnalyticsSystem" type="Node" parent="Systems"]
+[node name="AnnotationSettings" type="PanelContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer"]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -280.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 200.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2")
+metadata/accessibility_role = "region"
+metadata/accessibility_label = "Annotation display settings"
+
+[node name="AnnotationSettingsContent" type="VBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="AnnotationSettingsTitle" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Label Settings"
+horizontal_alignment = 1
+
+[node name="LabelSizeContainer" type="HBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
+layout_mode = 2
+
+[node name="LabelSizeLabel" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LabelSizeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Font Size:"
+
+[node name="LabelSizeSlider" type="HSlider" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LabelSizeContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+min_value = 8.0
+max_value = 24.0
+step = 2.0
+value = 14.0
+metadata/accessibility_label = "Adjust label font size for visibility"
+
+[node name="ContrastContainer" type="HBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
+layout_mode = 2
+
+[node name="ContrastLabel" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/ContrastContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "High Contrast:"
+
+[node name="ContrastToggle" type="CheckBox" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/ContrastContainer"]
+layout_mode = 2
+metadata/accessibility_label = "Enable high contrast mode for better visibility"
+
+[node name="LanguageContainer" type="HBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LanguageContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Language:"
+
+[node name="LanguageSelector" type="OptionButton" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LanguageContainer"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "English"
+popup/item_0/id = 0
+popup/item_1/text = "Latin"
+popup/item_1/id = 1
+popup/item_2/text = "Both"
+popup/item_2/id = 2
+metadata/accessibility_label = "Select annotation language"
+
+[node name="AnnotationDebug" type="Control" parent="EducationalUILayer/AnatomicalAnnotationLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/description = "Development mode annotation indicators"
+
+[node name="EducationalSystemsContainer" type="Node" parent="." groups=["core_systems"]]
+metadata/description = "Container for all educational platform systems"
+
+[node name="MedicalRenderingSystem" type="Node3D" parent="EducationalSystemsContainer" groups=["rendering_system"]]
+script = ExtResource("5_rendering_system")
+metadata/description = "Handles medical-grade brain model rendering and visualization"
+
+[node name="BrainInteractionSystem" type="Node" parent="EducationalSystemsContainer" groups=["interaction_system"]]
+metadata/description = "Manages user interactions with brain structures"
+
+[node name="EducationalAnimationSystem" type="Node" parent="EducationalSystemsContainer" groups=["animation_system"]]
+metadata/description = "Handles educational animations and transitions"
+
+[node name="EducationalAudioSystem" type="Node" parent="EducationalSystemsContainer" groups=["audio_system"]]
+metadata/description = "Manages educational audio feedback and narration"
+
+[node name="LearningAnalyticsSystem" type="Node" parent="EducationalSystemsContainer" groups=["analytics_system"]]
+metadata/description = "Tracks educational engagement and learning progress"

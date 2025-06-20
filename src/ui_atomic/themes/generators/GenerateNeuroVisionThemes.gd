@@ -393,7 +393,7 @@ func _validate_generated_themes() -> void:
 		COLORBLIND_THEME_PATH
 	]
 	
-	var Validator = preload("res://src/ui/themes/validation/M3AccessibilityValidator.gd")
+	var Validator = preload("res://src/ui_atomic/themes/validation/M3AccessibilityValidator.gd")
 	
 	for theme_path in theme_paths:
 		var theme = load(theme_path) as Theme

@@ -25,19 +25,18 @@ static func _get_animation_duration() -> float:
 @export var accent_color: Color
 
 # === PRIVATE VARIABLES ===
-@onready var _header: Control = $ContentContainer/HeaderSection
-@onready var _structure_title: Label = $ContentContainer/HeaderSection/TitleArea/StructureTitle
-@onready var _latin_name: Label = $ContentContainer/HeaderSection/TitleArea/LatinName
-@onready var _structure_icon: TextureRect = $ContentContainer/HeaderSection/StructureIcon
-@onready var _bookmark_button: Button = $ContentContainer/HeaderSection/BookmarkButton
-@onready var _tab_container: TabContainer = $ContentContainer/TabContainer
-@onready var _overview_content: RichTextLabel = $ContentContainer/TabContainer/Overview/OverviewContent
-@onready var _detailed_content: RichTextLabel = $ContentContainer/TabContainer/Details/DetailedContent
-@onready var _clinical_content: RichTextLabel = $ContentContainer/TabContainer/Clinical/ClinicalContent
-@onready var _related_structures: VBoxContainer = $ContentContainer/TabContainer/Related/RelatedStructures
-@onready var _quiz_button: Button = $ContentContainer/ActionBar/QuizButton
-@onready var _notes_button: Button = $ContentContainer/ActionBar/NotesButton
-@onready var _close_button: Button = $ContentContainer/ActionBar/CloseButton
+@onready var _header: Control = $EducationalContentContainer/AnatomicalHeaderSection
+@onready var _structure_title: Label = $EducationalContentContainer/AnatomicalHeaderSection/StructureTitleArea/AnatomicalStructureTitle
+@onready var _latin_name: Label = $EducationalContentContainer/AnatomicalHeaderSection/StructureTitleArea/MedicalLatinName
+@onready var _structure_icon: TextureRect = $EducationalContentContainer/AnatomicalHeaderSection/AnatomicalStructureIcon
+@onready var _bookmark_button: Button = $EducationalContentContainer/AnatomicalHeaderSection/StructureBookmarkButton
+@onready var _overview_content: RichTextLabel = $EducationalContentContainer/EducationalTabContainer/OverviewTab/OverviewRichContent
+@onready var _detailed_content: RichTextLabel = $EducationalContentContainer/EducationalTabContainer/DetailedInfoTab/DetailedRichContent
+@onready var _clinical_content: RichTextLabel = $EducationalContentContainer/EducationalTabContainer/ClinicalRelevanceTab/ClinicalRichContent
+@onready var _related_structures: VBoxContainer = $EducationalContentContainer/EducationalTabContainer/RelatedStructuresTab/RelatedStructuresList
+@onready var _quiz_button: Button = $EducationalContentContainer/EducationalActionBar/StructureQuizButton
+@onready var _notes_button: Button = $EducationalContentContainer/EducationalActionBar/EducationalNotesButton
+@onready var _close_button: Button = $EducationalContentContainer/EducationalActionBar/ClosePanelButton
 
 var _auto_hide_timer: Timer = null
 var _is_visible: bool = false
@@ -46,9 +45,6 @@ var _current_structure_id: String = ""
 
 # Enhanced Content Display System
 var _content_cache = {}
-var _bookmark_system = null
-var _3d_mini_model = null
-var _current_tab = "overview"
 
 # === PUBLIC METHODS ===
 
@@ -364,12 +360,13 @@ func _load_related_structures(data: Dictionary) -> void:
 		
 		_related_structures.add_child(structure_button)
 
-func _setup_mini_model(structure_id: String) -> void:
+func _setup_mini_model(_structure_id: String) -> void:
 	"""Setup 3D mini-model in info panel"""
 	var structure_icon = _structure_icon
 	if structure_icon and structure_icon is TextureRect:
 		# For now, use a placeholder. In full implementation, 
 		# this would render the 3D structure to a ViewportTexture
+		# TODO: Use _structure_id to load specific 3D model preview
 		structure_icon.modulate = M3DesignTokens.M3_COLORS["primary"]
 
 func _clear_content() -> void:

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://doo4d42e7phl3" path="res://scenes/ui/MainMenu.gd" id="1_7xnqf"]
 
-[node name="MainMenu" type="Control"]
+[node name="EducationalPlatformMainMenu" type="Control" groups=["educational_ui", "main_menu"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,10 +10,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7xnqf")
+metadata/accessibility_role = "main"
+metadata/accessibility_label = "NeuroVision main menu"
+metadata/educational_context = "application_entry_point"
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="MenuCanvasLayer" type="CanvasLayer" parent="." groups=["ui_layer"]]
+metadata/description = "Main menu UI layer"
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+[node name="BackgroundGradient" type="ColorRect" parent="MenuCanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -21,82 +25,94 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0588235, 0.0901961, 0.164706, 1)
 
-[node name="TopBar" type="PanelContainer" parent="CanvasLayer"]
+[node name="ApplicationHeader" type="PanelContainer" parent="MenuCanvasLayer" groups=["header_ui"]]
 custom_minimum_size = Vector2(0, 48)
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 48.0
 grow_horizontal = 2
+metadata/accessibility_role = "banner"
+metadata/accessibility_label = "Application header with title and version"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TopBar"]
+[node name="HeaderContent" type="HBoxContainer" parent="MenuCanvasLayer/ApplicationHeader"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="AppName" type="Label" parent="CanvasLayer/TopBar/HBoxContainer"]
+[node name="ApplicationTitle" type="Label" parent="MenuCanvasLayer/ApplicationHeader/HeaderContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "NeuroVision"
 
-[node name="VSeparator" type="Control" parent="CanvasLayer/TopBar/HBoxContainer"]
+[node name="TitleVersionSpacer" type="Control" parent="MenuCanvasLayer/ApplicationHeader/HeaderContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Version" type="Label" parent="CanvasLayer/TopBar/HBoxContainer"]
+[node name="VersionLabel" type="Label" parent="MenuCanvasLayer/ApplicationHeader/HeaderContent"]
 modulate = Color(0.7, 0.7, 0.7, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "v1.0"
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+[node name="MenuCenterContainer" type="CenterContainer" parent="MenuCanvasLayer" groups=["menu_content"]]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.99515, 1.02985)
+metadata/accessibility_role = "navigation"
+metadata/accessibility_label = "Main menu navigation options"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer"]
+[node name="MenuButtonContainer" type="VBoxContainer" parent="MenuCanvasLayer/MenuCenterContainer" groups=["menu_buttons"]]
 layout_mode = 2
 theme_override_constants/separation = 24
 alignment = 1
+metadata/description = "Container for main menu navigation buttons"
 
-[node name="TitleLabel" type="Label" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="MainTitleLabel" type="Label" parent="MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 57
 text = "NeuroVision"
 horizontal_alignment = 1
 
-[node name="SubtitleLabel" type="Label" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="EducationalSubtitleLabel" type="Label" parent="MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer"]
 modulate = Color(0.8, 0.8, 0.8, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Educational Neuroanatomy Explorer"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Control" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="TitleButtonSpacer" type="Control" parent="MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
-[node name="StartButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="BeginExplorationButton" type="Button" parent="MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer" groups=["primary_action"]]
 custom_minimum_size = Vector2(280, 56)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Start Exploration"
+metadata/accessibility_label = "Begin brain exploration session"
+metadata/navigation_order = 1
 
-[node name="ProfessionalButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="ProfessionalUIThemeButton" type="Button" parent="MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer" groups=["theme_control"]]
 custom_minimum_size = Vector2(280, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Professional UI"
+metadata/accessibility_label = "Switch to professional UI theme"
+metadata/navigation_order = 2
 
-[node name="SettingsButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="ApplicationSettingsButton" type="Button" parent="MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer" groups=["settings_control"]]
 custom_minimum_size = Vector2(280, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Settings"
+metadata/accessibility_label = "Open application settings"
+metadata/navigation_order = 3
 
-[node name="QuitButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="ExitApplicationButton" type="Button" parent="MenuCanvasLayer/MenuCenterContainer/MenuButtonContainer" groups=["exit_control"]]
 custom_minimum_size = Vector2(280, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Quit"
+metadata/accessibility_label = "Exit NeuroVision application"
+metadata/navigation_order = 4

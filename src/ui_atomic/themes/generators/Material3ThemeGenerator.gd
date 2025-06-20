@@ -633,7 +633,7 @@ func generate_educational_theme_variant(variant: String, context: Dictionary = {
 	
 	return theme
 
-func _apply_enhanced_educational_variant(theme: Theme, context: Dictionary) -> void:
+func _apply_enhanced_educational_variant(theme: Theme, _context: Dictionary) -> void:
 	"""Apply enhanced educational variant optimized for student engagement"""
 	var colors = M3Tokens.M3_COLORS
 	
@@ -659,7 +659,7 @@ func _apply_enhanced_educational_variant(theme: Theme, context: Dictionary) -> v
 	
 	print("[Material3] Enhanced educational variant applied")
 
-func _apply_minimal_educational_variant(theme: Theme, context: Dictionary) -> void:
+func _apply_minimal_educational_variant(theme: Theme, _context: Dictionary) -> void:
 	"""Apply minimal educational variant optimized for professional medical use"""
 	var colors = M3Tokens.M3_COLORS
 	
@@ -685,9 +685,9 @@ func _apply_minimal_educational_variant(theme: Theme, context: Dictionary) -> vo
 	
 	print("[Material3] Minimal educational variant applied")
 
-func _apply_clinical_educational_variant(theme: Theme, context: Dictionary) -> void:
+func _apply_clinical_educational_variant(theme: Theme, _context: Dictionary) -> void:
 	"""Apply clinical educational variant optimized for medical professionals"""
-	var colors = M3Tokens.M3_COLORS
+	var _colors = M3Tokens.M3_COLORS
 	
 	# Clinical color scheme - high contrast, medical-grade
 	theme.set_color("primary_clinical", "Educational", Color("#0066CC"))  # Medical blue
@@ -711,9 +711,9 @@ func _apply_clinical_educational_variant(theme: Theme, context: Dictionary) -> v
 	
 	print("[Material3] Clinical educational variant applied")
 
-func _apply_accessibility_educational_variant(theme: Theme, context: Dictionary) -> void:
+func _apply_accessibility_educational_variant(theme: Theme, _context: Dictionary) -> void:
 	"""Apply accessibility educational variant with WCAG AAA+ compliance"""
-	var colors = M3Tokens.M3_COLORS
+	var _colors = M3Tokens.M3_COLORS
 	
 	# Maximum contrast colors
 	theme.set_color("primary_accessible", "Educational", Color.YELLOW)

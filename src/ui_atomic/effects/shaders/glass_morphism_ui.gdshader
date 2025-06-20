@@ -81,7 +81,7 @@ float calculate_professional_depth(vec2 uv, vec2 cursor_pos, float influence) {
 // Main fragment shader
 void fragment() {
     vec2 screen_uv = SCREEN_UV;
-    vec2 pixel_size = SCREEN_PIXEL_SIZE;
+    vec2 pixel_size = 1.0 / vec2(textureSize(screen_texture, 0));
     
     // PHASE 2 ENHANCEMENT: Professional depth calculation
     float depth_factor = calculate_professional_depth(UV, cursor_position, cursor_influence);

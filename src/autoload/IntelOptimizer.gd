@@ -8,10 +8,12 @@ signal performance_critical(metric: String, value: float)
 
 # Intel UHD 620 specifications
 const INTEL_VRAM_LIMIT: int = 256  # MB (shared memory)
-const INTEL_TARGET_FPS: float = 30.0
-const INTEL_CRITICAL_FPS: float = 20.0
-const INTEL_MAX_DRAW_CALLS: int = 50
-const INTEL_MAX_TRIANGLES: int = 10000
+const INTEL_TARGET_FPS: float = 60.0
+const INTEL_CRITICAL_FPS: float = 30.0
+const INTEL_MAX_DRAW_CALLS: int = 30  # Reduced for 60 FPS target
+const INTEL_MAX_TRIANGLES: int = 8000  # Reduced triangle budget
+const INTEL_TEXTURE_MAX_SIZE: int = 512  # Max texture resolution
+const INTEL_LOD_BIAS: float = 2.0  # Aggressive LOD bias
 
 # Detection patterns for Intel graphics
 const INTEL_GPU_PATTERNS = [
@@ -32,6 +34,7 @@ func _ready():
 	if _is_intel_gpu:
 		print("[IntelOptimizer] Intel GPU detected - applying optimizations")
 		apply_intel_optimizations()
+		apply_intel_brain_rendering_preset()
 		start_performance_monitoring()
 	else:
 		print("[IntelOptimizer] Non-Intel GPU detected - Intel optimizations disabled")
@@ -80,6 +83,27 @@ func apply_intel_optimizations():
 	
 	print("[IntelOptimizer] Intel UHD 620 optimizations applied")
 
+func apply_intel_brain_rendering_preset():
+	"""Apply Intel UHD 620 specific brain rendering preset"""
+	var deferred_preset = func():
+		await get_tree().process_frame
+		var brain_rendering_system = get_tree().get_first_node_in_group("brain_rendering_system")
+		if not brain_rendering_system:
+			# Try to find ComprehensiveBrainRenderingSystem in scene
+			var scene_root = get_tree().current_scene
+			if scene_root:
+				brain_rendering_system = scene_root.find_child("*BrainRenderingSystem*", true, false)
+		
+		if brain_rendering_system and brain_rendering_system.has_method("apply_preset"):
+			brain_rendering_system.apply_preset("intel_uhd_620")
+			_optimizations_applied["brain_rendering"] = "Applied Intel UHD 620 brain rendering preset"
+			optimization_applied.emit("brain_rendering", "Using Intel UHD 620 optimized brain rendering")
+			print("[IntelOptimizer] Applied Intel UHD 620 brain rendering preset")
+		else:
+			print("[IntelOptimizer] Brain rendering system not found - will apply when available")
+	
+	deferred_preset.call()
+
 func force_low_quality_settings():
 	"""Force lowest quality settings for Intel graphics"""
 	if Engine.has_singleton("PerformanceMonitor"):
@@ -112,6 +136,9 @@ func optimize_model_loading():
 	
 	deferred_optimization.call()
 	
+	# Apply aggressive 3D optimizations
+	apply_aggressive_3d_optimizations()
+	
 	# Reduce texture quality globally
 	var viewport = get_viewport()
 	if viewport:
@@ -121,6 +148,31 @@ func optimize_model_loading():
 			_optimizations_applied["renderer"] = "Switched to compatibility renderer"
 			optimization_applied.emit("renderer", "Using GL compatibility renderer for Intel")
 
+func apply_aggressive_3d_optimizations():
+	"""Apply aggressive 3D optimizations for 60 FPS on Intel UHD 620"""
+	
+	# Set aggressive rendering settings - occlusion culling is controlled via project settings
+	# Note: Camera-specific occlusion culling is not available in Godot 4.4.1 RenderingServer API
+	
+	# Reduce global texture quality
+	var rendering_device = RenderingServer.get_rendering_device()
+	if rendering_device:
+		ProjectSettings.set_setting("rendering/textures/canvas_textures/default_texture_filter", 1)  # Linear filtering only
+		ProjectSettings.set_setting("rendering/textures/decals/filter", 1)
+		ProjectSettings.set_setting("rendering/textures/light_projectors/filter", 1)
+	
+	# Disable expensive 3D features
+	ProjectSettings.set_setting("rendering/3d/occlusion_culling/use_occlusion_culling", true)
+	ProjectSettings.set_setting("rendering/global_illumination/gi/use_half_resolution", true)
+	ProjectSettings.set_setting("rendering/3d/mesh_lod/lod_change/threshold_pixels", 4.0)  # More aggressive LOD
+	
+	# Configure for Intel UHD 620 memory constraints
+	ProjectSettings.set_setting("rendering/limits/global_shader_variables/buffer_size", 16384)  # Reduce buffer size
+	
+	_optimizations_applied["3d_aggressive"] = "Applied aggressive 3D optimizations"
+	optimization_applied.emit("3d_rendering", "Applied Intel UHD 620 specific 3D optimizations")
+	print("[IntelOptimizer] Applied aggressive 3D optimizations for 60 FPS target")
+
 func disable_expensive_ui_effects():
 	"""Disable expensive UI effects for Intel UHD 620"""
 	
@@ -129,6 +181,8 @@ func disable_expensive_ui_effects():
 		var ui_theme_manager = Engine.get_singleton("UIThemeManager")
 		if ui_theme_manager and ui_theme_manager.has_method("set_glass_morphism_enabled"):
 			ui_theme_manager.set_glass_morphism_enabled(false)
+		if ui_theme_manager and ui_theme_manager.has_method("apply_quality_based_shaders"):
+			ui_theme_manager.apply_quality_based_shaders("low")  # Force lowest quality shaders
 		_optimizations_applied["glass_morphism"] = "Disabled glass morphism effects"
 		optimization_applied.emit("ui_effects", "Disabled glass morphism for Intel UHD 620")
 	
@@ -199,7 +253,7 @@ func start_performance_monitoring():
 	_monitoring_active = true
 	
 	var monitor_timer = Timer.new()
-	monitor_timer.wait_time = 2.0  # Check every 2 seconds
+	monitor_timer.wait_time = 0.5  # Check every 0.5 seconds for more responsive optimization
 	monitor_timer.timeout.connect(_check_intel_performance)
 	monitor_timer.autostart = true
 	add_child(monitor_timer)

@@ -8,7 +8,7 @@ shader = ExtResource("2_glass")
 shader_parameter/blur_amount = 6.0
 shader_parameter/tint_color = Color(0.12, 0.15, 0.18, 0.95)
 
-[node name="StructureInfoPanel" type="Control"]
+[node name="AnatomicalStructureInfoPanel" type="Control" groups=["accessibility_critical", "anatomical_info", "educational_panel"]]
 material = SubResource("ShaderMaterial_1")
 layout_mode = 3
 anchor_left = 0.971875
@@ -23,8 +23,11 @@ grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_8xqnf")
 metadata/_edit_use_anchors_ = true
+metadata/accessibility_role = "complementary"
+metadata/accessibility_label = "Detailed anatomical structure information panel"
+metadata/medical_context = "brain_structure_details"
 
-[node name="BackgroundGlass" type="ColorRect" parent="."]
+[node name="GlassBackgroundEffect" type="ColorRect" parent="." groups=["visual_effect"]]
 material = SubResource("ShaderMaterial_1")
 layout_mode = 1
 anchors_preset = 15
@@ -34,7 +37,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.08, 0.1, 0.12, 0.95)
 
-[node name="ContentContainer" type="VBoxContainer" parent="."]
+[node name="EducationalContentContainer" type="VBoxContainer" parent="." groups=["content_container"]]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,119 +49,134 @@ offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 16
+metadata/description = "Main container for educational anatomical content"
 
-[node name="HeaderSection" type="HBoxContainer" parent="ContentContainer"]
+[node name="AnatomicalHeaderSection" type="HBoxContainer" parent="EducationalContentContainer" groups=["header_content"]]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 16
+metadata/description = "Header with structure icon, title, and bookmark"
 
-[node name="StructureIcon" type="TextureRect" parent="ContentContainer/HeaderSection"]
+[node name="AnatomicalStructureIcon" type="TextureRect" parent="EducationalContentContainer/AnatomicalHeaderSection"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 stretch_mode = 5
+metadata/accessibility_label = "Brain structure visual icon"
 
-[node name="TitleArea" type="VBoxContainer" parent="ContentContainer/HeaderSection"]
+[node name="StructureTitleArea" type="VBoxContainer" parent="EducationalContentContainer/AnatomicalHeaderSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 4
 
-[node name="StructureTitle" type="Label" parent="ContentContainer/HeaderSection/TitleArea"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Structure Name"
-autowrap_mode = 2
-
-[node name="LatinName" type="Label" parent="ContentContainer/HeaderSection/TitleArea"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "Latin Name"
-autowrap_mode = 2
-
-[node name="BookmarkButton" type="Button" parent="ContentContainer/HeaderSection"]
+[node name="StructureBookmarkButton" type="Button" parent="EducationalContentContainer/AnatomicalHeaderSection"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "★"
 flat = true
+metadata/accessibility_label = "Bookmark this brain structure"
 
-[node name="TabContainer" type="TabContainer" parent="ContentContainer"]
+[node name="EducationalTabContainer" type="TabContainer" parent="EducationalContentContainer" groups=["tabbed_content"]]
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
+metadata/accessibility_role = "tablist"
+metadata/accessibility_label = "Educational content tabs"
 
-[node name="Overview" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+[node name="OverviewTab" type="ScrollContainer" parent="EducationalContentContainer/EducationalTabContainer"]
 layout_mode = 2
+metadata/accessibility_role = "tabpanel"
+metadata/accessibility_label = "Structure overview content"
 metadata/_tab_name = "Overview"
 metadata/_tab_index = 0
 
-[node name="OverviewContent" type="RichTextLabel" parent="ContentContainer/TabContainer/Overview"]
+[node name="OverviewRichContent" type="RichTextLabel" parent="EducationalContentContainer/EducationalTabContainer/OverviewTab"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "Loading overview..."
 fit_content = true
+metadata/educational_content_type = "overview"
 
-[node name="Details" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+[node name="DetailedInfoTab" type="ScrollContainer" parent="EducationalContentContainer/EducationalTabContainer"]
 visible = false
 layout_mode = 2
+metadata/accessibility_role = "tabpanel"
+metadata/accessibility_label = "Detailed anatomical information"
 metadata/_tab_name = "Details"
 metadata/_tab_index = 1
 
-[node name="DetailedContent" type="RichTextLabel" parent="ContentContainer/TabContainer/Details"]
+[node name="DetailedRichContent" type="RichTextLabel" parent="EducationalContentContainer/EducationalTabContainer/DetailedInfoTab"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "Loading detailed information..."
 fit_content = true
+metadata/educational_content_type = "detailed"
 
-[node name="Clinical" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+[node name="ClinicalRelevanceTab" type="ScrollContainer" parent="EducationalContentContainer/EducationalTabContainer"]
 visible = false
 layout_mode = 2
+metadata/accessibility_role = "tabpanel"
+metadata/accessibility_label = "Clinical relevance information"
+metadata/medical_professional_content = true
 metadata/_tab_name = "Clinical"
 metadata/_tab_index = 2
 
-[node name="ClinicalContent" type="RichTextLabel" parent="ContentContainer/TabContainer/Clinical"]
+[node name="ClinicalRichContent" type="RichTextLabel" parent="EducationalContentContainer/EducationalTabContainer/ClinicalRelevanceTab"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "Loading clinical information..."
 fit_content = true
+metadata/educational_content_type = "clinical"
+metadata/medical_accuracy_required = true
 
-[node name="Related" type="ScrollContainer" parent="ContentContainer/TabContainer"]
+[node name="RelatedStructuresTab" type="ScrollContainer" parent="EducationalContentContainer/EducationalTabContainer"]
 visible = false
 layout_mode = 2
+metadata/accessibility_role = "tabpanel"
+metadata/accessibility_label = "Related brain structures"
 metadata/_tab_name = "Related"
 metadata/_tab_index = 3
 
-[node name="RelatedStructures" type="VBoxContainer" parent="ContentContainer/TabContainer/Related"]
+[node name="RelatedStructuresList" type="VBoxContainer" parent="EducationalContentContainer/EducationalTabContainer/RelatedStructuresTab"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
+metadata/educational_content_type = "relationships"
 
-[node name="ActionBar" type="HBoxContainer" parent="ContentContainer"]
+[node name="EducationalActionBar" type="HBoxContainer" parent="EducationalContentContainer" groups=["action_buttons", "educational_tools"]]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 12
 alignment = 1
+metadata/accessibility_role = "toolbar"
+metadata/accessibility_label = "Educational action buttons"
 
-[node name="QuizButton" type="Button" parent="ContentContainer/ActionBar"]
+[node name="StructureQuizButton" type="Button" parent="EducationalContentContainer/EducationalActionBar"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "Quiz"
+metadata/accessibility_label = "Take quiz on this structure"
+metadata/educational_action = "assessment"
 
-[node name="NotesButton" type="Button" parent="ContentContainer/ActionBar"]
+[node name="EducationalNotesButton" type="Button" parent="EducationalContentContainer/EducationalActionBar"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "Notes"
+metadata/accessibility_label = "Add educational notes"
+metadata/educational_action = "annotation"
 
-[node name="CloseButton" type="Button" parent="ContentContainer/ActionBar"]
+[node name="ClosePanelButton" type="Button" parent="EducationalContentContainer/EducationalActionBar"]
 custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
 text = "Close"
+metadata/accessibility_label = "Close information panel"
+metadata/keyboard_shortcut = "Escape"

@@ -20,6 +20,8 @@ Thumbs.db
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/snippets/
+!.vscode/launch.json
+
 
 # Certificates and secrets
 *.p12

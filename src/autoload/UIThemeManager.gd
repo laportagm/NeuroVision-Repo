@@ -8,7 +8,7 @@ signal theme_transition_completed()
 
 # === CONSTANTS ===
 const THEMES = {
-	"dark": "res://src/ui/themes/resources/themes/DarkTheme.tres",
+	"dark": "dynamic",  # Generated dynamically as Material3 dark theme
 	"high_contrast": "res://src/ui/themes/resources/themes/HighContrastTheme.tres", 
 	"colorblind": "res://src/ui/themes/resources/themes/ColorblindTheme.tres",
 	"material3": "dynamic",  # Generated dynamically
@@ -16,7 +16,7 @@ const THEMES = {
 	"material3_colorblind": "dynamic"  # Generated dynamically
 }
 
-const DEFAULT_THEME = "dark"
+const DEFAULT_THEME = "material3"
 const TRANSITION_DURATION = 0.3
 
 # Preload Material 3 generators
@@ -266,6 +266,8 @@ func _generate_material3_theme(theme_name: String) -> Theme:
 	
 	var variant = "default"
 	match theme_name:
+		"dark":
+			variant = "dark"  # Generate dark Material3 theme
 		"material3_high_contrast":
 			variant = "high_contrast"
 		"material3_colorblind":
@@ -439,7 +441,7 @@ func is_current_theme_accessible() -> bool:
 # === MATERIAL 3 INTEGRATION ===
 
 ## Generate Material 3 theme for specific brain structure
-func generate_m3_brain_region_theme(region_name: String, complexity_level: int = 1) -> void:
+func generate_m3_brain_region_theme(region_name: String, _complexity_level: int = 1) -> void:
 	"""Generate and apply Material 3 theme adapted for brain region"""
 	# ContentAdaptiveGenerator not implemented yet - use fallback
 	push_warning("[UIThemeManager] ContentAdaptiveGenerator not available, using default Material 3 theme")
@@ -985,7 +987,7 @@ func _on_quality_level_changed(new_level: int) -> void:
 
 func _setup_effects_integration() -> void:
 	"""Setup integration with ThemeEffectsManager for NeuroVision visual effects"""
-	var effects_manager = get_node("/root/ThemeEffectsManager")
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
 	
 	if not effects_manager:
 		push_warning("[UIThemeManager] ThemeEffectsManager not found")
@@ -1017,7 +1019,7 @@ func _setup_effects_integration() -> void:
 ## Apply NeuroVision glass morphism to UI panels
 func apply_neurovision_glass_effect(control: Control, structure_type: String = "panel") -> void:
 	"""Apply NeuroVision-themed glass morphism effect"""
-	var effects_manager = get_node("/root/ThemeEffectsManager")
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
 	if not effects_manager:
 		push_warning("[UIThemeManager] ThemeEffectsManager not available")
 		return
@@ -1039,7 +1041,7 @@ func apply_neurovision_glass_effect(control: Control, structure_type: String = "
 ## Create NeuroVision-themed transition between themes
 func apply_neurovision_theme_transition(from_theme: String, to_theme: String) -> void:
 	"""Apply NeuroVision-specific theme transition effect"""
-	var effects_manager = get_node("/root/ThemeEffectsManager")
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
 	if not effects_manager:
 		_set_theme_immediately(to_theme)
 		return
@@ -1060,15 +1062,15 @@ func apply_neurovision_theme_transition(from_theme: String, to_theme: String) ->
 ## Apply brain structure highlight effects
 func apply_brain_structure_highlight(control: Control, structure_name: String) -> void:
 	"""Apply NeuroVision brain structure specific highlighting"""
-	var effects_manager = get_node("/root/ThemeEffectsManager")
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
 	if not effects_manager:
 		return
 	
 	# Get structure-specific color
 	var structure_color = Color.CYAN  # Default
-	const M3DesignTokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
-	if M3DesignTokens.BRAIN_STRUCTURE_COLORS.has(structure_name):
-		structure_color = M3DesignTokens.BRAIN_STRUCTURE_COLORS[structure_name]
+	const design_tokens = preload("res://src/ui_atomic/themes/core/M3DesignTokens.gd")
+	if design_tokens.BRAIN_STRUCTURE_COLORS.has(structure_name):
+		structure_color = design_tokens.BRAIN_STRUCTURE_COLORS[structure_name]
 	
 	# Apply hover glow with structure color
 	effects_manager.apply_hover_glow(control, structure_color, 0.8)
@@ -1084,7 +1086,7 @@ func apply_brain_structure_highlight(control: Control, structure_name: String) -
 ## Update effects quality based on performance
 func update_effects_quality(quality_level: int) -> void:
 	"""Update visual effects quality based on performance level"""
-	var effects_manager = get_node("/root/ThemeEffectsManager")
+	var effects_manager = get_node_or_null("/root/ThemeEffectsManager")
 	if not effects_manager:
 		return
 	
@@ -1146,7 +1148,7 @@ func _monitor_performance_metrics() -> void:
 	if not _quality_adaptation_enabled:
 		return
 	
-	var current_time = Time.get_time_dict_from_system()
+	var _current_time = Time.get_time_dict_from_system()
 	var fps = Engine.get_frames_per_second()
 	var frame_time = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0  # Convert to ms
 	var memory_usage = OS.get_static_memory_usage() / 1024.0 / 1024.0  # Convert to MB
@@ -1189,7 +1191,7 @@ func _evaluate_quality_adaptation(snapshot: Dictionary) -> void:
 	var memory = snapshot.memory_mb
 	
 	# ML-based quality prediction
-	var predicted_quality = _predict_optimal_quality(snapshot)
+	var _predicted_quality = _predict_optimal_quality(snapshot)
 	var current_quality = _get_quality_level_from_profile()
 	
 	# Performance threshold evaluation
@@ -1227,7 +1229,7 @@ func _evaluate_quality_adaptation(snapshot: Dictionary) -> void:
 func _predict_optimal_quality(snapshot: Dictionary) -> int:
 	"""Use ML to predict optimal quality level"""
 	var weights = _performance_predictor.prediction_weights
-	var hardware_score = _performance_predictor.hardware_score
+	var _hardware_score = _performance_predictor.hardware_score
 	
 	# Normalize metrics
 	var fps_score = min(1.0, snapshot.fps / 120.0)  # Normalize to 120fps max

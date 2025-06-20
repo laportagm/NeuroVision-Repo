@@ -76,7 +76,8 @@ const FIELD_PRIORITIES = {
 }
 
 # === PRIVATE VARIABLES ===
-var _current_learning_level: UIAdaptationManager.LearningLevel = UIAdaptationManager.LearningLevel.INTERMEDIATE
+# var _current_learning_level: UIAdaptationManager.LearningLevel = UIAdaptationManager.LearningLevel.INTERMEDIATE
+var _current_learning_level: int = 1  # INTERMEDIATE
 var _filtered_content_cache: Dictionary = {}
 var _disclosure_levels: Dictionary = {}  # Track disclosure level per structure
 var _content_metadata_cache: Dictionary = {}
@@ -107,13 +108,8 @@ func _ready() -> void:
 
 func get_filtered_content(structure_id: String) -> Dictionary:
 	"""Get content filtered for current learning level"""
-	if not has_node("/root/StructureContentService"):
-		push_warning("[LearningContentManager] StructureContentService not available")
-		return {}
-	
-	var content_svc = get_node("/root/StructureContentService")
-	if not content_svc.is_content_loaded():
-		push_warning("[LearningContentManager] StructureContentService not ready")
+	if not EducationalPlatformManager:
+		push_warning("[LearningContentManager] EducationalPlatformManager not available")
 		return {}
 	
 	# Check cache first
@@ -121,8 +117,8 @@ func get_filtered_content(structure_id: String) -> Dictionary:
 	if _filtered_content_cache.has(cache_key):
 		return _filtered_content_cache[cache_key].duplicate(true)
 	
-	# Get raw content from StructureContentService
-	var raw_content = content_svc.get_structure_content(structure_id)
+	# Get raw content from EducationalPlatformManager
+	var raw_content = EducationalPlatformManager.get_content(structure_id)
 	if raw_content.is_empty():
 		push_warning("[LearningContentManager] No content found for structure: " + structure_id)
 		return {}
@@ -141,10 +137,12 @@ func get_filtered_content(structure_id: String) -> Dictionary:
 
 func get_progressive_content(structure_id: String, disclosure_level: DisclosureLevel) -> Dictionary:
 	"""Get content with specific disclosure level for progressive reveal"""
-	if not StructureContentService or not StructureContentService.is_content_loaded():
+	# Use EducationalPlatformManager for content management
+	if not EducationalPlatformManager:
+		push_error("[LearningContentManager] EducationalPlatformManager not available")
 		return {}
 	
-	var raw_content = StructureContentService.get_structure_content(structure_id)
+	var raw_content = EducationalPlatformManager.get_content(structure_id)
 	if raw_content.is_empty():
 		return {}
 	
@@ -197,7 +195,7 @@ func get_learning_level_summary() -> Dictionary:
 		"disclosure_level": hierarchy.get("disclosure_level", DisclosureLevel.BASIC)
 	}
 
-func is_field_available_at_level(field_name: String, level: UIAdaptationManager.LearningLevel = _current_learning_level) -> bool:
+func is_field_available_at_level(field_name: String, level: int = _current_learning_level) -> bool:
 	"""Check if a field is available at the specified learning level"""
 	var hierarchy = CONTENT_HIERARCHY.get(level, {})
 	var available_fields = hierarchy.get("fields", [])
@@ -213,21 +211,21 @@ func clear_content_cache() -> void:
 	_content_metadata_cache.clear()
 	print("[LearningContentManager] Content cache cleared")
 
-func get_content_complexity_description(level: UIAdaptationManager.LearningLevel = _current_learning_level) -> String:
+func get_content_complexity_description(level: int = _current_learning_level) -> String:
 	"""Get description of content complexity for learning level"""
 	match level:
-		UIAdaptationManager.LearningLevel.BEGINNER:
+		0:  # BEGINNER
 			return "Essential concepts with simplified explanations"
-		UIAdaptationManager.LearningLevel.INTERMEDIATE:
+		1:  # INTERMEDIATE
 			return "Standard educational content with clinical context"
-		UIAdaptationManager.LearningLevel.ADVANCED:
+		2:  # ADVANCED
 			return "Comprehensive information including research details"
 		_:
 			return "Unknown complexity level"
 
 # === PRIVATE METHODS ===
 
-func _filter_content_by_level(raw_content: Dictionary, level: UIAdaptationManager.LearningLevel) -> Dictionary:
+func _filter_content_by_level(raw_content: Dictionary, level: int) -> Dictionary:
 	"""Filter content based on learning level hierarchy"""
 	var hierarchy = CONTENT_HIERARCHY.get(level, {})
 	if hierarchy.is_empty():
@@ -249,7 +247,7 @@ func _filter_content_by_level(raw_content: Dictionary, level: UIAdaptationManage
 				"learningObjectives":
 					field_content = _filter_learning_objectives(field_content, hierarchy.get("max_learning_objectives", -1))
 				"function":
-					if level == UIAdaptationManager.LearningLevel.BEGINNER:
+					if level == 0:  # BEGINNER
 						field_content = _simplify_function_description(field_content)
 			
 			filtered[field] = field_content
@@ -331,11 +329,11 @@ func _generate_content_metadata(raw_content: Dictionary) -> Dictionary:
 		metadata.field_priorities[field] = priority
 		
 		# Check availability at each level
-		if is_field_available_at_level(field, UIAdaptationManager.LearningLevel.BEGINNER):
+		if is_field_available_at_level(field, 0):  # BEGINNER
 			metadata.available_at_beginner += 1
-		if is_field_available_at_level(field, UIAdaptationManager.LearningLevel.INTERMEDIATE):
+		if is_field_available_at_level(field, 1):  # INTERMEDIATE
 			metadata.available_at_intermediate += 1
-		if is_field_available_at_level(field, UIAdaptationManager.LearningLevel.ADVANCED):
+		if is_field_available_at_level(field, 2):  # ADVANCED
 			metadata.available_at_advanced += 1
 		
 		# Categorize content types
@@ -360,8 +358,8 @@ func _update_content_hierarchy() -> void:
 
 # === SIGNAL HANDLERS ===
 
-func _on_learning_level_changed(new_level: UIAdaptationManager.LearningLevel) -> void:
-	"""Handle learning level changes from UIAdaptationManager"""
+func _on_learning_level_changed(new_level: int) -> void:
+	"""Handle learning level changes"""
 	if new_level != _current_learning_level:
 		print("[LearningContentManager] Learning level changed from " + str(_current_learning_level) + " to " + str(new_level))
 		_current_learning_level = new_level
@@ -406,7 +404,7 @@ func get_disclosure_level_description(level: DisclosureLevel) -> String:
 
 func debug_content_filtering(structure_id: String) -> Dictionary:
 	"""Debug information about content filtering for a structure"""
-	var raw_content = StructureContentService.get_structure_content(structure_id)
+	var raw_content = EducationalPlatformManager.get_content(structure_id) if EducationalPlatformManager else {}
 	var filtered_content = get_filtered_content(structure_id)
 	var metadata = get_content_metadata(structure_id)
 	

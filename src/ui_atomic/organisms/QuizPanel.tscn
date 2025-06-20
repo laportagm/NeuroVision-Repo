@@ -8,7 +8,7 @@ shader = ExtResource("2_glass")
 shader_parameter/blur_amount = 8.0
 shader_parameter/tint_color = Color(0.1, 0.12, 0.15, 0.95)
 
-[node name="QuizPanel" type="Control"]
+[node name="EducationalQuizPanel" type="Control" groups=["educational_assessment", "quiz_system", "accessibility_critical"]]
 custom_minimum_size = Vector2(600, 700)
 anchors_preset = 8
 anchor_left = 0.5
@@ -20,8 +20,11 @@ offset_top = -350.0
 offset_right = 300.0
 offset_bottom = 350.0
 script = ExtResource("1_quiz")
+metadata/accessibility_role = "dialog"
+metadata/accessibility_label = "Educational assessment quiz"
+metadata/educational_type = "formative_assessment"
 
-[node name="GlassBackground" type="ColorRect" parent="."]
+[node name="QuizGlassBackground" type="ColorRect" parent="." groups=["visual_effect"]]
 material = SubResource("ShaderMaterial_1")
 layout_mode = 1
 anchors_preset = 15
@@ -31,7 +34,8 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.05, 0.08, 0.12, 0.95)
 
-[node name="MainContainer" type="VBoxContainer" parent="."]
+[node name="QuizMainContainer" type="VBoxContainer" parent="." groups=["quiz_content"]]
+metadata/description = "Main container for quiz interface elements"
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,43 +48,53 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="ProgressHeader" type="HBoxContainer" parent="MainContainer"]
+[node name="QuizProgressHeader" type="HBoxContainer" parent="QuizMainContainer" groups=["progress_tracking"]]
+metadata/accessibility_label = "Quiz progress information"
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 16
 
-[node name="ProgressBar" type="ProgressBar" parent="MainContainer/ProgressHeader"]
+[node name="QuizProgressBar" type="ProgressBar" parent="QuizMainContainer/QuizProgressHeader"]
+metadata/accessibility_label = "Quiz completion progress"
 custom_minimum_size = Vector2(200, 28)
 layout_mode = 2
 size_flags_horizontal = 3
 show_percentage = false
 
-[node name="ScoreDisplay" type="Label" parent="MainContainer/ProgressHeader"]
+[node name="QuizScoreDisplay" type="Label" parent="QuizMainContainer/QuizProgressHeader"]
+metadata/accessibility_role = "status"
+metadata/accessibility_live = "polite"
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Score: 0"
 horizontal_alignment = 1
 
-[node name="StreakCounter" type="HBoxContainer" parent="MainContainer/ProgressHeader"]
+[node name="CorrectStreakCounter" type="HBoxContainer" parent="QuizMainContainer/QuizProgressHeader" groups=["gamification"]]
+metadata/educational_feature = "positive_reinforcement"
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="StreakIcon" type="TextureRect" parent="MainContainer/ProgressHeader/StreakCounter"]
+[node name="StreakIconDisplay" type="TextureRect" parent="QuizMainContainer/QuizProgressHeader/CorrectStreakCounter"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="StreakNumber" type="Label" parent="MainContainer/ProgressHeader/StreakCounter"]
+[node name="StreakNumberLabel" type="Label" parent="QuizMainContainer/QuizProgressHeader/CorrectStreakCounter"]
+metadata/accessibility_live = "polite"
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Streak: 0"
 
-[node name="QuestionArea" type="VBoxContainer" parent="MainContainer"]
+[node name="AssessmentQuestionArea" type="VBoxContainer" parent="QuizMainContainer" groups=["question_display"]]
+metadata/accessibility_role = "region"
+metadata/accessibility_label = "Current quiz question"
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 16
 
-[node name="QuestionText" type="RichTextLabel" parent="MainContainer/QuestionArea"]
+[node name="QuizQuestionText" type="RichTextLabel" parent="QuizMainContainer/AssessmentQuestionArea"]
+metadata/accessibility_role = "heading"
+metadata/accessibility_level = 3
 custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 size_flags_vertical = 0
@@ -88,7 +102,8 @@ bbcode_enabled = true
 text = "Loading question..."
 fit_content = true
 
-[node name="QuestionImage" type="TextureRect" parent="MainContainer/QuestionArea"]
+[node name="AnatomicalQuestionImage" type="TextureRect" parent="QuizMainContainer/AssessmentQuestionArea"]
+metadata/accessibility_label = "Anatomical diagram for question"
 visible = false
 custom_minimum_size = Vector2(200, 150)
 layout_mode = 2
@@ -96,16 +111,21 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 stretch_mode = 5
 
-[node name="AnswerContainer" type="VBoxContainer" parent="MainContainer/QuestionArea"]
+[node name="MultipleChoiceAnswerContainer" type="VBoxContainer" parent="QuizMainContainer/AssessmentQuestionArea" groups=["answer_options"]]
+metadata/accessibility_role = "radiogroup"
+metadata/accessibility_label = "Answer choices"
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
-[node name="FeedbackArea" type="Control" parent="MainContainer"]
+[node name="EducationalFeedbackArea" type="Control" parent="QuizMainContainer" groups=["feedback_display"]]
+metadata/description = "Container for correct/incorrect feedback"
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="CorrectFeedback" type="PanelContainer" parent="MainContainer/FeedbackArea"]
+[node name="CorrectAnswerFeedback" type="PanelContainer" parent="QuizMainContainer/EducationalFeedbackArea" groups=["positive_feedback"]]
+metadata/accessibility_role = "alert"
+metadata/accessibility_live = "assertive"
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -114,24 +134,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CorrectContainer" type="HBoxContainer" parent="MainContainer/FeedbackArea/CorrectFeedback"]
+[node name="CorrectFeedbackContent" type="HBoxContainer" parent="QuizMainContainer/EducationalFeedbackArea/CorrectAnswerFeedback"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="CheckIcon" type="Label" parent="MainContainer/FeedbackArea/CorrectFeedback/CorrectContainer"]
+[node name="CorrectCheckIcon" type="Label" parent="QuizMainContainer/EducationalFeedbackArea/CorrectAnswerFeedback/CorrectFeedbackContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "✓"
 vertical_alignment = 1
 
-[node name="FeedbackText" type="RichTextLabel" parent="MainContainer/FeedbackArea/CorrectFeedback/CorrectContainer"]
+[node name="CorrectFeedbackText" type="RichTextLabel" parent="QuizMainContainer/EducationalFeedbackArea/CorrectAnswerFeedback/CorrectFeedbackContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
 text = "Correct! Great job!"
 fit_content = true
 
-[node name="IncorrectFeedback" type="PanelContainer" parent="MainContainer/FeedbackArea"]
+[node name="IncorrectAnswerFeedback" type="PanelContainer" parent="QuizMainContainer/EducationalFeedbackArea" groups=["corrective_feedback"]]
+metadata/accessibility_role = "alert"
+metadata/accessibility_live = "assertive"
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -140,34 +162,37 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="IncorrectContainer" type="HBoxContainer" parent="MainContainer/FeedbackArea/IncorrectFeedback"]
+[node name="IncorrectFeedbackContent" type="HBoxContainer" parent="QuizMainContainer/EducationalFeedbackArea/IncorrectAnswerFeedback"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="CrossIcon" type="Label" parent="MainContainer/FeedbackArea/IncorrectFeedback/IncorrectContainer"]
+[node name="IncorrectCrossIcon" type="Label" parent="QuizMainContainer/EducationalFeedbackArea/IncorrectAnswerFeedback/IncorrectFeedbackContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "✗"
 vertical_alignment = 1
 
-[node name="FeedbackText" type="RichTextLabel" parent="MainContainer/FeedbackArea/IncorrectFeedback/IncorrectContainer"]
+[node name="IncorrectFeedbackText" type="RichTextLabel" parent="QuizMainContainer/EducationalFeedbackArea/IncorrectAnswerFeedback/IncorrectFeedbackContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
 text = "Incorrect. The correct answer is..."
 fit_content = true
 
-[node name="ConfidenceArea" type="VBoxContainer" parent="MainContainer"]
+[node name="LearnerConfidenceArea" type="VBoxContainer" parent="QuizMainContainer" groups=["metacognition"]]
+metadata/educational_feature = "self_assessment"
+metadata/accessibility_label = "Confidence rating section"
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 8
 
-[node name="ConfidenceLabel" type="Label" parent="MainContainer/ConfidenceArea"]
+[node name="ConfidencePromptLabel" type="Label" parent="QuizMainContainer/LearnerConfidenceArea"]
 layout_mode = 2
 text = "How confident are you in your answer?"
 horizontal_alignment = 1
 
-[node name="ConfidenceSlider" type="HSlider" parent="MainContainer/ConfidenceArea"]
+[node name="ConfidenceRatingSlider" type="HSlider" parent="QuizMainContainer/LearnerConfidenceArea"]
+metadata/accessibility_label = "Confidence level from 1 to 5"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 min_value = 1.0
@@ -175,47 +200,56 @@ max_value = 5.0
 step = 1.0
 value = 3.0
 
-[node name="ConfidenceLabels" type="HBoxContainer" parent="MainContainer/ConfidenceArea"]
+[node name="ConfidenceScaleLabels" type="HBoxContainer" parent="QuizMainContainer/LearnerConfidenceArea"]
 layout_mode = 2
 
-[node name="LowLabel" type="Label" parent="MainContainer/ConfidenceArea/ConfidenceLabels"]
+[node name="LowConfidenceLabel" type="Label" parent="QuizMainContainer/LearnerConfidenceArea/ConfidenceScaleLabels"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 12
 text = "Not sure"
 
-[node name="Spacer" type="Control" parent="MainContainer/ConfidenceArea/ConfidenceLabels"]
+[node name="ConfidenceLabelSpacer" type="Control" parent="QuizMainContainer/LearnerConfidenceArea/ConfidenceScaleLabels"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HighLabel" type="Label" parent="MainContainer/ConfidenceArea/ConfidenceLabels"]
+[node name="HighConfidenceLabel" type="Label" parent="QuizMainContainer/LearnerConfidenceArea/ConfidenceScaleLabels"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 12
 text = "Very confident"
 
-[node name="ActionArea" type="HBoxContainer" parent="MainContainer"]
+[node name="QuizActionArea" type="HBoxContainer" parent="QuizMainContainer" groups=["quiz_controls"]]
+metadata/accessibility_role = "toolbar"
+metadata/accessibility_label = "Quiz action buttons"
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="SubmitButton" type="Button" parent="MainContainer/ActionArea"]
+[node name="SubmitAnswerButton" type="Button" parent="QuizMainContainer/QuizActionArea"]
+metadata/accessibility_label = "Submit your answer"
+metadata/keyboard_shortcut = "Enter"
 custom_minimum_size = Vector2(120, 44)
 layout_mode = 2
 text = "Submit"
 
-[node name="SkipButton" type="Button" parent="MainContainer/ActionArea"]
+[node name="SkipQuestionButton" type="Button" parent="QuizMainContainer/QuizActionArea"]
+metadata/accessibility_label = "Skip this question"
 custom_minimum_size = Vector2(100, 44)
 layout_mode = 2
 text = "Skip"
 
-[node name="ExplanationButton" type="Button" parent="MainContainer/ActionArea"]
+[node name="ShowExplanationButton" type="Button" parent="QuizMainContainer/QuizActionArea"]
+metadata/accessibility_label = "Show detailed explanation"
+metadata/educational_feature = "detailed_feedback"
 custom_minimum_size = Vector2(120, 44)
 layout_mode = 2
 text = "Explanation"
 
-[node name="CloseButton" type="Button" parent="MainContainer/ActionArea"]
+[node name="CloseQuizButton" type="Button" parent="QuizMainContainer/QuizActionArea"]
+metadata/accessibility_label = "Close quiz panel"
+metadata/keyboard_shortcut = "Escape"
 custom_minimum_size = Vector2(80, 44)
 layout_mode = 2
 text = "Close"
