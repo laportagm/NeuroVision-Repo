@@ -90,16 +90,19 @@ func _ready() -> void:
 	
 	# Connect to UIAdaptationManager for learning level changes
 	if has_node("/root/UIAdaptationManager"):
-		var ui_mgr = get_node("/root/UIAdaptationManager")
+		var ui_mgr = get_node_or_null("/root/UIAdaptationManager")
 		ui_mgr.learning_level_changed.connect(_on_learning_level_changed)
 		_current_learning_level = ui_mgr.get_learning_level()
 		print("[LearningContentManager] Connected to UIAdaptationManager - Level: " + str(_current_learning_level))
 	
-	# Connect to StructureContentService for content updates
-	if has_node("/root/StructureContentService"):
-		var content_svc = get_node("/root/StructureContentService")
-		content_svc.content_ready.connect(_on_structure_content_ready)
-		print("[LearningContentManager] Connected to StructureContentService")
+	# Connect to EducationalPlatformManager for content updates
+	if has_node("/root/EducationalPlatformManager"):
+		var content_svc = get_node_or_null("/root/EducationalPlatformManager")
+		if content_svc and content_svc.has_signal("content_ready"):
+			content_svc.content_ready.connect(_on_structure_content_ready)
+			print("[LearningContentManager] Connected to EducationalPlatformManager")
+		else:
+			print("[LearningContentManager] EducationalPlatformManager found but no content_ready signal")
 	
 	# Initialize content hierarchy for current level
 	_update_content_hierarchy()
@@ -173,7 +176,7 @@ func get_content_metadata(structure_id: String) -> Dictionary:
 	if _content_metadata_cache.has(cache_key):
 		return _content_metadata_cache[cache_key]
 	
-	var raw_content = StructureContentService.get_structure_content(structure_id)
+	var raw_content = EducationalPlatformManager.get_content(structure_id) if EducationalPlatformManager else {}
 	if raw_content.is_empty():
 		return {}
 	

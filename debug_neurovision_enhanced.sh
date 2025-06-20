@@ -20,19 +20,19 @@ PROJECT_PATH="/Users/gagelaporta/Desktop/NeuroVision-Repo"
 check_common_errors() {
     echo -e "${BLUE}[1/6] Checking for parse errors...${NC}"
     grep -n "try:\|except:" "$PROJECT_PATH"/**/*.gd 2>/dev/null | head -20
-    
+
     echo -e "${BLUE}[2/6] Checking for missing node references...${NC}"
     grep -n "has node:" "$PROJECT_PATH"/**/*.gd 2>/dev/null | head -20
-    
+
     echo -e "${BLUE}[3/6] Checking for null references...${NC}"
     grep -n "is_instance_valid\|!= null\|== null" "$PROJECT_PATH"/**/*.gd 2>/dev/null | head -20
-    
+
     echo -e "${BLUE}[4/6] Checking for shader errors...${NC}"
     find "$PROJECT_PATH" -name "*.gdshader" -exec grep -l "error\|ERROR" {} \; 2>/dev/null
-    
+
     echo -e "${BLUE}[5/6] Checking for resource path errors...${NC}"
     grep -n "res://" "$PROJECT_PATH"/**/*.gd 2>/dev/null | grep -v "ResourceLoader.exists" | head -20
-    
+
     echo -e "${BLUE}[6/6] Checking for signal connection errors...${NC}"
     grep -n "\.connect(" "$PROJECT_PATH"/**/*.gd 2>/dev/null | head -20
 }
@@ -41,7 +41,7 @@ check_common_errors() {
 run_godot_verbose() {
     echo -e "${GREEN}Starting Godot with maximum verbosity...${NC}"
     cd "$PROJECT_PATH"
-    
+
     # Run with all debug flags
     godot --verbose \
           --debug-collisions \
@@ -56,14 +56,14 @@ run_godot_verbose() {
 # Function to analyze log files
 analyze_logs() {
     echo -e "${BLUE}Analyzing debug logs...${NC}"
-    
+
     if [ -f "godot_debug_full.log" ]; then
         echo -e "${YELLOW}=== Errors Found ===${NC}"
         grep -i "error\|fail\|warning\|critical" godot_debug_full.log | sort | uniq
-        
+
         echo -e "${YELLOW}=== Performance Issues ===${NC}"
         grep -i "fps\|frame\|performance\|slow" godot_debug_full.log | tail -20
-        
+
         echo -e "${YELLOW}=== Resource Loading Issues ===${NC}"
         grep -i "load\|resource\|asset\|missing" godot_debug_full.log | tail -20
     fi

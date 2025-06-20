@@ -1,7 +1,7 @@
 class_name QuizPanel
 extends Control
 
-const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd") # Validated path
 
 ## Enhanced educational quiz interface panel with gamification features
 

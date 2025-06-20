@@ -35,7 +35,7 @@ func setup_dependencies() -> void:
 	var tree = Engine.get_main_loop() as SceneTree
 	if tree:
 		if tree.root.has_node("AccessibilityManager"):
-			accessibility_manager = tree.root.get_node("AccessibilityManager")
+			accessibility_manager = tree.root.get_node_or_null("AccessibilityManager")
 		
 		# === PHASE 4: ENHANCED DEPENDENCY SETUP ===
 		# Connect to performance monitoring

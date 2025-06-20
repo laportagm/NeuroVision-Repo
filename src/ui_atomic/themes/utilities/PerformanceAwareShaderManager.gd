@@ -102,9 +102,9 @@ func _detect_hardware_profile() -> void:
 func _initialize_performance_monitoring() -> void:
 	"""Initialize connection to performance monitoring systems"""
 	var tree = Engine.get_main_loop() as SceneTree
-	if tree and tree.root.has_node("UIThemeManager"):
-		performance_monitor = tree.root.get_node("UIThemeManager")
-		print("[ShaderManager] Connected to UIThemeManager performance monitoring")
+	if tree and tree.root.has_node("PerformanceMonitor"):
+		performance_monitor = tree.root.get_node("PerformanceMonitor")
+		print("[ShaderManager] Connected to PerformanceMonitor")
 	
 	# Set initial quality based on hardware
 	current_quality_level = _determine_initial_quality()

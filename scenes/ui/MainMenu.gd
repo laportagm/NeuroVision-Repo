@@ -1,7 +1,7 @@
 class_name MainMenu
 extends Control
 
-const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd") # Validated path
 
 ## Main menu screen for NeuroVision with Material 3 design and motion
 ##

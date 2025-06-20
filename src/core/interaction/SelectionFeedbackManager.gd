@@ -58,7 +58,7 @@ func _ready() -> void:
 	
 	# Connect to accessibility settings if available
 	if has_node("/root/AccessibilityManager"):
-		var accessibility = get_node("/root/AccessibilityManager")
+		var accessibility = get_node_or_null("/root/AccessibilityManager")
 		if accessibility.has_signal("audio_cues_changed"):
 			accessibility.audio_cues_changed.connect(_on_audio_cues_changed)
 
@@ -371,14 +371,14 @@ func _trigger_haptic_feedback(_strength: float) -> void:
 func _announce_selection(structure_name: String) -> void:
 	"""Announce selection for accessibility"""
 	if has_node("/root/AccessibilityManager"):
-		var accessibility = get_node("/root/AccessibilityManager")
+		var accessibility = get_node_or_null("/root/AccessibilityManager")
 		if accessibility.has_method("announce"):
 			accessibility.announce("Selected: " + structure_name)
 
 func _announce_error(message: String) -> void:
 	"""Announce error for accessibility"""
 	if has_node("/root/AccessibilityManager"):
-		var accessibility = get_node("/root/AccessibilityManager")
+		var accessibility = get_node_or_null("/root/AccessibilityManager")
 		if accessibility.has_method("announce"):
 			accessibility.announce("Error: " + message)
 

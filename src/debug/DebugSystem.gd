@@ -44,11 +44,17 @@ var _performance_metrics: Dictionary = {}
 var _memory_snapshots: Array = []
 var _debug_overlay: Control = null
 var _log_file: FileAccess = null
+var _last_fps_warning_time: float = 0.0
+var _fps_warning_cooldown: float = 5.0  # Only warn once every 5 seconds
+var _last_memory_warning_time: float = 0.0
+var _last_frame_time_warning_time: float = 0.0
+const MEMORY_WARNING_INTERVAL = 10.0  # seconds between memory warnings
+const FRAME_TIME_WARNING_INTERVAL = 5.0  # seconds between frame time warnings
 
 # Performance thresholds
-const FPS_WARNING_THRESHOLD = 30
-const MEMORY_WARNING_THRESHOLD = 500 * 1024 * 1024  # 500MB
-const FRAME_TIME_WARNING = 33.33  # milliseconds (30 FPS)
+const FPS_WARNING_THRESHOLD = 30  # Adjusted for 3D medical visualization - 30 FPS minimum
+const MEMORY_WARNING_THRESHOLD = 800 * 1024 * 1024  # 800MB - Adjusted for 3D medical visualization
+const FRAME_TIME_WARNING = 33.33  # milliseconds (30 FPS) - Adjusted for 3D medical visualization
 
 func _ready() -> void:
 	set_process(true)
@@ -76,7 +82,7 @@ func _initialize_debug_system() -> void:
 
 func _setup_error_handlers() -> void:
 	# Override push_error to capture all errors
-	var original_push_error = push_error
+	var _original_push_error = push_error
 	
 	# Set up custom error handler
 	set_meta("_error_handler_connected", true)
@@ -109,7 +115,7 @@ func _create_debug_overlay() -> void:
 		vbox.add_child(label)
 	
 	_debug_overlay.add_child(panel)
-	get_tree().root.add_child(_debug_overlay)
+	get_tree().root.call_deferred("add_child", _debug_overlay)
 
 func _process(delta: float) -> void:
 	if not debug_enabled:
@@ -138,14 +144,18 @@ func _update_performance_metrics(delta: float) -> void:
 	_performance_metrics["physics_time"] = physics_process_time
 	_performance_metrics["idle_time"] = idle_process_time
 	
-	# Check for performance issues
-	if fps < FPS_WARNING_THRESHOLD:
-		log_warning("PERFORMANCE", "Low FPS detected: %d" % fps)
+	# Check for performance issues with cooldown
+	var current_time = Time.get_ticks_msec() / 1000.0
+	if fps < FPS_WARNING_THRESHOLD and current_time - _last_fps_warning_time > _fps_warning_cooldown:
+		log_warning("PERFORMANCE", "Low FPS detected: %d (threshold: %d FPS)" % [fps, FPS_WARNING_THRESHOLD])
 		performance_warning.emit("fps", fps)
+		_last_fps_warning_time = current_time
 	
 	if frame_time > FRAME_TIME_WARNING:
-		log_warning("PERFORMANCE", "High frame time: %.2fms" % frame_time)
-		performance_warning.emit("frame_time", frame_time)
+		if current_time - _last_frame_time_warning_time > FRAME_TIME_WARNING_INTERVAL:
+			log_warning("PERFORMANCE", "High frame time: %.2f ms (threshold: %.2f ms)" % [frame_time, FRAME_TIME_WARNING])
+			performance_warning.emit("frame_time", frame_time)
+			_last_frame_time_warning_time = current_time
 
 func _update_memory_tracking() -> void:
 	var static_memory = Performance.get_monitor(Performance.MEMORY_STATIC)
@@ -156,10 +166,13 @@ func _update_memory_tracking() -> void:
 	_performance_metrics["memory_dynamic"] = dynamic_memory
 	_performance_metrics["memory_total"] = total_memory
 	
-	# Check for memory issues
+	# Check for memory issues with rate limiting
 	if total_memory > MEMORY_WARNING_THRESHOLD:
-		log_warning("MEMORY", "High memory usage: %.2f MB" % (total_memory / 1024.0 / 1024.0))
-		performance_warning.emit("memory", total_memory)
+		var current_time = Time.get_ticks_msec() / 1000.0
+		if current_time - _last_memory_warning_time > MEMORY_WARNING_INTERVAL:
+			log_warning("MEMORY", "High memory usage: %.2f MB (threshold: %.2f MB)" % [total_memory / 1024.0 / 1024.0, MEMORY_WARNING_THRESHOLD / 1024.0 / 1024.0])
+			performance_warning.emit("memory", total_memory)
+			_last_memory_warning_time = current_time
 	
 	# Track memory growth
 	_memory_snapshots.append({
@@ -338,15 +351,15 @@ func check_signal_connection(source: Object, signal_name: String, context: Strin
 	return true
 
 # Performance profiling
-func start_profiling(name: String) -> void:
-	set_meta("profile_" + name, Time.get_ticks_usec())
+func start_profiling(profile_name: String) -> void:
+	set_meta("profile_" + profile_name, Time.get_ticks_usec())
 
-func end_profiling(name: String) -> float:
-	if has_meta("profile_" + name):
-		var start_time = get_meta("profile_" + name)
+func end_profiling(profile_name: String) -> float:
+	if has_meta("profile_" + profile_name):
+		var start_time = get_meta("profile_" + profile_name)
 		var duration = (Time.get_ticks_usec() - start_time) / 1000.0
-		remove_meta("profile_" + name)
-		log_debug("PERFORMANCE", "Profile '%s': %.2fms" % [name, duration])
+		remove_meta("profile_" + profile_name)
+		log_debug("PERFORMANCE", "Profile '%s': %.2fms" % [profile_name, duration])
 		return duration
 	return 0.0
 

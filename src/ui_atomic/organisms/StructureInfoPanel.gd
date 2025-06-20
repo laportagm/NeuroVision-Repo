@@ -1,6 +1,6 @@
 extends Control
 
-const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd") # Validated path
 
 ## Enhanced educational information panel for brain structures with tabbed layout
 
@@ -25,18 +25,18 @@ static func _get_animation_duration() -> float:
 @export var accent_color: Color
 
 # === PRIVATE VARIABLES ===
-@onready var _header: Control = $EducationalContentContainer/AnatomicalHeaderSection
-@onready var _structure_title: Label = $EducationalContentContainer/AnatomicalHeaderSection/StructureTitleArea/AnatomicalStructureTitle
-@onready var _latin_name: Label = $EducationalContentContainer/AnatomicalHeaderSection/StructureTitleArea/MedicalLatinName
-@onready var _structure_icon: TextureRect = $EducationalContentContainer/AnatomicalHeaderSection/AnatomicalStructureIcon
-@onready var _bookmark_button: Button = $EducationalContentContainer/AnatomicalHeaderSection/StructureBookmarkButton
-@onready var _overview_content: RichTextLabel = $EducationalContentContainer/EducationalTabContainer/OverviewTab/OverviewRichContent
-@onready var _detailed_content: RichTextLabel = $EducationalContentContainer/EducationalTabContainer/DetailedInfoTab/DetailedRichContent
-@onready var _clinical_content: RichTextLabel = $EducationalContentContainer/EducationalTabContainer/ClinicalRelevanceTab/ClinicalRichContent
-@onready var _related_structures: VBoxContainer = $EducationalContentContainer/EducationalTabContainer/RelatedStructuresTab/RelatedStructuresList
-@onready var _quiz_button: Button = $EducationalContentContainer/EducationalActionBar/StructureQuizButton
-@onready var _notes_button: Button = $EducationalContentContainer/EducationalActionBar/EducationalNotesButton
-@onready var _close_button: Button = $EducationalContentContainer/EducationalActionBar/ClosePanelButton
+@onready var _header: Control = get_node_or_null("EducationalContentContainer/AnatomicalHeaderSection")
+@onready var _structure_title: Label = get_node_or_null("EducationalContentContainer/AnatomicalHeaderSection/StructureTitleArea/AnatomicalStructureTitle")
+@onready var _latin_name: Label = get_node_or_null("EducationalContentContainer/AnatomicalHeaderSection/StructureTitleArea/MedicalLatinName")
+@onready var _structure_icon: TextureRect = get_node_or_null("EducationalContentContainer/AnatomicalHeaderSection/AnatomicalStructureIcon")
+@onready var _bookmark_button: Button = get_node_or_null("EducationalContentContainer/AnatomicalHeaderSection/StructureBookmarkButton")
+@onready var _overview_content: RichTextLabel = get_node_or_null("EducationalContentContainer/EducationalTabContainer/OverviewTab/OverviewRichContent")
+@onready var _detailed_content: RichTextLabel = get_node_or_null("EducationalContentContainer/EducationalTabContainer/DetailedInfoTab/DetailedRichContent")
+@onready var _clinical_content: RichTextLabel = get_node_or_null("EducationalContentContainer/EducationalTabContainer/ClinicalRelevanceTab/ClinicalRichContent")
+@onready var _related_structures: VBoxContainer = get_node_or_null("EducationalContentContainer/EducationalTabContainer/RelatedStructuresTab/RelatedStructuresList")
+@onready var _quiz_button: Button = get_node_or_null("EducationalContentContainer/EducationalActionBar/StructureQuizButton")
+@onready var _notes_button: Button = get_node_or_null("EducationalContentContainer/EducationalActionBar/EducationalNotesButton")
+@onready var _close_button: Button = get_node_or_null("EducationalContentContainer/EducationalActionBar/ClosePanelButton")
 
 var _auto_hide_timer: Timer = null
 var _is_visible: bool = false
@@ -49,6 +49,20 @@ var _content_cache = {}
 # === PUBLIC METHODS ===
 
 func _ready() -> void:
+	# Validate required nodes - only warn about critical missing nodes
+	var critical_missing = []
+	if not _overview_content:
+		critical_missing.append("OverviewContent")
+	if not _close_button:
+		critical_missing.append("CloseButton")
+	
+	if critical_missing.size() > 0:
+		push_warning("[StructureInfoPanel] Missing critical nodes: " + ", ".join(critical_missing) + ". Panel may not function correctly.")
+	
+	# Optional nodes - don't warn if missing, just note them for debugging
+	if not _structure_title or not _latin_name:
+		print("[StructureInfoPanel] Note: Some optional title nodes are missing from scene structure")
+	
 	# Initialize theme colors from UnifiedColorSystem if not set
 	if panel_color == Color():
 		panel_color = UnifiedColorSystem.get_color("surface_container")
@@ -223,11 +237,15 @@ func _setup_ui() -> void:
 	# Apply theme
 	_apply_theme()
 	
-	# Connect signals
-	_close_button.pressed.connect(_on_close_pressed)
-	_quiz_button.pressed.connect(_on_quiz_pressed)
-	_notes_button.pressed.connect(_on_notes_pressed)
-	_bookmark_button.pressed.connect(_on_bookmark_pressed)
+	# Connect signals (with null checks)
+	if _close_button:
+		_close_button.pressed.connect(_on_close_pressed)
+	if _quiz_button:
+		_quiz_button.pressed.connect(_on_quiz_pressed)
+	if _notes_button:
+		_notes_button.pressed.connect(_on_notes_pressed)
+	if _bookmark_button:
+		_bookmark_button.pressed.connect(_on_bookmark_pressed)
 
 func _apply_theme() -> void:
 	"""Apply Material 3 theme to panel using M3ComponentApplicator"""
@@ -283,6 +301,9 @@ func _load_tab_content(tab_name: String, data: Dictionary) -> void:
 	match tab_name:
 		"overview":
 			content_node = _overview_content
+			if not content_node:
+				push_warning("[StructureInfoPanel] Overview content node not found")
+				return
 			var overview_text = "[font_size=16]%s[/font_size]\n\n" % data.get("description", data.get("shortDescription", ""))
 			overview_text += "[font_size=14][color=#666]Key Functions:[/color][/font_size]\n"
 			var functions = data.get("functions", data.get("function", "").split("\n") if data.get("function", "") != "" else [])
@@ -293,6 +314,9 @@ func _load_tab_content(tab_name: String, data: Dictionary) -> void:
 		
 		"details":
 			content_node = _detailed_content
+			if not content_node:
+				push_warning("[StructureInfoPanel] Detailed content node not found")
+				return
 			var details_text = "[font_size=16][color=#1976d2]Detailed Information[/color][/font_size]\n\n"
 			
 			# Add key facts
@@ -322,6 +346,9 @@ func _load_tab_content(tab_name: String, data: Dictionary) -> void:
 		
 		"clinical":
 			content_node = _clinical_content
+			if not content_node:
+				push_warning("[StructureInfoPanel] Clinical content node not found")
+				return
 			var clinical_text = "[font_size=16][color=#c41e3a]Clinical Significance[/color][/font_size]\n\n"
 			clinical_text += data.get("clinicalRelevance", "Clinical information being prepared.")
 			
@@ -334,6 +361,10 @@ func _load_tab_content(tab_name: String, data: Dictionary) -> void:
 
 func _load_related_structures(data: Dictionary) -> void:
 	"""Load related structures into the Related tab"""
+	if not _related_structures:
+		push_warning("[StructureInfoPanel] Related structures container not found")
+		return
+	
 	# Clear existing related structures
 	for child in _related_structures.get_children():
 		child.queue_free()
@@ -371,12 +402,16 @@ func _setup_mini_model(_structure_id: String) -> void:
 
 func _clear_content() -> void:
 	"""Clear all content from the tabs"""
-	_overview_content.text = "Loading overview..."
-	_detailed_content.text = "Loading detailed information..."
-	_clinical_content.text = "Loading clinical information..."
+	if _overview_content:
+		_overview_content.text = "Loading overview..."
+	if _detailed_content:
+		_detailed_content.text = "Loading detailed information..."
+	if _clinical_content:
+		_clinical_content.text = "Loading clinical information..."
 	
-	for child in _related_structures.get_children():
-		child.queue_free()
+	if _related_structures:
+		for child in _related_structures.get_children():
+			child.queue_free()
 
 func _add_section(title: String, content: String) -> void:
 	"""Add a content section to the panel with M3 styling"""

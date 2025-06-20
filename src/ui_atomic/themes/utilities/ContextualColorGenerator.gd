@@ -71,7 +71,7 @@ func _load_user_preferences() -> void:
 	var tree = Engine.get_main_loop() as SceneTree
 	var settings_manager = null
 	if tree and tree.root and tree.root.has_node("SettingsManager"):
-		settings_manager = tree.root.get_node("SettingsManager")
+		settings_manager = tree.root.get_node_or_null("SettingsManager")
 	
 	if settings_manager and settings_manager.has_method("get_setting"):
 		user_preferences = {

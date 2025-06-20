@@ -261,7 +261,7 @@ func get_suggested_next_structure() -> String:
 	# Get known structures from knowledge service
 	var all_structures = []
 	if has_node("/root/LearningContentManager"):
-		var content_manager = get_node("/root/LearningContentManager")
+		var content_manager = get_node_or_null("/root/LearningContentManager")
 		if content_manager.has_method("get_all_structure_ids"):
 			all_structures = content_manager.get_all_structure_ids()
 	

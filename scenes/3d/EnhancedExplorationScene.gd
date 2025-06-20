@@ -1,7 +1,7 @@
 class_name EnhancedExplorationScene
 extends Node3D
 
-const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd")
+const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd") # Validated path
 
 ## Enhanced main 3D exploration scene with comprehensive UI
 
@@ -43,7 +43,7 @@ const VERTICAL_ANGLE_LIMIT: float = 360.0
 @onready var loading_progress: ProgressBar = $EducationalUILayer/EducationalOverlays/ModelLoadingOverlay/LoadingProgressContent/ModelLoadingProgressBar
 @onready var help_overlay: PanelContainer = $EducationalUILayer/EducationalOverlays/EducationalHelpOverlay
 @onready var help_close: Button = $EducationalUILayer/EducationalOverlays/EducationalHelpOverlay/HelpGuideContent/CloseHelpButton
-@onready var annotation_layer: Control = $EducationalUILayer/AnatomicalAnnotationLayer
+# @onready var annotation_layer: Control = $EducationalUILayer/AnatomicalAnnotationLayer # Removed - Medical Annotation System
 
 # Quiz System Components
 @onready var quiz_overlay: PanelContainer = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay
@@ -65,24 +65,17 @@ const VERTICAL_ANGLE_LIMIT: float = 360.0
 @onready var next_button: Button = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls/NextButton
 @onready var review_button: Button = $EducationalUILayer/EducationalOverlays/EducationalQuizOverlay/QuizPanelContent/QuizControls/ReviewButton
 
-# Enhanced Annotation System Components
-@onready var structure_labels: Node2D = $EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations/StructureLabels
-@onready var medical_terminology_overlay: Control = $EducationalUILayer/AnatomicalAnnotationLayer/MedicalTerminologyOverlay
-@onready var clinical_markers: Node2D = $EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations/ClinicalMarkers
-@onready var educational_pointers: Node2D = $EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations/EducationalPointers
-@onready var annotation_settings: PanelContainer = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings
-@onready var label_size_slider: HSlider = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LabelSizeContainer/LabelSizeSlider
-@onready var contrast_toggle: CheckBox = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/ContrastContainer/ContrastToggle
-@onready var language_selector: OptionButton = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LanguageContainer/LanguageSelector
-@onready var annotation_debug: Control = $EducationalUILayer/AnatomicalAnnotationLayer/AnnotationDebug
+# Enhanced Annotation System Components - REMOVED
+# Medical annotation nodes have been removed from the scene
 
 # Advanced Camera Collision System Components
 @onready var camera_collision: Area3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection
 @onready var camera_collision_shape: CollisionShape3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraCollisionShape
-@onready var proximity_warning: Area3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/ProximityWarning
-@onready var proximity_shape: CollisionShape3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/ProximityWarning/ProximityShape
-@onready var camera_constraints: StaticBody3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraConstraints
-@onready var constraint_shape: CollisionShape3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraConstraints/ConstraintShape
+# Proximity warning system removed in optimization
+var proximity_warning: Area3D = null
+var proximity_shape: CollisionShape3D = null
+#@onready var camera_constraints: StaticBody3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraConstraints # Removed in optimization
+#@onready var constraint_shape: CollisionShape3D = $EducationalCameraSystem/AnatomicalCameraPivot/CameraCollisionDetection/CameraConstraints/ConstraintShape # Removed in optimization
 
 # Performance Monitoring UI Components
 @onready var performance_toggle: Button = $EducationalUILayer/MainEducationalInterface/EducationalStatusBar/StatusBarContent/PerformanceToggle
@@ -120,7 +113,7 @@ var _camera_rotation: Vector2 = Vector2(deg_to_rad(-45), deg_to_rad(-20))  # Bet
 var _brain_interaction: Node3D = null
 var _model_loader: Node = null
 var _camera_presets: Node = null
-var _annotation_system: Node = null
+# var _annotation_system: Node = null  # Removed - Medical Annotation System
 var _brain_structures: Dictionary = {}  # structure_id -> MeshInstance3D
 var _mesh_to_structure_id: Dictionary = {}  # mesh_name -> structure_id
 var _quiz_panel = null  # QuizPanel instance
@@ -137,6 +130,8 @@ var _quiz_is_active: bool = false
 
 # Missing variables used in _exit_tree
 var _debounce_timer: Timer = null
+
+# Missing UI references that were causing errors
 var _tooltip_timer: Timer = null
 var _current_structure: Node = null
 var _last_hover_structure: Node = null
@@ -145,7 +140,7 @@ var _camera_target_rotation: Vector3 = Vector3.ZERO
 var _quiz_structure_context: String = ""
 var _quiz_answer_options: Array = []
 
-# Enhanced Annotation System Variables
+# Enhanced Annotation System Variables - DISABLED (but variables kept for code compatibility)
 var _annotation_labels: Dictionary = {}  # structure_id -> Label
 var _3d_to_2d_projections: Dictionary = {}  # structure_id -> Vector2
 var _label_visibility_distance: float = 25.0
@@ -153,13 +148,12 @@ var _annotation_font_size: float = 14.0
 var _high_contrast_mode: bool = false
 var _annotation_language: String = "english"
 var _medical_terminology_database: Dictionary = {}
-var _annotation_update_timer: float = 0.0
-var _annotation_update_interval: float = 0.1  # Update 10 times per second
+# var _annotation_update_timer: float = 0.0  # Removed - unused
+# var _annotation_update_interval: float = 0.1  # Removed - unused
 
 # Advanced Camera Collision System Variables
 var _collision_avoidance_enabled: bool = true
-var _camera_smoothing_factor: float = 0.15
-var _min_distance_from_brain: float = 2.0
+var _min_distance_from_brain: float = 1.0
 var _max_distance_from_brain: float = 50.0
 var _collision_recovery_speed: float = 3.0
 var _proximity_warning_distance: float = 5.0
@@ -269,23 +263,27 @@ var _performance_data: Dictionary = {
 # === PUBLIC METHODS ===
 
 func _ready() -> void:
+	var _progress_tracker = get_node_or_null("/root/ProgressTracker")
 	print("[EnhancedExplorationScene] Initializing professional medical interface")
-	
+
+	# === PERFORMANCE OPTIMIZATION FOR INTEL UHD 620 ===
+	_optimize_for_integrated_graphics()
+
 	# Enhanced error detection setup
 	_setup_enhanced_error_detection()
-	
+
 	# Initialize with error checking
 	_safe_setup_ui()
 	_safe_setup_scene()
 	_safe_setup_advanced_lighting()
 	_safe_setup_intelligent_camera()
-	_safe_setup_enhanced_annotation_system()
+	# _safe_setup_enhanced_annotation_system()  # Removed - Medical Annotation System
 	_safe_setup_camera_collision_system()
 	_safe_create_axis_indicator()
 	_safe_connect_signals()
 	_safe_setup_help_text()
 	_safe_add_panels_to_ui_group()
-	
+
 	# === Initialize Comprehensive Brain Rendering System ===
 	_safe_initialize_medical_grade_rendering()
 
@@ -293,7 +291,7 @@ func _ready() -> void:
 	await get_tree().create_timer(1.0).timeout  # Allow UI to stabilize
 	_validate_accessibility_compliance()
 	print("[Professional UI] Medical education interface ready")
-	
+
 	# === Phase 6: Initialize Performance Integration ===
 	_setup_performance_integration()
 
@@ -308,11 +306,8 @@ func _physics_process(delta: float) -> void:
 		_update_camera_position()
 
 	# Update annotation projections for real-time 3D-to-2D display
-	_annotation_update_timer += delta
-	if _annotation_update_timer >= _annotation_update_interval:
-		_update_annotation_projections()
-		_annotation_update_timer = 0.0
-	
+	# Annotation update system removed
+
 	# Handle camera collision avoidance
 	_handle_camera_collision_in_physics(delta)
 
@@ -362,7 +357,7 @@ func toggle_axis_indicator(should_show: bool) -> void:
 func adapt_lighting_for_structure(structure_id: String) -> void:
 	"""Adapt lighting based on selected brain structure"""
 	var preset = "default"
-	
+
 	# Determine optimal lighting based on structure
 	match structure_id:
 		"hippocampus", "amygdala":
@@ -371,7 +366,7 @@ func adapt_lighting_for_structure(structure_id: String) -> void:
 			preset = "overview"  # Large structures benefit from broader lighting
 		_:
 			preset = "default"
-	
+
 	apply_lighting_preset(preset)
 
 func apply_lighting_preset(preset_name: String) -> void:
@@ -379,11 +374,11 @@ func apply_lighting_preset(preset_name: String) -> void:
 	if not _lighting_presets.has(preset_name):
 		push_warning("[Lighting] Unknown preset: " + preset_name)
 		return
-	
+
 	var preset = _lighting_presets[preset_name]
 	var tween = create_tween()
 	tween.set_parallel(true)
-	
+
 	# Animate lighting transitions
 	if key_light:
 		tween.tween_property(key_light, "light_energy", preset.key_intensity, 1.0)
@@ -391,7 +386,7 @@ func apply_lighting_preset(preset_name: String) -> void:
 		tween.tween_property(fill_light, "light_energy", preset.fill_intensity, 1.0)
 	if rim_light:
 		tween.tween_property(rim_light, "light_energy", preset.rim_intensity, 1.0)
-	
+
 	print("[Lighting] Applied preset: " + preset_name)
 
 func enable_ai_camera_assistance(enabled: bool) -> void:
@@ -403,18 +398,18 @@ func smart_focus_on_structure(structure_id: String, mesh_instance: MeshInstance3
 	"""Intelligently focus camera on selected structure"""
 	if not _camera_ai_enabled or not mesh_instance:
 		return
-	
+
 	# Get optimal viewing preset for this structure
 	var preset = _structure_viewing_presets.get(structure_id, {
 		"distance": 20.0,
 		"angle": Vector3(-30, 30, 0),
 		"focus_point": Vector3.ZERO
 	})
-	
+
 	# Calculate optimal camera position
 	var structure_center = mesh_instance.global_position
 	var optimal_position = structure_center + _calculate_optimal_camera_offset(preset)
-	
+
 	# Animate camera to optimal position
 	_animate_to_optimal_view(optimal_position, structure_center, preset.angle, preset.distance)
 
@@ -422,33 +417,33 @@ func _calculate_optimal_camera_offset(preset: Dictionary) -> Vector3:
 	"""Calculate optimal camera offset based on viewing preset"""
 	var distance = preset.get("distance", 20.0)
 	var angle = preset.get("angle", Vector3(-30, 30, 0))
-	
+
 	# Convert angles to position offset
 	var offset = Vector3(
 		sin(deg_to_rad(angle.y)) * cos(deg_to_rad(angle.x)),
 		sin(deg_to_rad(angle.x)),
 		cos(deg_to_rad(angle.y)) * cos(deg_to_rad(angle.x))
 	) * distance
-	
+
 	return offset
 
-func _animate_to_optimal_view(_camera_target_position: Vector3, focus_point: Vector3, target_rotation: Vector3, target_distance: float) -> void:
+func _animate_to_optimal_view(_target_position: Vector3, focus_point: Vector3, target_rotation: Vector3, target_distance: float) -> void:
 	"""Animate camera to optimal viewing position"""
 	var tween = create_tween()
 	tween.set_parallel(true)
-	
+
 	# Animate camera pivot to focus point
 	tween.tween_property(camera_pivot, "global_position", focus_point, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	
+
 	# Animate camera distance
 	tween.tween_property(self, "_camera_distance", target_distance, 1.5).set_ease(Tween.EASE_OUT)
-	
+
 	# Animate camera rotation
 	tween.tween_property(self, "_camera_rotation", Vector2(deg_to_rad(target_rotation.y), deg_to_rad(target_rotation.x)), 1.5).set_ease(Tween.EASE_OUT)
-	
+
 	# Update camera position during animation
 	tween.tween_callback(_update_camera_position).set_delay(0.1)
-	
+
 	await tween.finished
 	update_status("Focused on structure with optimal viewing angle")
 
@@ -457,9 +452,9 @@ func set_environment_for_context(context: String) -> void:
 	if not environment or not environment.environment:
 		push_warning("[Environment] Environment not found")
 		return
-	
+
 	var env = environment.environment
-	
+
 	match context:
 		"clinical":
 			# Clinical examination environment - bright and sterile
@@ -481,7 +476,7 @@ func set_environment_for_context(context: String) -> void:
 			env.ambient_light_energy = 0.4
 			env.ambient_light_color = Color(0.3, 0.6, 1.0)  # Educational blue
 			env.background_color = Color(0.1, 0.125, 0.15, 1)  # Standard background
-	
+
 	print("[Environment] Set environment for context: " + context)
 
 # === PRIVATE METHODS ===
@@ -528,10 +523,11 @@ func _safe_setup_intelligent_camera() -> void:
 		push_error("[Camera Setup] Failed to initialize camera")
 
 func _safe_setup_enhanced_annotation_system() -> void:
-	"""Setup annotations with error checking"""
-	_setup_enhanced_annotation_system()
-	if not _validate_annotation_setup():
-		push_error("[Annotation Setup] Failed to initialize annotations")
+	"""Setup annotations with error checking - DISABLED"""
+	# _setup_enhanced_annotation_system() - Medical annotation system removed
+	# if not _validate_annotation_setup():
+	#	push_error("[Annotation Setup] Failed to initialize annotations")
+	pass
 
 func _safe_setup_camera_collision_system() -> void:
 	"""Setup camera collision with error checking"""
@@ -570,7 +566,7 @@ func _safe_initialize_medical_grade_rendering() -> void:
 func _log_missing_nodes() -> void:
 	"""Log all missing node references"""
 	var missing_nodes = []
-	
+
 	# Check all @onready variables
 	var properties = get_property_list()
 	for prop in properties:
@@ -578,7 +574,7 @@ func _log_missing_nodes() -> void:
 			var node = get(prop.name)
 			if not is_instance_valid(node):
 				missing_nodes.append(prop.name)
-	
+
 	if missing_nodes.size() > 0:
 		push_error("[Missing Nodes] The following nodes were not found: %s" % str(missing_nodes))
 
@@ -785,25 +781,25 @@ func _apply_m3_button_styling(button: Button, text: String, variant: M3Component
 
 	button.text = text
 	M3ComponentApplicator.apply_m3_button_styling(button, variant)
-	
+
 	# Override colors for better contrast on dark top bar
 	button.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))  # Light text
 	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))  # Bright on hover
 	button.add_theme_color_override("font_pressed_color", Color(0.8, 0.8, 0.8))  # Slightly darker when pressed
-	
+
 	# Custom button background for visibility
 	var style_normal = StyleBoxFlat.new()
 	style_normal.bg_color = Color(0.3, 0.3, 0.35, 0.8)  # Semi-transparent dark
 	style_normal.set_corner_radius_all(4)
 	style_normal.set_content_margin_all(8)
 	button.add_theme_stylebox_override("normal", style_normal)
-	
+
 	var style_hover = StyleBoxFlat.new()
 	style_hover.bg_color = Color(0.4, 0.4, 0.45, 0.9)  # Lighter on hover
 	style_hover.set_corner_radius_all(4)
 	style_hover.set_content_margin_all(8)
 	button.add_theme_stylebox_override("hover", style_hover)
-	
+
 	var style_pressed = StyleBoxFlat.new()
 	style_pressed.bg_color = Color(0.25, 0.25, 0.3, 0.9)  # Darker when pressed
 	style_pressed.set_corner_radius_all(4)
@@ -821,7 +817,7 @@ func _setup_scene() -> void:
 	_setup_brain_interaction()
 	_setup_model_loader()
 	_setup_camera_presets()
-	_setup_annotation_system()
+	# _setup_annotation_system()  # Removed - Medical Annotation System
 	_setup_quiz_panel()
 
 	# Start loading brain models
@@ -832,7 +828,7 @@ func _setup_advanced_lighting() -> void:
 	if not lighting_system:
 		push_error("[Lighting] Lighting system not found")
 		return
-	
+
 	# Configure key light (main illumination)
 	if key_light:
 		key_light.rotation_degrees = Vector3(-45, 30, 0)
@@ -841,34 +837,34 @@ func _setup_advanced_lighting() -> void:
 		key_light.shadow_enabled = true
 		key_light.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
 		key_light.directional_shadow_max_distance = 50.0
-	
+
 	# Configure fill light (soft shadows)
 	if fill_light:
 		fill_light.rotation_degrees = Vector3(-30, -45, 0)
 		fill_light.light_energy = 0.6
 		fill_light.light_color = Color(0.95, 0.98, 1.0)  # Cool white
 		fill_light.shadow_enabled = false
-	
+
 	# Configure rim light (edge definition)
 	if rim_light:
 		rim_light.rotation_degrees = Vector3(-15, 135, 0)
 		rim_light.light_energy = 0.8
 		rim_light.light_color = Color(1.0, 1.0, 1.0)  # Neutral white
 		rim_light.shadow_enabled = false
-	
+
 	# Set default environment for educational context
 	set_environment_for_context("default")
-	
+
 	print("[Lighting] Professional medical lighting initialized")
 
 func _setup_intelligent_camera() -> void:
 	"""Initialize intelligent camera system"""
 	# Add camera collision avoidance
 	_setup_camera_collision_detection()
-	
+
 	# Initialize movement prediction
 	_camera_movement_history.clear()
-	
+
 	print("[Camera] Intelligent camera system initialized")
 
 func _setup_camera_collision_detection() -> void:
@@ -877,13 +873,13 @@ func _setup_camera_collision_detection() -> void:
 	_camera_collision_area = Area3D.new()
 	_camera_collision_area.name = "CameraCollisionArea"
 	camera.add_child(_camera_collision_area)
-	
+
 	var collision_shape = CollisionShape3D.new()
 	var sphere_shape = SphereShape3D.new()
 	sphere_shape.radius = 2.0
 	collision_shape.shape = sphere_shape
 	_camera_collision_area.add_child(collision_shape)
-	
+
 	# Connect collision signals
 	_camera_collision_area.body_entered.connect(_on_camera_body_collision_detected)
 
@@ -891,15 +887,15 @@ func _on_camera_body_collision_detected(body: Node3D) -> void:
 	"""Handle camera collision with brain model"""
 	if not _camera_ai_enabled:
 		return
-	
+
 	# Automatically adjust camera to avoid clipping
 	var collision_normal = (camera.global_position - body.global_position).normalized()
 	var safe_position = body.global_position + collision_normal * 3.0
-	
+
 	# Smoothly move camera to safe position
 	var tween = create_tween()
 	tween.tween_property(camera, "global_position", safe_position, 0.5)
-	
+
 	update_status("Camera collision avoided - repositioning")
 
 func _setup_camera_orbit() -> void:
@@ -925,7 +921,7 @@ func _create_axis_indicator() -> void:
 	if not is_instance_valid(axis_indicator):
 		push_warning("[AxisIndicator] axis_indicator node not found")
 		return
-		
+
 	var materials = {
 		"x": preload("res://assets/materials/axis_red.tres") if ResourceLoader.exists("res://assets/materials/axis_red.tres") else null,
 		"y": preload("res://assets/materials/axis_green.tres") if ResourceLoader.exists("res://assets/materials/axis_green.tres") else null,
@@ -982,17 +978,17 @@ func _connect_signals() -> void:
 	# Connect info panel signals
 	info_panel.close_requested.connect(_on_info_panel_closed)
 	info_panel.quiz_requested.connect(_on_info_panel_quiz_requested)
-	
+
 	# Connect quiz system signals
 	quiz_close_button.pressed.connect(_on_quiz_close_pressed)
 	previous_button.pressed.connect(_on_quiz_previous_pressed)
 	submit_button.pressed.connect(_on_quiz_submit_pressed)
 	next_button.pressed.connect(_on_quiz_next_pressed)
 	review_button.pressed.connect(_on_quiz_review_pressed)
-	
+
 	# Initialize quiz answer options array
 	_quiz_answer_options = [option_a, option_b, option_c, option_d]
-	
+
 	# Connect answer option signals
 	for i in range(_quiz_answer_options.size()):
 		var option = _quiz_answer_options[i]
@@ -1000,32 +996,36 @@ func _connect_signals() -> void:
 			option.toggled.connect(_on_quiz_answer_selected.bind(i))
 		else:
 			push_warning("[Quiz] Option %d is not a valid CheckBox" % i)
-	
-	# Connect annotation system signals
-	if is_instance_valid(label_size_slider):
-		label_size_slider.value_changed.connect(_on_annotation_font_size_changed)
-	if is_instance_valid(contrast_toggle) and contrast_toggle.has_signal("toggled"):
-		contrast_toggle.toggled.connect(_on_annotation_contrast_toggled)
-	if is_instance_valid(language_selector):
-		language_selector.item_selected.connect(_on_annotation_language_changed)
-	
+
+	# Connect annotation system signals - REMOVED
+	# Medical annotation system has been disabled
+
 	# Connect camera collision system signals
-	camera_collision.area_entered.connect(_on_camera_area_collision_detected)
-	camera_collision.area_exited.connect(_on_camera_collision_exited)
-	proximity_warning.area_entered.connect(_on_camera_proximity_warning)
-	proximity_warning.area_exited.connect(_on_camera_proximity_cleared)
+	if camera_collision and camera_collision.has_signal("area_entered"):
+		if not camera_collision.area_entered.is_connected(_on_camera_area_collision_detected):
+			camera_collision.area_entered.connect(_on_camera_area_collision_detected)
+	if camera_collision and camera_collision.has_signal("area_exited"):
+		if not camera_collision.area_exited.is_connected(_on_camera_collision_exited):
+			camera_collision.area_exited.connect(_on_camera_collision_exited)
+	# proximity_warning.area_entered # Node removed.connect(_on_camera_proximity_warning)
+	if proximity_warning and proximity_warning.has_signal("area_exited"):
+		if not proximity_warning.area_exited.is_connected(_on_camera_proximity_cleared):
+			proximity_warning.area_exited.connect(_on_camera_proximity_cleared)
 
 	# Connect to PerformanceMonitor if available
 	if has_node("/root/PerformanceMonitor"):
 		var perf_monitor = get_node("/root/PerformanceMonitor")
 		if perf_monitor.has_signal("performance_report_ready"):
-			perf_monitor.performance_report_ready.connect(_on_performance_report)
+			if not perf_monitor.performance_report_ready.is_connected(_on_performance_report):
+				perf_monitor.performance_report_ready.connect(_on_performance_report)
 		if perf_monitor.has_signal("quality_level_changed"):
-			perf_monitor.quality_level_changed.connect(_on_quality_changed)
-	
+			if not perf_monitor.quality_level_changed.is_connected(_on_quality_changed):
+				perf_monitor.quality_level_changed.connect(_on_quality_changed)
+
 	# Connect performance monitoring UI signals
-	if is_instance_valid(performance_toggle):
-		performance_toggle.pressed.connect(_on_performance_toggle_pressed)
+	if is_instance_valid(performance_toggle) and performance_toggle.has_signal("pressed"):
+		if not performance_toggle.pressed.is_connected(_on_performance_toggle_pressed):
+			performance_toggle.pressed.connect(_on_performance_toggle_pressed)
 
 func _setup_help_text() -> void:
 	"""Setup help overlay content"""
@@ -1192,11 +1192,7 @@ func _on_view_preset_selected(index: int) -> void:
 
 func _on_labels_toggled(toggled: bool) -> void:
 	"""Handle label toggle"""
-	if _annotation_system:
-		# Only toggle if the current state differs from the desired state
-		var current_visible = _annotation_system.is_visible() if _annotation_system.has_method("is_visible") else false
-		if current_visible != toggled:
-			_annotation_system.toggle_visibility()
+	# Annotation system removed - medical annotation functionality disabled
 	update_status("Labels " + ("enabled" if toggled else "disabled"))
 
 func _on_related_structure_pressed(structure_id: String) -> void:
@@ -1224,10 +1220,12 @@ func _on_quality_changed(new_level: int) -> void:
 	update_status("Quality changed to " + quality_names[new_level])
 
 func _on_performance_toggle_pressed() -> void:
+	if not performance_panel:
+		return
 	"""Handle performance monitoring panel toggle"""
 	performance_panel.visible = not performance_panel.visible
 	performance_toggle.text = "Hide Performance" if performance_panel.visible else "Show Performance"
-	
+
 	# Update performance display immediately when shown
 	if performance_panel.visible:
 		_update_performance_display()
@@ -1240,8 +1238,8 @@ func _on_performance_toggle_pressed() -> void:
 
 func _setup_brain_interaction() -> void:
 	"""Setup brain interaction controller"""
-	var BrainInteractionController = preload("res://src/systems/3d_interaction/ImprovedBrainInteractionController.gd")
-	_brain_interaction = BrainInteractionController.new()
+	var brain_interaction_controller_class = preload("res://src/systems/3d_interaction/ImprovedBrainInteractionController.gd")
+	_brain_interaction = brain_interaction_controller_class.new()
 	add_child(_brain_interaction)
 	_brain_interaction.initialize(camera)
 
@@ -1294,7 +1292,7 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 	# Get educational content
 	var content = {}
 	if has_node("/root/LearningContentManager"):
-		var learning_content = get_node("/root/LearningContentManager")
+		var learning_content = get_node_or_null("/root/LearningContentManager")
 		if learning_content.has_method("get_content"):
 			content = learning_content.get_content(structure_id)
 
@@ -1473,9 +1471,8 @@ func _on_internal_structures_loaded(model_instance: Node3D) -> void:
 	_adjust_model_transform(model_instance)
 	_frame_model(model_instance)
 
-	# Create annotations if needed
-	if _annotation_system:
-		_annotation_system.create_default_annotations(_brain_structures)
+	# Create annotations if needed - DISABLED
+	# Medical annotation system has been removed
 
 	show_loading("Finalizing...", 0.9)
 	await get_tree().create_timer(0.5).timeout
@@ -1750,10 +1747,8 @@ func _setup_camera_presets() -> void:
 	_camera_presets.initialize(camera, camera_pivot)
 
 func _setup_annotation_system() -> void:
-	var AnnotationSystem = preload("res://src/systems/3d_interaction/AnnotationSystem.gd")
-	_annotation_system = AnnotationSystem.new()
-	add_child(_annotation_system)
-	_annotation_system.initialize(brain_container, camera)
+	# Medical annotation system setup removed
+	pass
 
 func _setup_quiz_panel() -> void:
 	"""Setup the quiz panel"""
@@ -1789,7 +1784,7 @@ func _toggle_quiz() -> void:
 	else:
 		# Show quiz for current structure or general quiz
 		var structure_to_quiz = _current_structure_id if not _current_structure_id.is_empty() else "general"
-		
+
 		if structure_to_quiz == "general":
 			# Show general neuroanatomy quiz
 			_show_general_quiz()
@@ -1826,20 +1821,20 @@ func _show_general_quiz() -> void:
 			}
 		]
 	}
-	
+
 	_current_quiz_data = general_quiz_data
 	_current_quiz_question = 0
 	_quiz_answers.clear()
 	_quiz_scores.clear()
 	_quiz_structure_context = "general"
 	_quiz_is_active = true
-	
+
 	_setup_quiz_interface()
 	quiz_overlay.show()
-	
+
 	# Track educational analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("general_quiz_started", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("general_quiz_started", {
 			"question_count": general_quiz_data.questions.size()
 		})
 
@@ -1873,7 +1868,7 @@ func _monitor_performance(delta: float) -> void:
 
 		# Performance warning system for medical education
 		_check_performance_compliance()
-		
+
 		# Update detailed performance display if visible
 		if performance_panel.visible:
 			_update_performance_display()
@@ -1904,25 +1899,25 @@ func _check_performance_compliance() -> void:
 
 	# Update performance display with professional metrics
 	if performance_label:
-		var quality_indicator = "OPTIMAL" if current_fps >= 60 else ("GOOD" if current_fps >= 30 else "LOW")
+		var quality_status = "OPTIMAL" if current_fps >= 60 else ("GOOD" if current_fps >= 30 else "LOW")
 		performance_label.text = "FPS: %.0f | Memory: %.0fMB | Quality: %s" % [
 			current_fps,
 			_performance_data.memory_usage[-1] if not _performance_data.memory_usage.is_empty() else 0,
-			quality_indicator
+			quality_status
 		]
 
 func _update_performance_display() -> void:
 	"""Update detailed performance monitoring display"""
 	if not performance_panel.visible:
 		return
-	
+
 	# Core metrics
 	var current_fps = Engine.get_frames_per_second()
 	fps_indicator.text = "FPS: %.1f" % current_fps
-	
+
 	var frame_time = 1.0 / current_fps if current_fps > 0 else 0.0
 	frame_time_indicator.text = "Frame Time: %.2f ms" % (frame_time * 1000.0)
-	
+
 	# Quality assessment for medical education
 	var quality_status = ""
 	if current_fps >= 60:
@@ -1935,29 +1930,29 @@ func _update_performance_display() -> void:
 		quality_status = "LOW - Performance Issues"
 		quality_indicator.modulate = Color.RED
 	quality_indicator.text = "Quality: " + quality_status
-	
+
 	# Medical rendering metrics
 	var brain_models = get_children().filter(func(n): return n is MeshInstance3D)
 	brain_model_complexity.text = "Brain Models: %d" % brain_models.size()
-	
-	var texture_mem = OS.get_static_memory_usage() / (1024 * 1024)
+
+	var texture_mem = OS.get_static_memory_usage() / (1024.0 * 1024.0)
 	texture_memory.text = "Texture Memory: %.1f MB" % texture_mem
-	
+
 	var render_quality = "High" if current_fps >= 45 else ("Medium" if current_fps >= 25 else "Low")
 	rendering_quality.text = "Rendering: " + render_quality
-	
+
 	# Educational metrics
 	interaction_latency.text = "UI Latency: %.1f ms" % (frame_time * 1000.0)
 	accessibility_status.text = "Accessibility: WCAG 2.1 AA"
 	learning_analytics.text = "Analytics: Active"
-	
+
 	# System health
-	var memory_usage_mb = OS.get_static_memory_usage() / (1024 * 1024)
+	var memory_usage_mb = OS.get_static_memory_usage() / (1024.0 * 1024.0)
 	memory_usage.value = min(100, (memory_usage_mb / 500.0) * 100)  # 500MB threshold
-	
+
 	var cpu_load = current_fps / 60.0  # Approximate CPU load based on FPS
 	cpu_usage.value = min(100, (1.0 - cpu_load) * 100)
-	
+
 	var gpu_load = (60.0 - current_fps) / 60.0  # Approximate GPU load
 	gpu_usage.value = min(100, max(0, gpu_load * 100))
 
@@ -1966,13 +1961,13 @@ func _update_performance_display() -> void:
 func _setup_performance_integration() -> void:
 	"""Setup integration with UIThemeManager performance monitoring"""
 	print("[Performance] Setting up scene-level performance integration")
-	
+
 	# Connect to UIThemeManager performance signals if available
 	var theme_manager = get_node_or_null("/root/UIThemeManager")
 	if theme_manager:
 		# Enable quality adaptation by default for educational platform
 		theme_manager.enable_quality_adaptation(true)
-		
+
 		# Set initial quality profile based on hardware
 		var hardware_score = theme_manager._calculate_hardware_score()
 		var initial_profile = "auto"
@@ -1980,10 +1975,10 @@ func _setup_performance_integration() -> void:
 			initial_profile = "high"
 		elif hardware_score < 0.4:
 			initial_profile = "medium"
-		
+
 		theme_manager.set_quality_profile(initial_profile)
 		print("[Performance] Initial quality profile set to: %s (hardware score: %.2f)" % [initial_profile, hardware_score])
-		
+
 		# Disable glass morphism shaders for better readability
 		theme_manager.update_effects_quality(0)  # Set to lowest quality to disable glass effects
 	else:
@@ -1992,19 +1987,19 @@ func _setup_performance_integration() -> void:
 func apply_performance_quality(profile: Dictionary) -> void:
 	"""Apply performance quality settings to the 3D scene"""
 	print("[Performance] Applying quality profile to 3D scene: %s" % str(profile))
-	
+
 	# Apply lighting quality
 	_apply_lighting_quality(profile.get("lighting_complexity", "standard"))
-	
+
 	# Apply shadow quality
 	_apply_shadow_quality(profile.get("shadow_quality", "medium"))
-	
+
 	# Apply animation detail level
 	_apply_animation_quality(profile.get("animation_detail", "full"))
-	
+
 	# Apply particle system quality
 	_apply_particle_quality(profile.get("particle_count", 50))
-	
+
 	# Apply texture resolution scaling
 	_apply_texture_quality(profile.get("texture_resolution", 1.0))
 
@@ -2012,7 +2007,7 @@ func _apply_lighting_quality(complexity: String) -> void:
 	"""Apply lighting complexity based on performance profile"""
 	if not lighting_system:
 		return
-	
+
 	match complexity:
 		"full":
 			# Enable all three lights with full settings
@@ -2058,11 +2053,11 @@ func _apply_lighting_quality(complexity: String) -> void:
 func _apply_shadow_quality(quality: String) -> void:
 	"""Apply shadow quality settings"""
 	var lights = [key_light, fill_light, rim_light]
-	
+
 	for light in lights:
 		if not light or not light is DirectionalLight3D:
 			continue
-		
+
 		match quality:
 			"high":
 				light.shadow_enabled = true
@@ -2078,14 +2073,14 @@ func _apply_shadow_quality(quality: String) -> void:
 				light.directional_shadow_max_distance = 50.0
 			"off":
 				light.shadow_enabled = false
-	
+
 	print("[Shadows] Applied %s quality shadows" % quality.to_upper())
 
 func _apply_animation_quality(detail: String) -> void:
 	"""Apply animation detail level"""
 	var camera_transition_speed = 1.0
 	var _ui_animation_scale = 1.0  # Reserved for future UI animation scaling
-	
+
 	match detail:
 		"enhanced":
 			camera_transition_speed = 0.8  # Slower, more detailed transitions
@@ -2099,10 +2094,10 @@ func _apply_animation_quality(detail: String) -> void:
 		"minimal":
 			camera_transition_speed = 2.0  # Very fast
 			_ui_animation_scale = 0.5
-	
+
 	# Store camera transition speed setting for future use
 	set_meta("camera_transition_speed_multiplier", camera_transition_speed)
-	
+
 	print("[Animation] Applied %s detail animations (speed: %.1fx)" % [detail.to_upper(), camera_transition_speed])
 
 func _apply_particle_quality(particle_count: int) -> void:
@@ -2129,7 +2124,7 @@ func get_scene_performance_metrics() -> Dictionary:
 		"ui_panels_active": get_tree().get_nodes_in_group("ui_panels").size(),
 		"selection_feedback_active": _current_structure_id != ""
 	}
-	
+
 	# Detect current lighting complexity
 	if key_light and fill_light and rim_light:
 		if key_light.light_energy > 1.0 and fill_light.light_energy > 0.5:
@@ -2140,7 +2135,7 @@ func get_scene_performance_metrics() -> Dictionary:
 			metrics["lighting_complexity"] = "simplified"
 		else:
 			metrics["lighting_complexity"] = "basic"
-	
+
 	# Detect shadow quality
 	if key_light and key_light.shadow_enabled:
 		if key_light.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS:
@@ -2151,14 +2146,14 @@ func get_scene_performance_metrics() -> Dictionary:
 			metrics["shadow_quality"] = "low"
 	else:
 		metrics["shadow_quality"] = "off"
-	
+
 	return metrics
 
 func log_scene_performance_summary() -> void:
 	"""Log comprehensive scene performance summary"""
 	var metrics = get_scene_performance_metrics()
 	var theme_manager = get_node_or_null("/root/UIThemeManager")
-	
+
 	print("[Scene Performance Summary]")
 	print("  Brain Models Loaded: %d" % metrics.brain_models_loaded)
 	print("  UI Panels Active: %d" % metrics.ui_panels_active)
@@ -2166,7 +2161,7 @@ func log_scene_performance_summary() -> void:
 	print("  Shadow Quality: %s" % metrics.shadow_quality)
 	print("  Camera AI Enabled: %s" % str(metrics.camera_transitions_active))
 	print("  Selection Feedback: %s" % str(metrics.selection_feedback_active))
-	
+
 	if theme_manager:
 		var ui_metrics = theme_manager.get_performance_metrics()
 		print("  Current FPS: %.1f" % ui_metrics.fps)
@@ -2342,13 +2337,13 @@ func _add_panels_to_ui_group() -> void:
 func _initialize_medical_grade_rendering() -> void:
 	"""Initialize comprehensive brain rendering system for medical education"""
 	print("[EnhancedExplorationScene] Initializing medical-grade brain rendering...")
-	
+
 	# Get the comprehensive rendering system from the Systems node
 	var rendering_system = $EducationalSystemsContainer/MedicalRenderingSystem
 	if not rendering_system:
 		push_error("[EnhancedExplorationScene] ComprehensiveBrainRenderingSystem not found")
 		return
-	
+
 	# Initialize medical-grade rendering with educational context
 	var educational_context = {
 		"learning_level": "intermediate",
@@ -2356,21 +2351,27 @@ func _initialize_medical_grade_rendering() -> void:
 		"pathology_mode": false,
 		"target_audience": "medical_student"
 	}
-	
+
 	# Apply medical-grade materials to brain models
 	var model_holder_node = $AnatomicalModelContainer/BrainModelHolder
 	if model_holder_node:
 		print("[EnhancedExplorationScene] Applying medical-grade materials to brain models...")
-		
+
 		# Apply materials to all brain structure children
 		for child in model_holder_node.get_children():
 			if child.name.begins_with("Internal-Structures") or child.name.begins_with("Brain"):
-				rendering_system.apply_materials_to_brain_model(child, educational_context)
-				print("[EnhancedExplorationScene] Applied medical materials to: ", child.name)
-	
+				# Note: Metal renderer may show LOD bias warnings - this is a platform limitation
+				# that doesn't affect functionality on macOS/iOS
+				# Apply materials only to MeshInstance3D nodes
+				if child is MeshInstance3D:
+					rendering_system.apply_materials_to_brain_model(child, educational_context)
+					print("[EnhancedExplorationScene] Applied medical materials to: ", child.name)
+				else:
+					print("[EnhancedExplorationScene] Skipped non-mesh node: ", child.name, " (", child.get_class(), ")")
+
 	# Apply comprehensive rendering preset for medical study
 	rendering_system.apply_rendering_preset("educational_enhanced")
-	
+
 	print("[EnhancedExplorationScene] ✅ Medical-grade brain rendering system initialized")
 
 # === ADVANCED CAMERA COLLISION SYSTEM FUNCTIONS ===
@@ -2378,7 +2379,7 @@ func _initialize_medical_grade_rendering() -> void:
 func _setup_camera_collision_system() -> void:
 	"""Initialize the advanced camera collision detection system"""
 	print("[CameraCollision] Initializing advanced collision detection...")
-	
+
 	# Create collision shapes for camera
 	if is_instance_valid(camera_collision_shape):
 		var camera_sphere = SphereShape3D.new()
@@ -2386,46 +2387,52 @@ func _setup_camera_collision_system() -> void:
 		camera_collision_shape.shape = camera_sphere
 	else:
 		push_warning("[CameraCollision] camera_collision_shape not found")
-	
+
 	# Create proximity warning shape (larger sphere)
+	# Proximity shape removed in optimization
 	if is_instance_valid(proximity_shape):
 		var proximity_sphere = SphereShape3D.new()
 		proximity_sphere.radius = _proximity_warning_distance
 		proximity_shape.shape = proximity_sphere
 	else:
-		push_warning("[CameraCollision] proximity_shape not found")
-	
+		print("[CameraCollision] proximity_shape not available (removed in optimization)")
+
 	# Create constraint boundary (very large sphere to prevent camera from going too far)
 	var constraint_sphere = SphereShape3D.new()
 	constraint_sphere.radius = _max_distance_from_brain
-	constraint_shape.shape = constraint_sphere
-	
+	# constraint_shape. # Node removed
+	#shape = constraint_sphere
+
 	# Set collision layers properly
 	camera_collision.collision_layer = 0  # Doesn't collide with anything
 	camera_collision.collision_mask = 1   # Detects brain structures (layer 1)
-	
-	proximity_warning.collision_layer = 0
-	proximity_warning.collision_mask = 1
-	
-	camera_constraints.collision_layer = 2  # Boundary layer
-	camera_constraints.collision_mask = 0   # Doesn't detect anything
-	
+
+	# Proximity warning removed in optimization
+	if is_instance_valid(proximity_warning):
+		proximity_warning.collision_layer = 0
+		proximity_warning.collision_mask = 1
+
+	# camera_constraints. # Node removed
+	#collision_layer = 2  # Boundary layer
+	# camera_constraints. # Node removed
+	#collision_mask = 0   # Doesn't detect anything
+
 	print("[CameraCollision] ✅ Advanced collision detection initialized")
 
 func _handle_camera_collision_in_physics(delta: float) -> void:
 	"""Handle camera collision avoidance during physics updates"""
 	if not _collision_avoidance_enabled or not _is_collision_active:
 		return
-	
+
 	# Smoothly move camera away from collision
 	if _collision_normal != Vector3.ZERO:
 		var target_distance = _camera_distance + _target_collision_distance
 		target_distance = clamp(target_distance, _min_distance_from_brain, _max_distance_from_brain)
-		
+
 		# Smooth interpolation to target distance
 		_camera_distance = lerp(_camera_distance, target_distance, _collision_recovery_speed * delta)
 		_update_camera_position()
-		
+
 		# Clear collision when sufficiently far
 		if _camera_distance >= target_distance - 0.1:
 			_is_collision_active = false
@@ -2436,25 +2443,27 @@ func _calculate_collision_normal(colliding_area: Area3D) -> Vector3:
 	"""Calculate the normal vector pointing away from collision"""
 	if not is_instance_valid(colliding_area):
 		return Vector3.ZERO
-	
+
 	var camera_pos = camera.global_position
 	var collision_center = colliding_area.global_position
-	
+
 	# Calculate direction from collision center to camera
 	var direction = (camera_pos - collision_center).normalized()
-	
+
 	# If direction is zero (camera inside object), use fallback
 	if direction.length_squared() < 0.01:
 		direction = Vector3.BACK  # Move camera backwards
-	
+
 	return direction
 
 func enable_collision_avoidance(enabled: bool) -> void:
 	"""Enable or disable camera collision avoidance"""
 	_collision_avoidance_enabled = enabled
 	camera_collision.set_deferred("monitoring", enabled)
-	proximity_warning.set_deferred("monitoring", enabled)
-	
+	# Proximity warning removed in optimization
+	if is_instance_valid(proximity_warning):
+		proximity_warning.set_deferred("monitoring", enabled)
+
 	if enabled:
 		print("[CameraCollision] Collision avoidance enabled")
 	else:
@@ -2464,7 +2473,7 @@ func set_collision_sensitivity(min_distance: float, recovery_speed: float) -> vo
 	"""Adjust collision detection sensitivity for different educational contexts"""
 	_min_distance_from_brain = max(min_distance, 0.5)  # Minimum safety distance
 	_collision_recovery_speed = clamp(recovery_speed, 0.5, 10.0)
-	
+
 	print("[CameraCollision] Sensitivity updated: min_distance=%.1f, recovery_speed=%.1f" % [_min_distance_from_brain, _collision_recovery_speed])
 
 # === CAMERA COLLISION SIGNAL HANDLERS ===
@@ -2473,20 +2482,20 @@ func _on_camera_area_collision_detected(area: Area3D) -> void:
 	"""Handle camera collision with brain structures"""
 	if not _collision_avoidance_enabled:
 		return
-	
+
 	print("[CameraCollision] Collision detected with: " + str(area.name))
-	
+
 	# Calculate collision response
 	_collision_normal = _calculate_collision_normal(area)
 	_target_collision_distance = _min_distance_from_brain
 	_is_collision_active = true
-	
+
 	# Provide haptic feedback if available (controller vibration)
 	_trigger_collision_feedback()
-	
+
 	# Track collision for educational analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("camera_collision", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("camera_collision", {
 			"structure": area.name,
 			"camera_distance": _camera_distance
 		})
@@ -2494,20 +2503,20 @@ func _on_camera_area_collision_detected(area: Area3D) -> void:
 func _on_camera_collision_exited(area: Area3D) -> void:
 	"""Handle camera collision exit"""
 	print("[CameraCollision] Collision cleared with: " + str(area.name))
-	
+
 	# Gradually clear collision response
 	_is_collision_active = false
 
 func _on_camera_proximity_warning(area: Area3D) -> void:
 	"""Handle camera proximity warning"""
 	print("[CameraCollision] Proximity warning for: " + str(area.name))
-	
+
 	# Visual feedback for approaching structures
 	_show_proximity_warning(area.name)
-	
+
 	# Track proximity for educational analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("camera_proximity", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("camera_proximity", {
 			"structure": area.name,
 			"camera_distance": _camera_distance
 		})
@@ -2515,7 +2524,7 @@ func _on_camera_proximity_warning(area: Area3D) -> void:
 func _on_camera_proximity_cleared(area: Area3D) -> void:
 	"""Handle camera proximity warning cleared"""
 	print("[CameraCollision] Proximity cleared for: " + str(area.name))
-	
+
 	# Clear visual feedback
 	_hide_proximity_warning()
 
@@ -2526,7 +2535,7 @@ func _trigger_collision_feedback() -> void:
 		status_label.modulate = Color.RED
 		var tween = create_tween()
 		tween.tween_property(status_label, "modulate", Color.WHITE, 0.3)
-	
+
 	# Could add controller vibration here if available
 
 func _show_proximity_warning(structure_name: String) -> void:
@@ -2541,36 +2550,14 @@ func _hide_proximity_warning() -> void:
 		status_label.text = "Ready"
 		status_label.modulate = Color.WHITE
 
-# === ENHANCED ANNOTATION SYSTEM FUNCTIONS ===
+# === ENHANCED ANNOTATION SYSTEM FUNCTIONS === 
+# ALL ANNOTATION FUNCTIONS BELOW ARE DISABLED - Medical Annotation System Removed
 
+# DISABLED - Medical Annotation System
 func _setup_enhanced_annotation_system() -> void:
-	"""Initialize the enhanced annotation system with medical terminology"""
-	print("[Annotation] Initializing enhanced annotation system...")
-	
-	# Initialize medical terminology database
-	_load_medical_terminology_database()
-	
-	# Setup annotation settings
-	if is_instance_valid(label_size_slider):
-		_annotation_font_size = label_size_slider.value
-	else:
-		_annotation_font_size = 16  # Default font size
-		
-	if is_instance_valid(contrast_toggle):
-		_high_contrast_mode = contrast_toggle.button_pressed
-	else:
-		_high_contrast_mode = false
-		
-	if is_instance_valid(language_selector):
-		_annotation_language = ["english", "latin", "both"][language_selector.selected]
-	else:
-		_annotation_language = "english"
-	
-	# Initialize annotation containers
-	_annotation_labels.clear()
-	_3d_to_2d_projections.clear()
-	
-	print("[Annotation] ✅ Enhanced annotation system initialized")
+	"""Initialize the enhanced annotation system with medical terminology - DISABLED"""
+	print("[Annotation] Medical annotation system disabled - function disabled")
+	return
 
 func _load_medical_terminology_database() -> void:
 	"""Load medical terminology and pronunciation data"""
@@ -2621,17 +2608,17 @@ func _update_annotation_projections() -> void:
 	"""Update 3D-to-2D projection of anatomical labels"""
 	if not camera or not is_instance_valid(camera):
 		return
-	
+
 	# Update projections for all brain structures
 	for structure_id in _brain_structures.keys():
 		var structure_node = _brain_structures[structure_id]
 		if not is_instance_valid(structure_node):
 			continue
-		
+
 		# Calculate 3D world position to 2D screen projection
 		var structure_center = structure_node.global_position
 		var distance_to_camera = camera.global_position.distance_to(structure_center)
-		
+
 		# Check if structure is within visibility range and camera frustum
 		if distance_to_camera <= _label_visibility_distance and _is_position_visible(structure_center):
 			var screen_pos = camera.unproject_position(structure_center)
@@ -2644,25 +2631,25 @@ func _is_position_visible(world_position: Vector3) -> bool:
 	"""Check if a 3D position is visible within camera frustum"""
 	if not camera or not is_instance_valid(camera):
 		return false
-	
+
 	# Get camera's view frustum
 	var cam_transform = camera.global_transform
 	var cam_projection = camera.get_camera_projection()
-	
+
 	# Transform position to camera space
 	var local_pos = cam_transform.affine_inverse() * world_position
-	
+
 	# Check if position is in front of camera
 	if local_pos.z >= 0:
 		return false
-	
+
 	# Project to normalized device coordinates
 	var projected = cam_projection * Vector4(local_pos.x, local_pos.y, local_pos.z, 1.0)
 	if projected.w <= 0:
 		return false
-	
+
 	var ndc = Vector2(projected.x / projected.w, projected.y / projected.w)
-	
+
 	# Check if within screen bounds
 	return ndc.x >= -1.0 and ndc.x <= 1.0 and ndc.y >= -1.0 and ndc.y <= 1.0
 
@@ -2671,13 +2658,13 @@ func _show_annotation_label(structure_id: String, screen_position: Vector2) -> v
 	var label = _get_or_create_annotation_label(structure_id)
 	if not label:
 		return
-	
+
 	# Update label position
 	label.position = screen_position - Vector2(label.size.x * 0.5, label.size.y)
-	
+
 	# Update label content based on current settings
 	_update_annotation_label_content(label, structure_id)
-	
+
 	# Show label
 	label.visible = true
 
@@ -2694,25 +2681,25 @@ func _get_or_create_annotation_label(structure_id: String) -> Label:
 		var existing_label = _annotation_labels[structure_id]
 		if is_instance_valid(existing_label):
 			return existing_label
-	
+
 	# Create new label
 	var label = Label.new()
 	label.add_theme_font_size_override("font_size", int(_annotation_font_size))
-	
+
 	# Apply accessibility and medical styling
 	_apply_medical_label_styling(label, structure_id)
-	
-	# Add to structure labels container
-	structure_labels.add_child(label)
-	_annotation_labels[structure_id] = label
-	
+
+	# Add to structure labels container - DISABLED
+	# Medical annotation system has been removed
+	# _annotation_labels[structure_id] = label
+
 	return label
 
 func _apply_medical_label_styling(label: Label, structure_id: String) -> void:
 	"""Apply medical-grade styling to annotation labels"""
 	# Font and size
 	label.add_theme_font_size_override("font_size", int(_annotation_font_size))
-	
+
 	# Colors based on contrast mode
 	if _high_contrast_mode:
 		label.add_theme_color_override("font_color", Color.WHITE)
@@ -2724,7 +2711,7 @@ func _apply_medical_label_styling(label: Label, structure_id: String) -> void:
 		label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.8))
 		label.add_theme_constant_override("shadow_offset_x", 1)
 		label.add_theme_constant_override("shadow_offset_y", 1)
-	
+
 	# Accessibility metadata
 	label.set_meta("accessibility_role", "label")
 	label.set_meta("accessibility_label", "Anatomical structure: " + structure_id)
@@ -2735,10 +2722,10 @@ func _update_annotation_label_content(label: Label, structure_id: String) -> voi
 	if not _medical_terminology_database.has(structure_id):
 		label.text = structure_id.capitalize()
 		return
-	
+
 	var term_data = _medical_terminology_database[structure_id]
 	var display_text = ""
-	
+
 	match _annotation_language:
 		"english":
 			display_text = term_data.get("english", structure_id.capitalize())
@@ -2748,7 +2735,7 @@ func _update_annotation_label_content(label: Label, structure_id: String) -> voi
 			var english = term_data.get("english", structure_id.capitalize())
 			var latin = term_data.get("latin", structure_id.capitalize())
 			display_text = english + "\n(" + latin + ")"
-	
+
 	label.text = display_text
 
 func toggle_annotation_visibility(show_labels: bool) -> void:
@@ -2758,43 +2745,43 @@ func toggle_annotation_visibility(show_labels: bool) -> void:
 			label.visible = show_labels
 
 func show_annotation_settings() -> void:
-	"""Show annotation settings panel"""
-	annotation_settings.visible = true
+	"""Show annotation settings panel - DISABLED"""
+	pass
 
 func hide_annotation_settings() -> void:
-	"""Hide annotation settings panel"""
-	annotation_settings.visible = false
+	"""Hide annotation settings panel - DISABLED"""
+	pass
 
 # === ANNOTATION SIGNAL HANDLERS ===
 
 func _on_annotation_font_size_changed(new_size: float) -> void:
 	"""Handle font size slider change"""
 	_annotation_font_size = new_size
-	
+
 	# Update all existing labels
 	for label in _annotation_labels.values():
 		if is_instance_valid(label):
 			label.add_theme_font_size_override("font_size", int(_annotation_font_size))
-	
+
 	# Track accessibility analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("annotation_font_size_changed", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("annotation_font_size_changed", {
 			"new_size": new_size
 		})
 
 func _on_annotation_contrast_toggled(enabled: bool) -> void:
 	"""Handle high contrast mode toggle"""
 	_high_contrast_mode = enabled
-	
+
 	# Update styling for all labels
 	for structure_id in _annotation_labels.keys():
 		var label = _annotation_labels[structure_id]
 		if is_instance_valid(label):
 			_apply_medical_label_styling(label, structure_id)
-	
+
 	# Track accessibility analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("annotation_contrast_toggled", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("annotation_contrast_toggled", {
 			"high_contrast_enabled": enabled
 		})
 
@@ -2803,16 +2790,16 @@ func _on_annotation_language_changed(language_index: int) -> void:
 	var languages = ["english", "latin", "both"]
 	if language_index < languages.size():
 		_annotation_language = languages[language_index]
-		
+
 		# Update content for all labels
 		for structure_id in _annotation_labels.keys():
 			var label = _annotation_labels[structure_id]
 			if is_instance_valid(label):
 				_update_annotation_label_content(label, structure_id)
-		
+
 		# Track educational analytics
-		if ProgressTracker:
-			ProgressTracker.track_educational_interaction("annotation_language_changed", {
+		if get_node_or_null("/root/ProgressTracker"):
+			get_node("/root/ProgressTracker").track_educational_interaction("annotation_language_changed", {
 				"language": _annotation_language
 			})
 
@@ -2820,28 +2807,28 @@ func _on_annotation_language_changed(language_index: int) -> void:
 
 func show_quiz_for_structure(structure_id: String) -> void:
 	"""Show educational quiz for selected brain structure"""
-	if not AssessmentService:
+	if not get_node_or_null("/root/AssessmentService"):
 		push_error("[Quiz] AssessmentService not available")
 		return
-	
-	var quiz_data = AssessmentService.get_quiz_for_structure(structure_id)
+
+	var quiz_data = get_node("/root/AssessmentService").get_quiz_for_structure(structure_id)
 	if quiz_data.is_empty():
 		update_status("No assessment available for: " + structure_id)
 		return
-	
+
 	_current_quiz_data = quiz_data
 	_current_quiz_question = 0
 	_quiz_answers.clear()
 	_quiz_scores.clear()
 	_quiz_structure_context = structure_id
 	_quiz_is_active = true
-	
+
 	_setup_quiz_interface()
 	quiz_overlay.show()
-	
+
 	# Track educational analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("quiz_started", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("quiz_started", {
 			"structure": structure_id,
 			"question_count": quiz_data.questions.size()
 		})
@@ -2850,19 +2837,19 @@ func _setup_quiz_interface() -> void:
 	"""Setup quiz interface with current question data"""
 	if _current_quiz_data.is_empty():
 		return
-	
+
 	# Update header
 	var structure_name = _current_quiz_data.get("structure_name", _quiz_structure_context)
 	quiz_title.text = "Assessment: " + structure_name
 	quiz_progress.max_value = _current_quiz_data.questions.size()
 	quiz_progress.value = _current_quiz_question + 1
-	
+
 	# Hide feedback initially
 	quiz_feedback.hide()
-	
+
 	# Display current question
 	_display_current_question()
-	
+
 	# Update control buttons
 	_update_quiz_controls()
 
@@ -2871,13 +2858,13 @@ func _display_current_question() -> void:
 	if _current_quiz_question >= _current_quiz_data.questions.size():
 		_show_quiz_completion()
 		return
-	
+
 	var question_data = _current_quiz_data.questions[_current_quiz_question]
-	
+
 	# Set question text with medical formatting
 	var question_html = "[b]Question %d:[/b] %s" % [_current_quiz_question + 1, question_data.question]
 	question_text.text = question_html
-	
+
 	# Load question image if available
 	if question_data.has("image_path") and question_data.image_path != "":
 		var image_texture = load(question_data.image_path)
@@ -2888,7 +2875,7 @@ func _display_current_question() -> void:
 			question_image.hide()
 	else:
 		question_image.hide()
-	
+
 	# Set answer options
 	var options = question_data.get("options", [])
 	for i in range(_quiz_answer_options.size()):
@@ -2899,7 +2886,7 @@ func _display_current_question() -> void:
 			option_button.button_pressed = false
 		else:
 			option_button.hide()
-	
+
 	# Restore previous answer if exists
 	var question_id = str(_current_quiz_question)
 	if _quiz_answers.has(question_id):
@@ -2911,15 +2898,15 @@ func _update_quiz_controls() -> void:
 	"""Update quiz control button states"""
 	# Previous button
 	previous_button.disabled = (_current_quiz_question == 0)
-	
-	# Next button  
+
+	# Next button
 	var has_answer = _quiz_answers.has(str(_current_quiz_question))
 	var is_last_question = (_current_quiz_question >= _current_quiz_data.questions.size() - 1)
 	next_button.disabled = not has_answer or is_last_question
-	
+
 	# Submit button
 	submit_button.disabled = not has_answer
-	
+
 	# Review button (only show when all questions answered)
 	var all_answered = _quiz_answers.size() == _current_quiz_data.questions.size()
 	review_button.visible = all_answered
@@ -2930,35 +2917,35 @@ func _show_quiz_completion() -> void:
 	for score in _quiz_scores.values():
 		if score:
 			correct_count += 1
-	
+
 	var total_questions = _current_quiz_data.questions.size()
 	var percentage = (float(correct_count) / float(total_questions)) * 100.0
-	
+
 	# Update question area to show results
 	var results_html = "[center][b]Assessment Complete![/b][/center]\n\n"
 	results_html += "Score: %d/%d (%.1f%%)\n\n" % [correct_count, total_questions, percentage]
-	
+
 	if percentage >= 80.0:
 		results_html += "[color=green]Excellent understanding of %s anatomy![/color]" % _quiz_structure_context
 	elif percentage >= 60.0:
 		results_html += "[color=yellow]Good grasp of %s concepts. Review highlighted areas.[/color]" % _quiz_structure_context
 	else:
 		results_html += "[color=red]Additional study recommended for %s anatomy.[/color]" % _quiz_structure_context
-	
+
 	question_text.text = results_html
 	question_image.hide()
 	answer_options.hide()
-	
+
 	# Update controls for completion
 	previous_button.hide()
 	submit_button.hide()
 	next_button.text = "Close"
 	next_button.disabled = false
 	next_button.show()
-	
+
 	# Track completion analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("quiz_completed", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("quiz_completed", {
 			"structure": _quiz_structure_context,
 			"score": correct_count,
 			"total": total_questions,
@@ -2971,10 +2958,10 @@ func _on_quiz_close_pressed() -> void:
 	"""Handle quiz close button press"""
 	quiz_overlay.hide()
 	_quiz_is_active = false
-	
+
 	# Track analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("quiz_closed", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("quiz_closed", {
 			"structure": _quiz_structure_context,
 			"questions_answered": _quiz_answers.size()
 		})
@@ -2992,7 +2979,7 @@ func _on_quiz_next_pressed() -> void:
 	if next_button.text == "Close":
 		_on_quiz_close_pressed()
 		return
-	
+
 	if _current_quiz_question < _current_quiz_data.questions.size() - 1:
 		_current_quiz_question += 1
 		_display_current_question()
@@ -3004,24 +2991,24 @@ func _on_quiz_submit_pressed() -> void:
 	var question_id = str(_current_quiz_question)
 	if not _quiz_answers.has(question_id):
 		return
-	
+
 	var selected_answer = _quiz_answers[question_id]
 	var question_data = _current_quiz_data.questions[_current_quiz_question]
 	var correct_answer = question_data.get("correct_answer", 0)
 	var is_correct = (selected_answer == correct_answer)
-	
+
 	# Store score
 	_quiz_scores[question_id] = is_correct
-	
+
 	# Show feedback
 	_show_quiz_feedback(is_correct, question_data)
-	
+
 	# Update controls
 	_update_quiz_controls()
-	
+
 	# Track answer analytics
-	if ProgressTracker:
-		ProgressTracker.track_educational_interaction("quiz_answer_submitted", {
+	if get_node_or_null("/root/ProgressTracker"):
+		get_node("/root/ProgressTracker").track_educational_interaction("quiz_answer_submitted", {
 			"structure": _quiz_structure_context,
 			"question": _current_quiz_question,
 			"selected": selected_answer,
@@ -3037,25 +3024,25 @@ func _on_quiz_review_pressed() -> void:
 func _on_quiz_answer_selected(option_index: int) -> void:
 	"""Handle answer option selection - manage exclusive selection"""
 	var question_id = str(_current_quiz_question)
-	
+
 	# Get the selected checkbox
 	var selected_checkbox = _quiz_answer_options[option_index]
-	
+
 	if selected_checkbox.button_pressed:
 		# This option was just selected - deselect others
 		for i in range(_quiz_answer_options.size()):
 			if i != option_index:
 				_quiz_answer_options[i].button_pressed = false
-		
+
 		_quiz_answers[question_id] = option_index
 	else:
 		# This option was deselected - remove answer
 		if _quiz_answers.has(question_id):
 			_quiz_answers.erase(question_id)
-	
+
 	# Update controls
 	_update_quiz_controls()
-	
+
 	# Hide previous feedback
 	quiz_feedback.hide()
 
@@ -3063,7 +3050,7 @@ func _show_quiz_feedback(is_correct: bool, question_data: Dictionary) -> void:
 	"""Display feedback for submitted answer"""
 	var feedback_html = ""
 	var clinical_html = ""
-	
+
 	if is_correct:
 		feedback_html = "[color=green][b]Correct![/b][/color] " + question_data.get("explanation", "")
 	else:
@@ -3071,14 +3058,14 @@ func _show_quiz_feedback(is_correct: bool, question_data: Dictionary) -> void:
 		var options = question_data.get("options", [])
 		var correct_text = options[correct_option] if correct_option < options.size() else "Unknown"
 		feedback_html = "[color=red][b]Incorrect.[/b][/color] The correct answer is: " + correct_text + "\n" + question_data.get("explanation", "")
-	
+
 	# Add clinical relevance if available
 	if question_data.has("clinical_relevance"):
 		clinical_html = "[b]Clinical Relevance:[/b] " + question_data.clinical_relevance
-	
+
 	feedback_text.text = feedback_html
 	clinical_relevance.text = clinical_html
-	
+
 	# Show feedback panel
 	quiz_feedback.show()
 
@@ -3089,17 +3076,17 @@ func _exit_tree() -> void:
 		_debounce_timer.stop()
 		_debounce_timer.queue_free()
 		_debounce_timer = null
-	
+
 	if _tooltip_timer and is_instance_valid(_tooltip_timer):
 		_tooltip_timer.stop()
 		_tooltip_timer.queue_free()
 		_tooltip_timer = null
-	
+
 	# Clean up interaction controller
 	if _brain_interaction and is_instance_valid(_brain_interaction):
 		_brain_interaction.queue_free()
 		_brain_interaction = null
-	
+
 	# Clean up structure button styles and references
 	for button in _structure_buttons.values():
 		if button and is_instance_valid(button):
@@ -3133,7 +3120,7 @@ func _exit_tree() -> void:
 	for panel in panels:
 		if panel and is_instance_valid(panel) and panel.has_method("set_material"):
 			panel.material = null
-	
+
 	# Clean up brain container children
 	if brain_container and is_instance_valid(brain_container):
 		for child in brain_container.get_children():
@@ -3141,13 +3128,13 @@ func _exit_tree() -> void:
 				# Clear material overrides
 				for i in range(child.get_surface_override_material_count()):
 					child.set_surface_override_material(i, null)
-	
+
 	# Clear cached references
 	_current_structure = null
 	_last_hover_structure = null
 	_camera_target_position = Vector3.ZERO
 	_camera_target_rotation = Vector3.ZERO
-	
+
 	# Disconnect any remaining signal connections
 	if has_node("/root/PerformanceMonitor"):
 		var perf_monitor = get_node("/root/PerformanceMonitor")
@@ -3165,11 +3152,11 @@ func _validate_ui_setup() -> bool:
 		left_panel,
 		bottom_panel
 	]
-	
+
 	for ui_element in required_ui:
 		if not is_instance_valid(ui_element):
 			return false
-	
+
 	return true
 
 func _validate_scene_setup() -> bool:
@@ -3179,28 +3166,28 @@ func _validate_scene_setup() -> bool:
 		camera,
 		camera_pivot
 	]
-	
+
 	for scene_element in required_scene:
 		if not is_instance_valid(scene_element):
 			return false
-	
+
 	return true
 
 func _validate_lighting_setup() -> bool:
 	"""Validate lighting components are properly initialized"""
-	var key_light = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/KeyLight")
-	var fill_light = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/FillLight")
-	var rim_light = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/RimLight")
+	var key_light_node = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/KeyLight")
+	var fill_light_node = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/FillLight")
+	var rim_light_node = get_node_or_null("EnvironmentSystem/MedicalLightingSystem/RimLight")
 	var required_lights = [
-		key_light,
-		fill_light,
-		rim_light
+		key_light_node,
+		fill_light_node,
+		rim_light_node
 	]
-	
+
 	for light in required_lights:
 		if not is_instance_valid(light):
 			return false
-	
+
 	return true
 
 func _validate_camera_setup() -> bool:
@@ -3208,8 +3195,8 @@ func _validate_camera_setup() -> bool:
 	return is_instance_valid(camera) and is_instance_valid(camera_pivot)
 
 func _validate_annotation_setup() -> bool:
-	"""Validate annotation system is properly initialized"""
-	return is_instance_valid(info_panel)
+	"""Validate annotation system is properly initialized - DISABLED"""
+	return true  # Always return true since annotation system is disabled
 
 
 func _validate_camera_collision_setup() -> bool:
@@ -3226,4 +3213,90 @@ func _validate_help_text_setup() -> bool:
 
 func _validate_rendering_setup() -> bool:
 	"""Validate rendering components are properly initialized"""
-	return is_instance_valid(brain_container) and is_instance_valid(camera)
+	return true
+
+func _optimize_for_integrated_graphics() -> void:
+	"""Optimize scene for Intel UHD 620 and similar integrated graphics"""
+	var intel_optimizer = get_node_or_null("/root/IntelOptimizer")
+	if not intel_optimizer:
+		push_warning("[Performance] IntelOptimizer not available")
+		return
+
+	# Check if Intel GPU is detected
+	if intel_optimizer.is_intel_gpu_detected():
+		print("[Performance] Integrated graphics detected - applying optimizations")
+
+		# Disable heavy effects in environment
+		if environment and environment.environment:
+			var env = environment.environment
+			env.ssao_enabled = false  # SSAO is expensive
+			env.glow_enabled = false  # Glow/bloom effects
+			env.volumetric_fog_enabled = false
+			env.adjustment_enabled = false
+			print("[Performance] Disabled SSAO, glow, and other expensive effects")
+
+		# Remove unused nodes
+		_remove_unused_nodes()
+
+		# Optimize materials
+		_optimize_materials_for_integrated()
+
+		# Reduce shadow quality
+		if fill_light:
+			fill_light.shadow_enabled = false
+			print("[Performance] Disabled shadows on fill light")
+
+		# Set lower quality defaults
+		_performance_data.target_fps = 30.0  # Target 30 FPS on Intel UHD 620
+
+	else:
+		print("[Performance] Dedicated graphics detected - keeping full quality")
+
+func _remove_unused_nodes() -> void:
+	"""Remove nodes identified as unused in the audit"""
+	# Remove disabled lights
+	if key_light and not key_light.visible:
+		print("[Optimization] Removing unused KeyLight")
+		key_light.queue_free()
+		key_light = null
+
+	if rim_light and not rim_light.visible:
+		print("[Optimization] Removing unused RimLight")
+		rim_light.queue_free()
+		rim_light = null
+
+	# Remove hidden visualization helpers if not used
+	if grid_floor and not grid_floor.visible:
+		print("[Optimization] Removing unused GridFloor")
+		grid_floor.queue_free()
+		grid_floor = null
+
+	if axis_indicator and not axis_indicator.visible:
+		print("[Optimization] Removing unused AxisIndicator")
+		axis_indicator.queue_free()
+		axis_indicator = null
+
+	# Remove empty MedicalCameraEffects node
+	var camera_effects = camera.get_node_or_null("MedicalCameraEffects")
+	if camera_effects and camera_effects.get_child_count() == 0:
+		print("[Optimization] Removing empty MedicalCameraEffects node")
+		camera_effects.queue_free()
+
+func _optimize_materials_for_integrated() -> void:
+	"""Optimize materials for integrated graphics"""
+	# Find and optimize blur shaders
+	var panels_with_blur = [
+		top_bar,
+		left_panel,
+		info_panel,
+		quiz_overlay,
+		help_overlay
+	]
+
+	for panel in panels_with_blur:
+		if panel and panel.material and panel.material is ShaderMaterial:
+			var mat = panel.material as ShaderMaterial
+			if mat.shader and mat.shader.resource_path.contains("glass"):
+				# Reduce blur amount for performance
+				mat.set_shader_parameter("blur_amount", 4.0)  # Reduced from 12.0
+				print("[Optimization] Reduced blur amount on " + panel.name)

@@ -110,12 +110,14 @@ func _ready() -> void:
 	# Connect to settings manager if available
 	var settings_manager = get_node_or_null("/root/SettingsManager")
 	if settings_manager and settings_manager.has_signal("setting_changed"):
-		settings_manager.setting_changed.connect(_on_setting_changed)
+		if not settings_manager.setting_changed.is_connected(_on_setting_changed):
+			settings_manager.setting_changed.connect(_on_setting_changed)
 	
 	# Connect to performance monitor for quality-based shader switching
 	var performance_monitor = get_node_or_null("/root/PerformanceMonitor")
 	if performance_monitor and performance_monitor.has_signal("quality_level_changed"):
-		performance_monitor.quality_level_changed.connect(_on_quality_level_changed)
+		if not performance_monitor.quality_level_changed.is_connected(_on_quality_level_changed):
+			performance_monitor.quality_level_changed.connect(_on_quality_level_changed)
 	
 	# === Phase 6: Initialize Performance Monitoring ===
 	_initialize_performance_monitoring()
@@ -601,8 +603,8 @@ func preview_theme(theme: Theme, preview_duration: float = 5.0) -> void:
 		timer.queue_free()
 	)
 	
-	add_child(timer)
-	timer.start()
+	call_deferred("add_child", timer)
+	timer.call_deferred("start")
 
 ## Save user theme preferences
 func save_user_theme_preferences(preferences: Dictionary) -> void:
@@ -772,7 +774,7 @@ func _animate_theme_transition(new_theme: Theme, theme_name: String) -> void:
 		overlay.modulate.a = 0.0
 		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		get_tree().root.add_child(overlay)
+		get_tree().root.call_deferred("add_child", overlay)
 		
 		# Fade to black
 		_transition_tween.tween_property(overlay, "modulate:a", 1.0, theme_transition_duration * 0.5)
@@ -1110,7 +1112,7 @@ func _initialize_performance_monitoring() -> void:
 	_performance_monitor_timer.wait_time = 0.5  # Check every 500ms
 	_performance_monitor_timer.timeout.connect(_monitor_performance_metrics)
 	_performance_monitor_timer.autostart = true
-	add_child(_performance_monitor_timer)
+	call_deferred("add_child", _performance_monitor_timer)
 	
 	# Initialize sample arrays
 	_frame_time_samples.resize(20)  # Keep last 20 samples (10 seconds)

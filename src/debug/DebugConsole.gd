@@ -12,7 +12,7 @@ signal command_executed(command: String, result: String)
 
 var command_history: Array[String] = []
 var history_index: int = 0
-var is_visible: bool = false
+var console_visible: bool = false
 
 # Available commands
 var commands := {
@@ -60,7 +60,7 @@ func _ready() -> void:
 func _setup_console() -> void:
 	# Setup console panel
 	console_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	console_panel.size.y = 400
+	console_panel.set_deferred("size:y", 400)
 	console_panel.modulate.a = 0.95
 	add_child(console_panel)
 	
@@ -108,8 +108,8 @@ func _setup_console() -> void:
 	# Suggestions panel (hidden by default)
 	suggestions_panel.hide()
 	suggestions_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	suggestions_panel.position.y = 400
-	suggestions_panel.size.y = 200
+	suggestions_panel.set_deferred("position:y", 400)
+	suggestions_panel.set_deferred("size:y", 200)
 	suggestions_panel.item_selected.connect(_on_suggestion_selected)
 	add_child(suggestions_panel)
 	
@@ -136,8 +136,8 @@ func _on_input_gui_event(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 
 func toggle_console() -> void:
-	is_visible = !is_visible
-	if is_visible:
+	console_visible = !console_visible
+	if console_visible:
 		show()
 		console_input.grab_focus()
 	else:
@@ -236,7 +236,7 @@ func _on_error_detected(error_type: String, details: Dictionary) -> void:
 	print_line("[color=red][ERROR] %s: %s[/color]" % [error_type, details.get("message", "")])
 
 # Command implementations
-func _cmd_help(args: Array) -> String:
+func _cmd_help(_args: Array) -> String:
 	var help_text = "[color=cyan]Available Commands:[/color]\n"
 	help_text += "  help - Show this help\n"
 	help_text += "  clear - Clear console\n"
@@ -263,36 +263,36 @@ func _cmd_help(args: Array) -> String:
 	help_text += "  profile [function] - Profile function"
 	return help_text
 
-func _cmd_clear(args: Array) -> String:
+func _cmd_clear(_args: Array) -> String:
 	console_output.clear()
 	return ""
 
-func _cmd_exit(args: Array) -> String:
+func _cmd_exit(_args: Array) -> String:
 	toggle_console()
 	return ""
 
-func _cmd_fps(args: Array) -> String:
+func _cmd_fps(_args: Array) -> String:
 	var fps = Engine.get_frames_per_second()
-	var frame_time = 1000.0 / fps if fps > 0 else 0
+	var frame_time = 1000.0 / fps if fps > 0 else 0.0
 	return "FPS: %d (%.2fms)" % [fps, frame_time]
 
-func _cmd_memory(args: Array) -> String:
+func _cmd_memory(_args: Array) -> String:
 	var static_mem = Performance.get_monitor(Performance.MEMORY_STATIC) / 1024.0 / 1024.0
 	var dynamic_mem = Performance.get_monitor(Performance.MEMORY_MESSAGE_BUFFER_MAX) / 1024.0 / 1024.0
 	var total = static_mem + dynamic_mem
 	return "Memory - Static: %.2f MB, Dynamic: %.2f MB, Total: %.2f MB" % [static_mem, dynamic_mem, total]
 
-func _cmd_nodes(args: Array) -> String:
+func _cmd_nodes(_args: Array) -> String:
 	return "Active nodes: %d" % get_tree().get_node_count()
 
-func _cmd_errors(args: Array) -> String:
+func _cmd_errors(_args: Array) -> String:
 	if has_node("/root/DebugSystem"):
 		var debug_system = get_node("/root/DebugSystem")
 		debug_system.execute_debug_command("errors")
 		return "See error summary above"
 	return "Debug system not available"
 
-func _cmd_autoloads(args: Array) -> String:
+func _cmd_autoloads(_args: Array) -> String:
 	var autoloads = [
 		"UnifiedColorManager",
 		"CoreSystemManager", 
@@ -314,7 +314,7 @@ func _cmd_autoloads(args: Array) -> String:
 	
 	return result
 
-func _cmd_performance(args: Array) -> String:
+func _cmd_performance(_args: Array) -> String:
 	var result = "[color=cyan]Performance Metrics:[/color]\n"
 	result += "  FPS: %d\n" % Engine.get_frames_per_second()
 	result += "  Physics FPS: %d\n" % Engine.physics_ticks_per_second
@@ -337,11 +337,11 @@ func _cmd_scene(args: Array) -> String:
 			return "Loading scene: " + scene_path
 		return "[color=red]Scene not found: " + scene_path + "[/color]"
 
-func _cmd_reload(args: Array) -> String:
+func _cmd_reload(_args: Array) -> String:
 	get_tree().reload_current_scene()
 	return "Reloading current scene..."
 
-func _cmd_screenshot(args: Array) -> String:
+func _cmd_screenshot(_args: Array) -> String:
 	var image = get_viewport().get_texture().get_image()
 	var timestamp = Time.get_datetime_string_from_system().replace(":", "-")
 	var path = "user://screenshot_%s.png" % timestamp
@@ -353,9 +353,9 @@ func _cmd_brain(args: Array) -> String:
 		return "Usage: brain [structure_name]"
 	
 	var structure = args[0]
-	if has_node("/root/KnowledgeService"):
-		var knowledge = get_node("/root/KnowledgeService")
-		var data = knowledge.get_structure(structure)
+	if has_node("/root/EducationalPlatformManager"):
+		var knowledge = get_node_or_null("/root/EducationalPlatformManager")
+		var data = knowledge.get_content(structure)
 		if not data.is_empty():
 			var result = "[color=cyan]%s:[/color]\n" % data.get("display_name", structure)
 			result += "  Description: %s\n" % data.get("description", "N/A")
@@ -387,9 +387,9 @@ func _cmd_knowledge(args: Array) -> String:
 		return "Usage: knowledge [search_query]"
 	
 	var query = " ".join(args)
-	if has_node("/root/KnowledgeService"):
-		var knowledge = get_node("/root/KnowledgeService")
-		var results = knowledge.search_structures(query)
+	if has_node("/root/EducationalPlatformManager"):
+		var knowledge = get_node_or_null("/root/EducationalPlatformManager")
+		var results = knowledge.search_content(query)
 		if results.size() > 0:
 			var result = "[color=cyan]Search results for '%s':[/color]\n" % query
 			for i in min(5, results.size()):
@@ -398,13 +398,13 @@ func _cmd_knowledge(args: Array) -> String:
 		return "No results found for: " + query
 	return "Knowledge service not available"
 
-func _cmd_validate(args: Array) -> String:
+func _cmd_validate(_args: Array) -> String:
 	var result = "[color=cyan]Validation Results:[/color]\n"
 	
 	# Check autoloads
 	var autoload_count = 0
 	var missing_autoloads = []
-	for autoload in ["UnifiedColorManager", "CoreSystemManager", "UISystemManager"]:
+	for autoload in ["UnifiedColorManager", "UIThemeManager", "EducationalPlatformManager"]:
 		if get_node_or_null("/root/" + autoload):
 			autoload_count += 1
 		else:

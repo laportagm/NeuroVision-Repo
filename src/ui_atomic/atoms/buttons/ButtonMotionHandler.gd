@@ -48,8 +48,11 @@ static func setup_button_hover_animation(button: Button) -> void:
 	if not button:
 		return
 	
-	button.mouse_entered.connect(func(): _animate_hover(button, true))
-	button.mouse_exited.connect(func(): _animate_hover(button, false))
+	# Safely connect mouse signals
+	if button.has_signal("mouse_entered") and not button.mouse_entered.is_connected(_animate_hover.bind(button, true)):
+		button.mouse_entered.connect(_animate_hover.bind(button, true))
+	if button.has_signal("mouse_exited") and not button.mouse_exited.is_connected(_animate_hover.bind(button, false)):
+		button.mouse_exited.connect(_animate_hover.bind(button, false))
 
 ## Animate button focus state
 static func animate_button_focus(button: Button) -> void:

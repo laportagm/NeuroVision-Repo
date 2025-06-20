@@ -115,9 +115,12 @@ add_section "Potential Memory Leaks"
 echo "Checking for potential memory leaks..." >> "$OUTPUT_FILE"
 find "$PROJECT_ROOT" -name "*.gd" -type f | while read file; do
     # Check for new() without queue_free()
-    new_count=$(grep -c "\.new()" "$file" 2>/dev/null || echo 0)
-    free_count=$(grep -c "queue_free\|free()" "$file" 2>/dev/null || echo 0)
-    if [ "$new_count" -gt "$free_count" ]; then
+    new_count=$(grep -c "\.new()" "$file" 2>/dev/null || echo "0")
+    free_count=$(grep -c "queue_free\|free()" "$file" 2>/dev/null || echo "0")
+    # Ensure counts are valid integers
+    new_count=$(echo "$new_count" | tr -d '\n' | awk '{print $1}')
+    free_count=$(echo "$free_count" | tr -d '\n' | awk '{print $1}')
+    if [[ "$new_count" =~ ^[0-9]+$ ]] && [[ "$free_count" =~ ^[0-9]+$ ]] && [ "$new_count" -gt "$free_count" ]; then
         echo "File: $file - new() calls: $new_count, free() calls: $free_count" >> "$OUTPUT_FILE"
     fi
 done

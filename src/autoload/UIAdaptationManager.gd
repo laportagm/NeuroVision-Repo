@@ -295,13 +295,13 @@ func _connect_to_existing_systems() -> void:
 	"""Connect to existing autoload systems"""
 	# Connect to SettingsManager
 	if has_node("/root/SettingsManager"):
-		var settings_mgr = get_node("/root/SettingsManager")
+		var settings_mgr = get_node_or_null("/root/SettingsManager")
 		settings_mgr.setting_changed.connect(_on_setting_changed)
 		print("[UIAdaptationManager] Connected to SettingsManager")
 	
 	# Connect to AccessibilityManager
 	if has_node("/root/AccessibilityManager"):
-		var accessibility_mgr = get_node("/root/AccessibilityManager")
+		var accessibility_mgr = get_node_or_null("/root/AccessibilityManager")
 		accessibility_mgr.accessibility_mode_changed.connect(_on_accessibility_changed)
 		print("[UIAdaptationManager] Connected to AccessibilityManager")
 	
@@ -314,7 +314,7 @@ func _load_adaptation_settings() -> void:
 		print("[UIAdaptationManager] SettingsManager not available, using defaults")
 		return
 	
-	var settings_mgr = get_node("/root/SettingsManager")
+	var settings_mgr = get_node_or_null("/root/SettingsManager")
 	
 	# Load layout mode
 	var saved_layout = settings_mgr.get_setting("ui_layout_mode", str(DEFAULT_LAYOUT_MODE))
@@ -404,19 +404,19 @@ func _update_content_hierarchy() -> void:
 func _save_layout_preference() -> void:
 	"""Save layout mode preference"""
 	if has_node("/root/SettingsManager"):
-		var settings_mgr = get_node("/root/SettingsManager")
+		var settings_mgr = get_node_or_null("/root/SettingsManager")
 		settings_mgr.set_setting("ui_layout_mode", str(_current_layout_mode))
 
 func _save_learning_level_preference() -> void:
 	"""Save learning level preference"""
 	if has_node("/root/SettingsManager"):
-		var settings_mgr = get_node("/root/SettingsManager")
+		var settings_mgr = get_node_or_null("/root/SettingsManager")
 		settings_mgr.set_setting("ui_learning_level", str(_current_learning_level))
 
 func _save_theme_preference() -> void:
 	"""Save theme variant preference"""
 	if has_node("/root/SettingsManager"):
-		var settings_mgr = get_node("/root/SettingsManager")
+		var settings_mgr = get_node_or_null("/root/SettingsManager")
 		settings_mgr.set_setting("ui_theme_variant", str(_current_theme_variant))
 
 func _apply_educational_theme() -> void:
@@ -451,7 +451,7 @@ func _resolve_theme_variant() -> ThemeVariant:
 	
 	# Auto-detect based on system preferences and accessibility needs
 	if has_node("/root/AccessibilityManager"):
-		var accessibility_mgr = get_node("/root/AccessibilityManager")
+		var accessibility_mgr = get_node_or_null("/root/AccessibilityManager")
 		if accessibility_mgr.is_high_contrast_enabled():
 			return ThemeVariant.HIGH_CONTRAST
 	

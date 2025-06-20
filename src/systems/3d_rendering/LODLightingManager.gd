@@ -126,8 +126,8 @@ func _initialize_lod_system():
 func _connect_to_systems():
 	"""Connect to other rendering systems"""
 	var tree = Engine.get_main_loop() as SceneTree
-	if tree and tree.root.has_node("UIThemeManager"):
-		performance_monitor = tree.root.get_node("UIThemeManager")
+	if tree and tree.root.has_node("PerformanceMonitor"):
+		performance_monitor = tree.root.get_node("PerformanceMonitor")
 		print("[LODLighting] Connected to performance monitoring")
 	
 	# Connect to medical lighting manager

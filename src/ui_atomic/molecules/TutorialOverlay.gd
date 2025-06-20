@@ -119,11 +119,35 @@ func _setup_ui() -> void:
 	tooltip_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
 func _connect_signals() -> void:
-	"""Connect button signals"""
-	next_button.pressed.connect(func(): next_pressed.emit())
-	skip_button.pressed.connect(func(): skip_pressed.emit())
-	previous_button.pressed.connect(func(): previous_pressed.emit())
-	close_button.pressed.connect(func(): skip_pressed.emit())
+	"""Connect button signals with safety checks"""
+	# Safely connect next button
+	if next_button and next_button.has_signal("pressed"):
+		if not next_button.pressed.is_connected(_on_next_pressed):
+			next_button.pressed.connect(_on_next_pressed)
+	
+	# Safely connect skip button
+	if skip_button and skip_button.has_signal("pressed"):
+		if not skip_button.pressed.is_connected(_on_skip_pressed):
+			skip_button.pressed.connect(_on_skip_pressed)
+	
+	# Safely connect previous button
+	if previous_button and previous_button.has_signal("pressed"):
+		if not previous_button.pressed.is_connected(_on_previous_pressed):
+			previous_button.pressed.connect(_on_previous_pressed)
+	
+	# Safely connect close button
+	if close_button and close_button.has_signal("pressed"):
+		if not close_button.pressed.is_connected(_on_skip_pressed):
+			close_button.pressed.connect(_on_skip_pressed)
+
+func _on_next_pressed() -> void:
+	next_pressed.emit()
+
+func _on_skip_pressed() -> void:
+	skip_pressed.emit()
+
+func _on_previous_pressed() -> void:
+	previous_pressed.emit()
 
 func _apply_theme() -> void:
 	"""Apply Material 3 theme to UI elements"""

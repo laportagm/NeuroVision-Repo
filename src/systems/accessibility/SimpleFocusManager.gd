@@ -15,7 +15,7 @@ const FOCUS_RING_COLOR: Color = Color.CYAN
 const FOCUS_RING_WIDTH: int = 3
 
 # === PRIVATE VARIABLES ===
-var _focus_registry: Array[Control] = []
+var _focus_registry: Array = []  # Array of Control nodes
 var _focus_labels: Dictionary = {}  # Control -> String label for announcements
 var _current_focus_index: int = -1
 var _is_enabled: bool = true
@@ -24,7 +24,7 @@ var _is_enabled: bool = true
 
 func register_control(control: Control, label: String = "") -> void:
 	## Register a control for focus management
-	if control in _focus_registry:
+	if _focus_registry.has(control):
 		return
 		
 	_focus_registry.append(control)

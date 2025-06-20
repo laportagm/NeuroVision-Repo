@@ -83,8 +83,8 @@ func _init():
 func _initialize_performance_monitoring():
 	"""Initialize connection to performance monitoring for quality adaptation"""
 	var tree = Engine.get_main_loop() as SceneTree
-	if tree and tree.root.has_node("UIThemeManager"):
-		performance_monitor = tree.root.get_node("UIThemeManager")
+	if tree and tree.root.has_node("PerformanceMonitor"):
+		performance_monitor = tree.root.get_node("PerformanceMonitor")
 		print("[BrainMaterials] Connected to performance monitoring")
 
 func _create_base_materials():

@@ -189,8 +189,8 @@ func _create_single_area_light(index: int, light_position: Vector3) -> Light3D:
 func _connect_performance_monitoring():
 	"""Connect to performance monitoring for adaptive quality"""
 	var tree = Engine.get_main_loop() as SceneTree
-	if tree and tree.root.has_node("UIThemeManager"):
-		performance_monitor = tree.root.get_node("UIThemeManager")
+	if tree and tree.root.has_node("PerformanceMonitor"):
+		performance_monitor = tree.root.get_node("PerformanceMonitor")
 		print("[MedicalLighting] Connected to performance monitoring")
 
 # === LIGHTING PRESET MANAGEMENT ===

@@ -49,11 +49,11 @@ case $choice in
         ;;
     2)
         echo -e "${GREEN}Starting Enhanced Brain Explorer...${NC}"
-        "$GODOT" --path "$PROJECT_PATH" "res://src/scenes/EnhancedExplorationScene.tscn"
+        "$GODOT" --path "$PROJECT_PATH" "res://scenes/3d/EnhancedExplorationScene.tscn"
         ;;
     3)
         echo -e "${GREEN}Starting Standard Brain Explorer...${NC}"
-        "$GODOT" --path "$PROJECT_PATH" "res://src/scenes/ExplorationScene.tscn"
+        "$GODOT" --path "$PROJECT_PATH" "res://scenes/main_menu.tscn"
         ;;
     4)
         echo -e "${GREEN}Starting Performance Test Mode...${NC}"

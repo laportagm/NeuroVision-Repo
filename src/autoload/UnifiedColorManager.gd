@@ -332,7 +332,7 @@ func _setup_validation() -> void:
 		UnifiedColorSystem.set_validation_enabled(true)
 		
 		# Connect validation signals
-		if not validation_failed.is_connected(_on_validation_failed):
+		if has_signal("validation_failed") and not validation_failed.is_connected(_on_validation_failed):
 			validation_failed.connect(_on_validation_failed)
 
 func _setup_educational_colors() -> void:
@@ -351,7 +351,7 @@ func _connect_to_theme_manager() -> void:
 		var theme_manager = get_node("/root/UIThemeManager")
 		
 		# Connect theme change signals
-		if theme_manager.has_signal("theme_changed"):
+		if theme_manager and theme_manager.has_signal("theme_changed"):
 			if not theme_manager.theme_changed.is_connected(_on_theme_manager_changed):
 				theme_manager.theme_changed.connect(_on_theme_manager_changed)
 		
