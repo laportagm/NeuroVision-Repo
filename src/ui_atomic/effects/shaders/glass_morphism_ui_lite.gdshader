@@ -6,7 +6,7 @@ shader_type canvas_item;
 
 // === PERFORMANCE OPTIMIZATIONS ===
 // ✓ Removed Gaussian blur (expensive texture sampling)
-// ✓ Replaced with simple gradient backgrounds  
+// ✓ Replaced with simple gradient backgrounds
 // ✓ Reduced uniform complexity
 // ✓ Simplified fragment calculations
 // ✓ No chromatic aberration or advanced effects
@@ -28,14 +28,14 @@ vec3 create_simple_gradient(vec2 uv, vec3 bg_color) {
     // Create a subtle radial gradient from center
     vec2 center = vec2(0.5, 0.5);
     float distance_from_center = length(uv - center);
-    
+
     // Simple gradient falloff
     float gradient_factor = 1.0 - smoothstep(0.0, 0.7, distance_from_center);
     gradient_factor *= gradient_strength;
-    
+
     // Mix with slight brightness boost toward center
     vec3 gradient_color = bg_color * (1.0 + gradient_factor * 0.2);
-    
+
     return gradient_color;
 }
 
@@ -49,28 +49,28 @@ float fast_noise(vec2 uv) {
 void fragment() {
     // SINGLE texture sample - no blur, no multiple sampling
     vec4 background = texture(screen_texture, SCREEN_UV);
-    
+
     // Get original UI element color
     vec4 original_color = texture(TEXTURE, UV);
-    
+
     // Apply simple gradient effect instead of expensive blur
     vec3 enhanced_bg = create_simple_gradient(UV, background.rgb);
-    
+
     // Apply glass tint - simple mix operation
     vec3 tinted_bg = mix(enhanced_bg, tint_color.rgb, tint_color.a);
-    
+
     // Optional subtle noise - single calculation
     if (enable_subtle_noise) {
         float noise = fast_noise(UV * 3.0) * 0.01; // Reduced noise intensity
         tinted_bg += vec3(noise); // Simple addition instead of complex mixing
     }
-    
+
     // Simple brightness boost for glass effect
     tinted_bg *= 1.1;
-    
+
     // Final blend - single lerp operation
     vec3 final_color = mix(tinted_bg, original_color.rgb, original_color.a * (1.0 - glass_opacity));
-    
+
     // Preserve original alpha for UI compositing
     COLOR = vec4(final_color, original_color.a);
 }
@@ -80,7 +80,7 @@ void vertex() {
     // Standard vertex transformation only - no effects
 }
 
-/* 
+/*
 PERFORMANCE COMPARISON vs Full Version:
 ======================================
 

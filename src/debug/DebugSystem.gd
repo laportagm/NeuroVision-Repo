@@ -52,9 +52,9 @@ const MEMORY_WARNING_INTERVAL = 10.0  # seconds between memory warnings
 const FRAME_TIME_WARNING_INTERVAL = 5.0  # seconds between frame time warnings
 
 # Performance thresholds
-const FPS_WARNING_THRESHOLD = 30  # Adjusted for 3D medical visualization - 30 FPS minimum
+const FPS_WARNING_THRESHOLD = 25  # Adjusted for 3D medical visualization - 25 FPS minimum warning
 const MEMORY_WARNING_THRESHOLD = 800 * 1024 * 1024  # 800MB - Adjusted for 3D medical visualization
-const FRAME_TIME_WARNING = 33.33  # milliseconds (30 FPS) - Adjusted for 3D medical visualization
+const FRAME_TIME_WARNING = 40.0  # milliseconds (25 FPS) - Adjusted for 3D medical visualization
 
 func _ready() -> void:
 	set_process(true)

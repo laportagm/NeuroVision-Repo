@@ -1,0 +1,83 @@
+# GDFormat Configuration for NeuroVision
+# https://github.com/Scony/godot-gdscript-toolkit
+
+# Line length limit
+line_length = 100
+
+# Keep empty lines (important for code organization)
+keep_empty_lines = 2
+
+# Format multiline expressions
+format_multiline = true
+
+# Sort imports
+sort_imports = true
+
+# Group imports by their origin
+group_imports = true
+
+# Convert spaces to tabs (Godot standard)
+convert_indent_to_tabs = true
+
+# Tab size
+tab_size = 4
+
+# Trailing comma in multiline collections
+trailing_comma_in_multiline = true
+
+# Space around operators
+spaces_around_operators = true
+
+# Space after comma
+space_after_comma = true
+
+# Space before colon
+space_before_colon = false
+
+# Space after colon
+space_after_colon = true
+
+# Space before open parenthesis in function calls
+space_before_open_parenthesis_in_function_call = false
+
+# Space before open parenthesis in function definition
+space_before_open_parenthesis_in_function_definition = false
+
+# Space inside parentheses
+space_inside_parentheses = false
+
+# Space inside brackets
+space_inside_brackets = false
+
+# Space inside braces
+space_inside_braces = true
+
+# Keep blank lines at the end of functions
+blank_lines_after_function = 1
+
+# Keep blank lines at the end of classes
+blank_lines_after_class = 2
+
+# Blank lines around class definitions
+blank_lines_around_class = 2
+
+# Blank lines around function definitions
+blank_lines_around_function = 1
+
+# Blank lines around nested classes
+blank_lines_around_nested_class = 1
+
+# Maximum blank lines to keep
+max_blank_lines = 2
+
+# Format docstrings
+format_docstrings = true
+
+# Docstring line length
+docstring_line_length = 80
+
+# Normalize string quotes
+normalize_string_quotes = true
+
+# Use double quotes for strings
+string_quote_style = "double"

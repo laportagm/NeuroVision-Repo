@@ -47,8 +47,24 @@
       "comments": false,
       "strings": true
     },
-    "editor.suggest.insertMode": "replace"
+    "editor.suggest.insertMode": "replace",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
   },
+
+  // ====== GDScript Linting ======
+  "gdscript.lsp.autoReloadScripts": true,
+  "gdscript.formatter": "gdformat",
+  "gdscript.linter": "gdlint",
+  "gdscript.formatOnSave": true,
+  "gdscript.lintOnSave": true,
+  "gdscript.showErrors": true,
+  "gdscript.showWarnings": true,
+  "gdscript.completeFunctionParentheses": true,
 
   // ====== Terminal Settings ======
   "terminal.integrated.defaultProfile.osx": "zsh",
@@ -198,8 +214,6 @@
 
   // ====== Extension Specific ======
   "DockerRun.DisableDockerrc": true,
-  "markdown.preview.fontSize": 14,
-  "markdown.preview.lineHeight": 1.6,
 
   // ====== Enhanced Git Integration ======
   "git.inputValidation": true,
@@ -225,15 +239,9 @@
   // ====== Workspace Recommendations ======
   "extensions.ignoreRecommendations": false,
   "workbench.startupEditor": "none",
-  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorTheme": "One Dark Pro Night Flat",
   "workbench.iconTheme": "vs-seti",
 
-  // ====== Custom File Icons ======
-  "material-icon-theme.files.associations": {
-    "*.gd": "godot",
-    "*.tscn": "godot-scene",
-    "*.tres": "godot-resource"
-  },
 
   // ====== Code Lens ======
   "editor.codeLens": true,
@@ -263,6 +271,256 @@
     "NOTE:",
     "OPTIMIZE:",
     "REFACTOR:",
-    "NEUROVIS:"
-  ]
+    "NEUROVIS:",
+    "MEDICAL:",
+    "EDUCATIONAL:",
+    "ACCESSIBILITY:",
+    "PERFORMANCE:"
+  ],
+
+  // ====== GitLens Configuration ======
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.currentLine.enabled": true,
+  "gitlens.codeLens.enabled": false,
+  "gitlens.statusBar.enabled": true,
+  "gitlens.views.repositories.autoReveal": false,
+  "gitlens.views.fileHistory.enabled": true,
+  "gitlens.views.lineHistory.enabled": true,
+  "gitlens.blame.highlight.enabled": true,
+  "gitlens.blame.avatars": false,
+  "gitlens.blame.format": "${author|8} ${date}",
+  "gitlens.blame.dateFormat": "YYYY-MM-DD",
+  "gitlens.defaultDateStyle": "relative",
+  "gitlens.views.repositories.files.layout": "tree",
+  "gitlens.advanced.messages": {
+    "suppressGitMissingWarning": true
+  },
+
+  // ====== TODO Tree Configuration ======
+  "todo-tree.general.tags": [
+    "TODO",
+    "FIXME",
+    "BUG",
+    "HACK",
+    "NOTE",
+    "OPTIMIZE",
+    "REFACTOR",
+    "NEUROVIS",
+    "MEDICAL",
+    "EDUCATIONAL",
+    "ACCESSIBILITY",
+    "PERFORMANCE",
+    "XXX",
+    "[ ]",
+    "[x]"
+  ],
+  "todo-tree.highlights.defaultHighlight": {
+    "icon": "alert",
+    "type": "text-and-comment",
+    "foreground": "#FF8C00",
+    "opacity": 90
+  },
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "check-circle",
+      "iconColour": "#2196F3",
+      "foreground": "#2196F3"
+    },
+    "FIXME": {
+      "icon": "bug",
+      "iconColour": "#F44336",
+      "foreground": "#F44336"
+    },
+    "BUG": {
+      "icon": "bug",
+      "iconColour": "#D32F2F",
+      "foreground": "#D32F2F"
+    },
+    "MEDICAL": {
+      "icon": "heart",
+      "iconColour": "#E91E63",
+      "foreground": "#E91E63"
+    },
+    "EDUCATIONAL": {
+      "icon": "book",
+      "iconColour": "#4CAF50",
+      "foreground": "#4CAF50"
+    },
+    "ACCESSIBILITY": {
+      "icon": "eye",
+      "iconColour": "#9C27B0",
+      "foreground": "#9C27B0"
+    },
+    "PERFORMANCE": {
+      "icon": "dashboard",
+      "iconColour": "#FF9800",
+      "foreground": "#FF9800"
+    },
+    "NEUROVIS": {
+      "icon": "beaker",
+      "iconColour": "#00BCD4",
+      "foreground": "#00BCD4"
+    }
+  },
+  "todo-tree.tree.showCountsInTree": true,
+  "todo-tree.tree.showBadges": true,
+  "todo-tree.general.statusBar": "total",
+
+  // ====== Enhanced Spell Checker Configuration ======
+  "cSpell.enableFiletypes": [
+    "gdscript",
+    "godot-scene",
+    "godot-resource"
+  ],
+  "cSpell.language": "en,en-US",
+  "cSpell.maxNumberOfProblems": 100,
+  "cSpell.minWordLength": 4,
+  "cSpell.showStatus": true,
+  "cSpell.diagnosticLevel": "Warning",
+
+  // ====== Enhanced Error Lens Configuration ======
+  "errorLens.messageTemplate": "$severity: $message ($source:$code)",
+  "errorLens.statusBarIconsEnabled": true,
+  "errorLens.statusBarMessageEnabled": true,
+  "errorLens.statusBarColorsEnabled": true,
+  "errorLens.statusBarMessageType": "closestProblem",
+  "errorLens.excludeBySource": ["cSpell"],
+  "errorLens.delay": 100,
+  "errorLens.followCursor": "closestProblem",
+  "errorLens.followCursorMore": 2,
+  "errorLens.fontWeight": "normal",
+  "errorLens.fontStyleItalic": true,
+  "errorLens.enabledDiagnosticLevels": [
+    "error",
+    "warning",
+    "info"
+  ],
+
+  // ====== Bookmarks Extension Configuration ======
+  "bookmarks.navigateThroughAllFiles": true,
+  "bookmarks.saveBookmarksInProject": true,
+  "bookmarks.label.suggestion": "useWhenSelected",
+  "bookmarks.multicursor.toggleMode": "eachBookmark",
+  "bookmarks.showCommandsInContextMenu": true,
+  "bookmarks.sideBar.expanded": true,
+  "bookmarks.wrapNavigation": true,
+  "bookmarks.useWorkaroundForFormatters": true,
+
+  // ====== Path Intellisense Configuration ======
+  "path-intellisense.autoSlashAfterDirectory": true,
+  "path-intellisense.extensionOnImport": false,
+  "path-intellisense.showHiddenFiles": false,
+  "path-intellisense.absolutePathToWorkspace": false,
+  "path-intellisense.mappings": {
+    "/": "${workspaceFolder}",
+    "res://": "${workspaceFolder}",
+    "src/": "${workspaceFolder}/src/",
+    "scenes/": "${workspaceFolder}/scenes/",
+    "assets/": "${workspaceFolder}/assets/"
+  },
+
+  // ====== Trailing Spaces Configuration ======
+  "trailing-spaces.trimOnSave": true,
+  "trailing-spaces.deleteModifiedLinesOnly": true,
+  "trailing-spaces.includeEmptyLines": false,
+  "trailing-spaces.highlightCurrentLine": false,
+  "trailing-spaces.backgroundColor": "rgba(255,0,0,0.3)",
+  "trailing-spaces.borderColor": "rgba(255,100,100,0.15)",
+
+  // ====== Git Graph Configuration ======
+  "git-graph.repository.commits.showSignatureStatus": false,
+  "git-graph.repository.sign.commits": false,
+  "git-graph.repository.sign.tags": false,
+  "git-graph.defaultColumnVisibility": {
+    "Date": true,
+    "Author": true,
+    "Commit": true
+  },
+  "git-graph.date.format": "Date & Time",
+  "git-graph.showStatusBarItem": true,
+  "git-graph.showCurrentBranchByDefault": true,
+
+  // ====== Material Icon Theme Configuration ======
+  "material-icon-theme.folders.theme": "specific",
+  "material-icon-theme.folders.color": "#90a4ae",
+  "material-icon-theme.activeIconPack": "angular",
+  "material-icon-theme.files.associations": {
+    "*.gd": "godot",
+    "*.tscn": "godot-scene",
+    "*.tres": "godot-resource",
+    "*.gdshader": "shader",
+    "anatomical_data.json": "database",
+    "CLAUDE.md": "robot",
+    ".cursorrules": "robot",
+    ".cursorignore": "settings"
+  },
+  "material-icon-theme.folders.associations": {
+    "autoload": "core",
+    "ui_atomic": "components",
+    "atoms": "react-components",
+    "molecules": "react-components",
+    "organisms": "react-components",
+    "3d_models": "3d",
+    "shaders": "shader",
+    "educational": "docs",
+    "assessment": "test"
+  },
+
+  // ====== Color Highlight Configuration ======
+  "color-highlight.enable": true,
+  "color-highlight.markerType": "dot-before",
+  "color-highlight.markRuler": false,
+  "color-highlight.matchRgbWithNoFunction": false,
+  "color-highlight.matchWords": true,
+  "color-highlight.languages": [
+    "*"
+  ],
+
+  // ====== Markdown Configuration ======
+  "markdown.preview.scrollEditorWithPreview": true,
+  "markdown.preview.scrollPreviewWithEditor": true,
+  "markdown.preview.markEditorSelection": true,
+  "markdown.preview.lineHeight": 1.6,
+  "markdown.preview.fontSize": 14,
+  "markdown.preview.fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif",
+  "markdown.extension.toc.levels": "2..6",
+  "markdown.extension.preview.autoShowPreviewToSide": false,
+  "markdownlint.config": {
+    "MD033": false,
+    "MD041": false,
+    "MD024": false,
+    "MD025": false
+  },
+
+  // ====== AI Assistant Configuration ======
+  "github.copilot.enable": {
+    "*": true,
+    "gdscript": true,
+    "markdown": true,
+    "json": true
+  },
+
+
+  // ====== Project Manager Configuration ======
+  "projectManager.git.baseFolders": [
+    "$home/Desktop"
+  ],
+  "projectManager.sortList": "Name",
+  "projectManager.projectsLocation": "$home/Desktop",
+  "projectManager.cacheProjectsBetweenSessions": true,
+
+  // ====== Code Snap Configuration ======
+  "codesnap.backgroundColor": "#1e1e1e",
+  "codesnap.boxShadow": "rgba(0, 0, 0, 0.55) 0px 20px 68px",
+  "codesnap.containerPadding": "3em",
+  "codesnap.roundedCorners": true,
+  "codesnap.showWindowControls": true,
+  "codesnap.showWindowTitle": true,
+  "codesnap.showLineNumbers": true,
+  "codesnap.realLineNumbers": true,
+  "codesnap.transparentBackground": false,
+  "codesnap.target": "container",
+
+  // ====== EditorConfig Support ======
+  "editorconfig.generateAuto": false
 }

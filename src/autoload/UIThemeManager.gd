@@ -9,8 +9,8 @@ signal theme_transition_completed()
 # === CONSTANTS ===
 const THEMES = {
 	"dark": "dynamic",  # Generated dynamically as Material3 dark theme
-	"high_contrast": "res://src/ui/themes/resources/themes/HighContrastTheme.tres", 
-	"colorblind": "res://src/ui/themes/resources/themes/ColorblindTheme.tres",
+	"high_contrast": "res://src/ui_atomic/themes/resources/themes/HighContrastTheme.tres", 
+	"colorblind": "res://src/ui_atomic/themes/resources/themes/ColorblindTheme.tres",
 	"material3": "dynamic",  # Generated dynamically
 	"material3_high_contrast": "dynamic",  # Generated dynamically
 	"material3_colorblind": "dynamic"  # Generated dynamically
@@ -29,7 +29,9 @@ var _loaded_themes: Dictionary = {}
 var _transition_tween: Tween = null
 
 # Performance-based shader management
+@warning_ignore("unused_private_class_variable")
 var _glass_shader_full: Shader = null
+@warning_ignore("unused_private_class_variable")
 var _glass_shader_lite: Shader = null
 var _current_shader_quality: String = "medium"
 
@@ -878,7 +880,7 @@ func _preload_shaders() -> void:
 	print("[UIThemeManager] Preloading glass morphism shaders")
 	
 	# Load full quality shader
-	var full_shader_path = "res://src/ui/effects/shaders/glass_morphism_ui.gdshader"
+	var full_shader_path = "res://src/ui_atomic/effects/shaders/glass_morphism_ui.gdshader"
 	if ResourceLoader.exists(full_shader_path):
 		_glass_shader_full = load(full_shader_path)
 		print("[UIThemeManager] Loaded full quality glass shader")
@@ -886,7 +888,7 @@ func _preload_shaders() -> void:
 		push_warning("[UIThemeManager] Full quality glass shader not found: " + full_shader_path)
 	
 	# Load lite shader
-	var lite_shader_path = "res://src/ui/effects/shaders/glass_morphism_ui_lite.gdshader"
+	var lite_shader_path = "res://src/ui_atomic/effects/shaders/glass_morphism_ui_lite.gdshader"
 	if ResourceLoader.exists(lite_shader_path):
 		_glass_shader_lite = load(lite_shader_path)
 		print("[UIThemeManager] Loaded lite quality glass shader")

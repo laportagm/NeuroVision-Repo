@@ -3,11 +3,18 @@
 .import/
 export.cfg
 export_presets.cfg
-*.uid
+*.uid  # Godot editor generates these unique identifier files
 
-# Environment
+# Environment files (NEVER commit these)
 .env
 .env.local
+.env.*.local
+.env.production
+.env.development
+
+# But allow example/template files
+!.env.example
+!.env.template
 
 # OS
 .DS_Store
@@ -20,7 +27,8 @@ Thumbs.db
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/snippets/
-!.vscode/launch.json
+!.vscode/cursor-settings.json
+!.vscode/*.md
 
 
 # Certificates and secrets

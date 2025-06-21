@@ -1,24 +1,74 @@
-# EditorConfig for consistent coding styles
+# EditorConfig for NeuroVision - Medical-Grade Educational Platform
+# https://editorconfig.org
 
+# Top-most EditorConfig file
 root = true
 
+# Default settings for all files
 [*]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-
-[*.gd]
 indent_style = tab
 indent_size = 4
 
-[*.{json,yml,yaml}]
+# GDScript files - Godot standard
+[*.gd]
+indent_style = tab
+indent_size = 4
+max_line_length = 100
+
+# Godot resource files
+[*.{tscn,tres,godot,import}]
+indent_style = tab
+indent_size = 4
+
+# Shader files
+[*.{gdshader,shader}]
+indent_style = tab
+indent_size = 4
+
+# JSON files - Educational data
+[*.json]
+indent_style = space
+indent_size = 2
+max_line_length = 120
+
+# YAML/YML files
+[*.{yml,yaml}]
 indent_style = space
 indent_size = 2
 
-[*.md]
+# Markdown files - Documentation
+[*.{md,markdown}]
+indent_style = space
+indent_size = 2
 trim_trailing_whitespace = false
+max_line_length = 80
 
-[*.{tscn,tres,import}]
+# Python files (for tooling)
+[*.py]
 indent_style = space
 indent_size = 4
+max_line_length = 88
+
+# Shell scripts
+[*.{sh,bash}]
+indent_style = space
+indent_size = 2
+
+# Configuration files
+[.{gitignore,gitattributes,gdformat,gdlintrc}]
+indent_style = space
+indent_size = 2
+
+# VS Code files
+[.vscode/*.json]
+indent_style = space
+indent_size = 2
+
+# GitHub Actions
+[.github/workflows/*.{yml,yaml}]
+indent_style = space
+indent_size = 2

@@ -1,10 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://b7nqm4jvtxcd2"]
+[gd_scene load_steps=14 format=3 uid="uid://b7nqm4jvtxcd2"]
 
-[ext_resource type="Script" uid="uid://em5jvu7wm51t" path="res://scenes/3d/EnhancedExplorationScene.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bpkbdnn5olwqy" path="res://scenes/3d/EnhancedExplorationScene.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c4olnrbjeqmk6" path="res://src/ui_atomic/organisms/StructureInfoPanel.tscn" id="2_panel"]
-[ext_resource type="Shader" uid="uid://dqk0ra5nbr0in" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="3_glass"]
 [ext_resource type="Script" uid="uid://bdppch6urx77v" path="res://src/systems/3d_rendering/ComprehensiveBrainRenderingSystem.gd" id="5_rendering_system"]
-[ext_resource type="Script" uid="uid://cfm1o3t3835kc" path="res://src/systems/3d_interaction/BrainInteractionController.gd" id="6_itnfc"]
+[ext_resource type="Script" uid="uid://dyfb08u3gayfy" path="res://src/systems/3d_interaction/ImprovedBrainInteractionController.gd" id="6_itnfc"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -15,22 +14,10 @@ reflected_light_source = 2
 tonemap_mode = 2
 ssao_intensity = 0.6
 ssao_horizon = 0.15
-glow_enabled = true
 glow_intensity = 0.2
 glow_bloom = 0.2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_1"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
-albedo_color = Color(0.8, 0.85, 0.9, 1)
-metallic = 0.2
-roughness = 0.1
-emission_enabled = true
-emission = Color(0.3, 0.6, 1, 1)
-emission_energy_multiplier = 0.3
-rim_enabled = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_1"]
 radius = 0.001
@@ -41,17 +28,6 @@ transparency = 1
 cull_mode = 2
 no_depth_test = true
 albedo_color = Color(0.2, 0.225, 0.25, 1)
-
-[sub_resource type="QuadMesh" id="QuadMesh_1"]
-size = Vector2(20, 20)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3"]
-albedo_color = Color(0.1, 0.125, 0.15, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
-shader = ExtResource("3_glass")
-shader_parameter/blur_amount = 4.0
-shader_parameter/tint_color = Color(0.15, 0.175, 0.2, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
 content_margin_left = 24.0
@@ -92,10 +68,21 @@ border_color = Color(0.3, 0.6, 1, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0prj0"]
-shader = ExtResource("3_glass")
-shader_parameter/blur_amount = 6.0
-shader_parameter/tint_color = Color(0.12, 0.15, 0.18, 0.95)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PerformancePanel"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(0.05, 0.05, 0.1, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.4, 0.6, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4"]
 content_margin_left = 32.0
@@ -173,33 +160,12 @@ metadata/description = "Container for medically accurate brain models and anatom
 
 [node name="BrainModelHolder" type="Node3D" parent="AnatomicalModelContainer"]
 
-[node name="BrainModelPlaceholder" type="MeshInstance3D" parent="AnatomicalModelContainer/BrainModelHolder"]
-visible = false
-mesh = SubResource("BoxMesh_1")
-surface_material_override/0 = SubResource("StandardMaterial3D_1")
-
-[node name="BrainModelLoader" type="Node" parent="AnatomicalModelContainer/BrainModelHolder"]
-metadata/description = "Async brain model loading system"
-
 [node name="StructureSelectionIndicator" type="MeshInstance3D" parent="AnatomicalModelContainer" groups=["interaction_feedback"]]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
 visible = false
 mesh = SubResource("SphereMesh_1")
 surface_material_override/0 = SubResource("StandardMaterial3D_2")
 metadata/description = "Visual indicator for selected brain structures"
-
-[node name="AnatomicalVisualizationHelpers" type="Node3D" parent="." groups=["visualization_aids"]]
-metadata/description = "Helper objects for spatial orientation and scale reference"
-
-[node name="AnatomicalGridFloor" type="MeshInstance3D" parent="AnatomicalVisualizationHelpers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
-visible = false
-mesh = SubResource("QuadMesh_1")
-surface_material_override/0 = SubResource("StandardMaterial3D_3")
-
-[node name="AnatomicalAxisIndicator" type="Node3D" parent="AnatomicalVisualizationHelpers"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -8, -4, 0)
-visible = false
 
 [node name="EducationalUILayer" type="CanvasLayer" parent="." groups=["accessibility_critical", "educational_ui"]]
 metadata/description = "Main UI layer for educational interface components"
@@ -216,8 +182,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="EducationalTopBar" type="PanelContainer" parent="EducationalUILayer/MainEducationalInterface" groups=["ui_navigation"]]
-material = SubResource("ShaderMaterial_1")
-custom_minimum_size = Vector2(0, 80)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -244,13 +208,6 @@ text = "NeuroVision"
 layout_mode = 2
 metadata/accessibility_label = "Anatomical view selection controls"
 metadata/_edit_group_ = true
-
-[node name="ViewSelectionLabel" type="Label" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/AnatomicalViewControls"]
-modulate = Color(0.7882, 0.8196, 0.8509, 1)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "View:"
 
 [node name="AnatomicalViewPresets" type="OptionButton" parent="EducationalUILayer/MainEducationalInterface/EducationalTopBar/NavigationContent/AnatomicalViewControls"]
 custom_minimum_size = Vector2(200, 40)
@@ -331,10 +288,6 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 24
 text = "Brain Structures"
 
-[node name="StructureListSeparator" type="HSeparator" parent="EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel/BrainStructureList"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
 [node name="StructureScrollContainer" type="ScrollContainer" parent="EducationalUILayer/MainEducationalInterface/AnatomicalStructurePanel/BrainStructureList"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -383,7 +336,7 @@ metadata/accessibility_label = "Toggle detailed performance monitoring"
 [node name="PerformanceMonitoringPanel" type="PanelContainer" parent="EducationalUILayer/MainEducationalInterface/EducationalStatusBar"]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_PerformancePanel")
 metadata/accessibility_role = "region"
 metadata/accessibility_label = "Detailed performance monitoring"
 
@@ -526,8 +479,7 @@ show_percentage = false
 metadata/accessibility_label = "GPU usage percentage"
 
 [node name="AnatomicalInfoPanel" parent="EducationalUILayer" groups=["educational_panels"] instance=ExtResource("2_panel")]
-material = SubResource("ShaderMaterial_0prj0")
-anchor_left = 0.939062
+layout_mode = 3
 offset_left = -316.0
 offset_top = 133.0
 offset_right = 31.0
@@ -784,113 +736,6 @@ layout_mode = 2
 text = "Close"
 metadata/accessibility_label = "Close help dialog"
 
-[node name="AnatomicalAnnotationLayer" type="Control" parent="EducationalUILayer" groups=["annotation_system"]]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 2.0
-offset_bottom = 2.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-metadata/description = "Layer for 3D-to-2D anatomical label projections"
-
-[node name="AnatomicalAnnotations" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer"]
-position = Vector2(17, 23)
-metadata/description = "Container for all structure labels"
-
-[node name="StructureLabels" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations"]
-metadata/description = "3D-to-2D projected anatomical structure labels"
-
-[node name="ClinicalMarkers" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations"]
-metadata/description = "Clinical relevance and pathology indicators"
-
-[node name="EducationalPointers" type="Node2D" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnatomicalAnnotations"]
-metadata/description = "Interactive learning arrows and connection lines"
-
-[node name="MedicalTerminologyOverlay" type="Control" parent="EducationalUILayer/AnatomicalAnnotationLayer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-metadata/description = "Medical terminology and pronunciation guides"
-
-[node name="AnnotationSettings" type="PanelContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer"]
-visible = false
-layout_mode = 0
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -280.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = 200.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_2")
-metadata/accessibility_role = "region"
-metadata/accessibility_label = "Annotation display settings"
-
-[node name="AnnotationSettingsContent" type="VBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings"]
-layout_mode = 2
-theme_override_constants/separation = 15
-
-[node name="AnnotationSettingsTitle" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Label Settings"
-horizontal_alignment = 1
-
-[node name="LabelSizeContainer" type="HBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
-layout_mode = 2
-
-[node name="LabelSizeLabel" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LabelSizeContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Font Size:"
-
-[node name="LabelSizeSlider" type="HSlider" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LabelSizeContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-min_value = 8.0
-max_value = 24.0
-step = 2.0
-value = 14.0
-metadata/accessibility_label = "Adjust label font size for visibility"
-
-[node name="ContrastContainer" type="HBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
-layout_mode = 2
-
-[node name="ContrastLabel" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/ContrastContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "High Contrast:"
-
-[node name="ContrastToggle" type="CheckBox" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/ContrastContainer"]
-layout_mode = 2
-metadata/accessibility_label = "Enable high contrast mode for better visibility"
-
-[node name="LanguageContainer" type="HBoxContainer" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent"]
-layout_mode = 2
-
-[node name="LanguageLabel" type="Label" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LanguageContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Language:"
-
-[node name="LanguageSelector" type="OptionButton" parent="EducationalUILayer/AnatomicalAnnotationLayer/AnnotationSettings/AnnotationSettingsContent/LanguageContainer"]
-layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "English"
-popup/item_0/id = 0
-popup/item_1/text = "Latin"
-popup/item_1/id = 1
-popup/item_2/text = "Both"
-popup/item_2/id = 2
-metadata/accessibility_label = "Select annotation language"
-
 [node name="EducationalSystemsContainer" type="Node" parent="." groups=["core_systems"]]
 metadata/description = "Container for all educational platform systems"
 
@@ -898,15 +743,6 @@ metadata/description = "Container for all educational platform systems"
 script = ExtResource("5_rendering_system")
 metadata/description = "Handles medical-grade brain model rendering and visualization"
 
-[node name="BrainInteractionSystem" type="Node" parent="EducationalSystemsContainer" groups=["interaction_system"]]
-metadata/description = "Manages user interactions with brain structures"
-
-[node name="InteractionController" type="Node3D" parent="EducationalSystemsContainer/BrainInteractionSystem"]
+[node name="InteractionController" type="Node3D" parent="EducationalSystemsContainer" groups=["interaction_system"]]
 script = ExtResource("6_itnfc")
 metadata/description = "Manages brain structure selection and highlighting"
-
-[node name="AccessibilityManager" type="Node" parent="EducationalSystemsContainer"]
-metadata/description = "WCAG AAA compliance coordination"
-
-[node name="EducationalAudioSystem" type="AudioStreamPlayer" parent="."]
-metadata/description = "Medical terminology pronunciation and audio feedback"

@@ -1,0 +1,5 @@
+# Lighting System Directory
+# Reserved for future lighting system implementations including:
+# - Dynamic medical visualization lighting
+# - Ambient occlusion for brain structures
+# - Specialized lighting presets for different anatomical views

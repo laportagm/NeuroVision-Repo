@@ -1,0 +1,49 @@
+# GDScript Linting Ignore Patterns for NeuroVision
+
+# Godot internal directories
+.godot/
+.import/
+
+# Third-party addons
+addons/
+
+# Build outputs
+exports/
+releases/
+build/
+dist/
+
+# Test files (optional - remove if you want to lint tests)
+**/test_*.gd
+**/tests/*.gd
+**/*_test.gd
+
+# Debug/development files
+**/debug_*.gd
+**/temp_*.gd
+**/sandbox_*.gd
+
+# Generated files
+**/generated/*.gd
+**/*_generated.gd
+
+# External tools
+tools/external/
+
+# Large auto-generated UI files
+scenes/ui/auto_generated/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~

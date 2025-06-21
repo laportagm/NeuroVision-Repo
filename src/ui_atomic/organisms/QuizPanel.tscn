@@ -1,12 +1,22 @@
-[gd_scene load_steps=4 format=3 uid="uid://b86jwh5kh65xd"]
+[gd_scene load_steps=3 format=3 uid="uid://b86jwh5kh65xd"]
 
 [ext_resource type="Script" path="res://src/ui_atomic/organisms/QuizPanel.gd" id="1_quiz"]
-[ext_resource type="Shader" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="2_glass"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
-shader = ExtResource("2_glass")
-shader_parameter/blur_amount = 8.0
-shader_parameter/tint_color = Color(0.1, 0.12, 0.15, 0.95)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Quiz"]
+bg_color = Color(0.08, 0.08, 0.12, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.4, 0.6, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 24.0
+content_margin_top = 20.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
 
 [node name="EducationalQuizPanel" type="Control" groups=["educational_assessment", "quiz_system", "accessibility_critical"]]
 custom_minimum_size = Vector2(600, 700)
@@ -25,7 +35,7 @@ metadata/accessibility_label = "Educational assessment quiz"
 metadata/educational_type = "formative_assessment"
 
 [node name="QuizGlassBackground" type="ColorRect" parent="." groups=["visual_effect"]]
-material = SubResource("ShaderMaterial_1")
+add_theme_stylebox_override("panel", SubResource("StyleBoxFlat_Quiz"))
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

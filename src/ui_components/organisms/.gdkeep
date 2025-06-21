@@ -1,0 +1,6 @@
+# UI Organisms Directory
+# Contains complete UI features built from molecules and atoms:
+# - NavigationDrawer (Full navigation sidebar)
+# - SettingsPanel (Complete settings interface)
+# - NotificationSystem (Toast notifications)
+# - ModalDialog (Full modal implementation)

@@ -1,0 +1,70 @@
+# GDLint Configuration for NeuroVision
+# https://github.com/Scony/godot-gdscript-toolkit
+
+[tool.gdlint]
+
+# Disable specific rules that might conflict with NeuroVision patterns
+disable = [
+    "max-line-length",  # We handle this with gdformat
+    "class-definitions-order",  # We have custom ordering for educational clarity
+]
+
+# Enable additional checks
+enable = [
+    "function-name",
+    "class-name",
+    "function-argument-name",
+    "signal-name",
+    "constant-name",
+    "load-constant-name",
+    "trailing-whitespace",
+    "max-returns",
+    "max-public-methods",
+    "no-elif-return",
+    "no-else-return",
+    "function-variable-name",
+]
+
+# Configure specific rules
+max-line-length = 100
+max-returns = 5
+max-public-methods = 20
+max-file-lines = 1000
+
+# Indentation
+tab-size = 4
+
+# Naming conventions
+function-name = "snake_case"
+class-name = "PascalCase"
+signal-name = "snake_case"
+constant-name = "UPPER_SNAKE_CASE"
+enum-name = "PascalCase"
+enum-element-name = "UPPER_SNAKE_CASE"
+function-variable-name = "snake_case"
+function-argument-name = "snake_case"
+load-constant-name = "PascalCase"
+
+# Exclude patterns
+exclude = [
+    ".godot/**",
+    "addons/**",
+    "releases/**",
+    "exports/**",
+    "**/test_*.gd",
+    "**/debug_*.gd",
+]
+
+# Medical/Educational specific patterns to allow
+allowed-patterns = [
+    # Allow medical terminology in names
+    ".*[Hh]ippocampus.*",
+    ".*[Aa]mygdala.*",
+    ".*[Cc]ortex.*",
+    ".*[Cc]erebellum.*",
+    # Allow educational patterns
+    ".*[Ee]ducational.*",
+    ".*[Mm]edical.*",
+    ".*[Aa]natomical.*",
+    ".*[Cc]linical.*",
+]
