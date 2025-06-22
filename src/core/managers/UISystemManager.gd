@@ -51,6 +51,8 @@ enum OnboardingStep {
 var _current_theme: String = DEFAULT_THEME
 var _loaded_themes: Dictionary = {}
 var _transition_tween: Tween = null
+var _glass_shader_full: Shader = null
+var _glass_shader_lite: Shader = null
 var _current_shader_quality: String = "medium"
 var current_theme_resource: Theme = null
 var theme_transition_duration: float = TRANSITION_DURATION
@@ -271,16 +273,14 @@ func _initialize_ui_pools() -> void:
 		_create_pool(pool_type)
 
 func _preload_shaders() -> void:
-	"""Preload glass morphism shaders - DISABLED for performance"""
-	# Glass shaders replaced with StyleBoxFlat for GPU performance
-	# var shader_path = "res://src/ui_atomic/effects/shaders/glass_panel.gdshader"
-	# if ResourceLoader.exists(shader_path):
-	# 	_glass_shader_full = load(shader_path)
+	"""Preload glass morphism shaders"""
+	var shader_path = "res://src/ui_atomic/effects/shaders/glass_panel.gdshader"
+	if ResourceLoader.exists(shader_path):
+		_glass_shader_full = load(shader_path)
 	
-	# var lite_shader_path = "res://src/ui/effects/shaders/glass_panel_lite.gdshader"
-	# if ResourceLoader.exists(lite_shader_path):
-	# 	_glass_shader_lite = load(lite_shader_path)
-	pass  # Keep function for future shader preloading if needed
+	var lite_shader_path = "res://src/ui/effects/shaders/glass_panel_lite.gdshader"
+	if ResourceLoader.exists(lite_shader_path):
+		_glass_shader_lite = load(lite_shader_path)
 
 func _preload_themes() -> void:
 	"""Preload static themes"""

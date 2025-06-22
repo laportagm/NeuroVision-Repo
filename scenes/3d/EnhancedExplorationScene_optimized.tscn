@@ -1,10 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://b7nqm4jvtxcd2"]
+[gd_scene load_steps=18 format=3 uid="uid://ul87fv1v5ter"]
 
-[ext_resource type="Script" uid="uid://em5jvu7wm51t" path="res://scenes/3d/EnhancedExplorationScene.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://c4olnrbjeqmk6" path="res://src/ui_atomic/organisms/StructureInfoPanel.tscn" id="2_panel"]
-[ext_resource type="Shader" uid="uid://dqk0ra5nbr0in" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="3_glass"]
-[ext_resource type="Script" uid="uid://bdppch6urx77v" path="res://src/systems/3d_rendering/ComprehensiveBrainRenderingSystem.gd" id="5_rendering_system"]
-[ext_resource type="Script" uid="uid://cfm1o3t3835kc" path="res://src/systems/3d_interaction/BrainInteractionController.gd" id="6_itnfc"]
+[ext_resource type="Script" uid="uid://em5jvu7wm51t" path="res://scenes/3d/EnhancedExplorationScene.gd" id="1_frwqi"]
+[ext_resource type="Shader" uid="uid://dqk0ra5nbr0in" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="2_wl4rq"]
+[ext_resource type="PackedScene" uid="uid://c4olnrbjeqmk6" path="res://src/ui_atomic/organisms/StructureInfoPanel.tscn" id="3_mftkk"]
+[ext_resource type="Script" uid="uid://bdppch6urx77v" path="res://src/systems/3d_rendering/ComprehensiveBrainRenderingSystem.gd" id="5_gxtfd"]
+[ext_resource type="Script" uid="uid://cfm1o3t3835kc" path="res://src/systems/3d_interaction/BrainInteractionController.gd" id="6_yx3ar"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -20,17 +20,6 @@ glow_intensity = 0.2
 glow_bloom = 0.2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_1"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
-albedo_color = Color(0.8, 0.85, 0.9, 1)
-metallic = 0.2
-roughness = 0.1
-emission_enabled = true
-emission = Color(0.3, 0.6, 1, 1)
-emission_energy_multiplier = 0.3
-rim_enabled = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_1"]
 radius = 0.001
@@ -49,7 +38,7 @@ size = Vector2(20, 20)
 albedo_color = Color(0.1, 0.125, 0.15, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
-shader = ExtResource("3_glass")
+shader = ExtResource("2_wl4rq")
 shader_parameter/blur_amount = 4.0
 shader_parameter/tint_color = Color(0.15, 0.175, 0.2, 1)
 
@@ -93,7 +82,7 @@ corner_radius_top_left = 12
 corner_radius_top_right = 12
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0prj0"]
-shader = ExtResource("3_glass")
+shader = ExtResource("2_wl4rq")
 shader_parameter/blur_amount = 6.0
 shader_parameter/tint_color = Color(0.12, 0.15, 0.18, 0.95)
 
@@ -115,8 +104,8 @@ corner_radius_bottom_left = 16
 shadow_color = Color(0, 0, 0, 0.3)
 shadow_size = 8
 
-[node name="EducationalBrainExplorationScene2" type="Node3D" groups=["educational_scene", "medical_visualization"]]
-script = ExtResource("1_script")
+[node name="EducationalBrainExplorationScene" type="Node3D" groups=["educational_scene", "medical_visualization"]]
+script = ExtResource("1_frwqi")
 metadata/accessibility_role = "main_exploration_view"
 metadata/medical_accuracy_level = "professional"
 metadata/educational_context = "neuroanatomy_3d_exploration"
@@ -172,11 +161,6 @@ shape = SubResource("SphereShape3D_1")
 metadata/description = "Container for medically accurate brain models and anatomical structures"
 
 [node name="BrainModelHolder" type="Node3D" parent="AnatomicalModelContainer"]
-
-[node name="BrainModelPlaceholder" type="MeshInstance3D" parent="AnatomicalModelContainer/BrainModelHolder"]
-visible = false
-mesh = SubResource("BoxMesh_1")
-surface_material_override/0 = SubResource("StandardMaterial3D_1")
 
 [node name="BrainModelLoader" type="Node" parent="AnatomicalModelContainer/BrainModelHolder"]
 metadata/description = "Async brain model loading system"
@@ -525,7 +509,7 @@ value = 45.0
 show_percentage = false
 metadata/accessibility_label = "GPU usage percentage"
 
-[node name="AnatomicalInfoPanel" parent="EducationalUILayer" groups=["educational_panels"] instance=ExtResource("2_panel")]
+[node name="AnatomicalInfoPanel" parent="EducationalUILayer" groups=["educational_panels"] instance=ExtResource("3_mftkk")]
 material = SubResource("ShaderMaterial_0prj0")
 anchor_left = 0.939062
 offset_left = -316.0
@@ -895,14 +879,14 @@ metadata/accessibility_label = "Select annotation language"
 metadata/description = "Container for all educational platform systems"
 
 [node name="MedicalRenderingSystem" type="Node3D" parent="EducationalSystemsContainer" groups=["rendering_system"]]
-script = ExtResource("5_rendering_system")
+script = ExtResource("5_gxtfd")
 metadata/description = "Handles medical-grade brain model rendering and visualization"
 
 [node name="BrainInteractionSystem" type="Node" parent="EducationalSystemsContainer" groups=["interaction_system"]]
 metadata/description = "Manages user interactions with brain structures"
 
 [node name="InteractionController" type="Node3D" parent="EducationalSystemsContainer/BrainInteractionSystem"]
-script = ExtResource("6_itnfc")
+script = ExtResource("6_yx3ar")
 metadata/description = "Manages brain structure selection and highlighting"
 
 [node name="AccessibilityManager" type="Node" parent="EducationalSystemsContainer"]

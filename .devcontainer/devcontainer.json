@@ -27,7 +27,8 @@
         "ms-vscode.test-adapter-converter",
         "yzhang.markdown-all-in-one",
         "bierner.markdown-mermaid",
-        "shd101wyy.markdown-preview-enhanced"
+        "shd101wyy.markdown-preview-enhanced",
+        "ms-vscode-remote.remote-containers"
       ],
       "settings": {
         "godot_tools.editor_path": "/usr/local/bin/godot",
@@ -161,36 +162,6 @@
       }
     }
   },
-  "postCreateCommand": "/workspace/.devcontainer/post-create.sh",
-  "remoteUser": "vscode",
-  "forwardPorts": [6007, 6008, 6009],
-  "portsAttributes": {
-    "6007": {
-      "label": "Godot Editor",
-      "onAutoForward": "notify"
-    },
-    "6008": {
-      "label": "Godot Language Server",
-      "onAutoForward": "silent"
-    },
-    "6009": {
-      "label": "Godot Debug",
-      "onAutoForward": "silent"
-    }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
-  "mounts": [
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
-  ],
-  "runArgs": [
-    "--gpus=all",
-    "--privileged"
-  ],
-  "containerEnv": {
-    "DISPLAY": "${localEnv:DISPLAY}"
-  }
+  "postCreateCommand": "echo 'Ready for Godot development!'",
+  "remoteUser": "vscode"
 }

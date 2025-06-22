@@ -93,21 +93,6 @@ func reset_all_progress() -> void:
 	_save_progress()
 	print("[Progress] All progress has been reset")
 
-func track_educational_interaction(interaction_type: String, data: Dictionary = {}) -> void:
-	"""Track educational interactions for analytics"""
-	# For now, just log the interaction - can be expanded for full analytics
-	print("[Progress] Educational interaction: ", interaction_type, " with data: ", data)
-	
-	# Update session stats
-	if not _session_stats.has("interactions"):
-		_session_stats["interactions"] = []
-	
-	_session_stats["interactions"].append({
-		"type": interaction_type,
-		"data": data,
-		"timestamp": Time.get_unix_time_from_system()
-	})
-
 # === PRIVATE METHODS ===
 
 func _setup_autosave() -> void:

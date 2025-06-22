@@ -4,14 +4,6 @@ extends Node3D
 const ButtonMotionHandlerScript = preload("res://src/ui_atomic/atoms/buttons/ButtonMotionHandler.gd") # Validated path
 
 ## Enhanced main 3D exploration scene with comprehensive UI
-## 
-## PERFORMANCE OPTIMIZATIONS APPLIED:
-## - Performance monitoring disabled by default (was causing 12 FPS)
-## - Timer-based updates (0.5s) instead of per-frame monitoring
-## - Removed orphaned UI nodes (ViewSelectionLabel, StructureListSeparator)
-## - Added missing @onready references for system nodes
-## - Commented out unused annotation system variables
-## Target: 30+ FPS on Intel UHD 620 graphics
 
 # === SIGNALS ===
 signal structure_selected(structure_name: String)
@@ -108,12 +100,9 @@ var proximity_shape: CollisionShape3D = null
 @onready var rim_light: DirectionalLight3D = $EnvironmentSystem/MedicalLightingSystem/RimLight
 @onready var environment: WorldEnvironment = $EnvironmentSystem/MedicalVisualizationEnvironment
 
-# System Nodes (Added to fix missing references)
-@onready var medical_rendering_system: Node3D = $EducationalSystemsContainer/MedicalRenderingSystem
-@onready var interaction_controller: Node3D = $EducationalSystemsContainer/InteractionController
-
 # Visualization helpers
-# Removed - visualization helpers deleted for performance
+@onready var grid_floor: MeshInstance3D = $AnatomicalVisualizationHelpers/AnatomicalGridFloor
+@onready var axis_indicator: Node3D = $AnatomicalVisualizationHelpers/AnatomicalAxisIndicator
 
 # === PRIVATE VARIABLES ===
 var _camera_distance: float = 15.0  # Better initial distance for brain model
@@ -151,12 +140,9 @@ var _camera_target_rotation: Vector3 = Vector3.ZERO
 var _quiz_structure_context: String = ""
 var _quiz_answer_options: Array = []
 
-# Enhanced Annotation System Variables - DISABLED (commented out to save memory)
-# Temporarily declaring to avoid errors - annotation system is disabled
+# Enhanced Annotation System Variables - DISABLED (but variables kept for code compatibility)
 var _annotation_labels: Dictionary = {}  # structure_id -> Label
-@warning_ignore("unused_private_class_variable")
 var _3d_to_2d_projections: Dictionary = {}  # structure_id -> Vector2
-@warning_ignore("unused_private_class_variable")
 var _label_visibility_distance: float = 25.0
 var _annotation_font_size: float = 14.0
 var _high_contrast_mode: bool = false
@@ -164,11 +150,6 @@ var _annotation_language: String = "english"
 var _medical_terminology_database: Dictionary = {}
 # var _annotation_update_timer: float = 0.0  # Removed - unused
 # var _annotation_update_interval: float = 0.1  # Removed - unused
-
-# Performance monitoring control flag
-var performance_monitoring_enabled: bool = false  # DISABLED by default to fix 12 FPS issue
-var performance_update_timer: float = 0.0
-var performance_update_interval: float = 0.5  # Update every 0.5 seconds instead of every frame
 
 # Advanced Camera Collision System Variables
 var _collision_avoidance_enabled: bool = true
@@ -298,18 +279,13 @@ func _ready() -> void:
 	_safe_setup_intelligent_camera()
 	# _safe_setup_enhanced_annotation_system()  # Removed - Medical Annotation System
 	_safe_setup_camera_collision_system()
-	# Axis indicator removed for performance
+	_safe_create_axis_indicator()
 	_safe_connect_signals()
 	_safe_setup_help_text()
 	_safe_add_panels_to_ui_group()
 
 	# === Initialize Comprehensive Brain Rendering System ===
 	_safe_initialize_medical_grade_rendering()
-	
-	# === CRITICAL PERFORMANCE FIX: Disable performance monitoring panel by default ===
-	if performance_panel:
-		performance_panel.visible = false
-		print("[Performance Fix] Performance monitoring panel disabled by default")
 
 	# Professional medical education validation
 	await get_tree().create_timer(1.0).timeout  # Allow UI to stabilize
@@ -336,12 +312,7 @@ func _physics_process(delta: float) -> void:
 	_handle_camera_collision_in_physics(delta)
 
 	# Professional Performance Monitoring for Medical Education
-	# _monitor_performance(delta)  # DISABLED - was causing 12 FPS issue
-	if performance_monitoring_enabled:  # Only run if explicitly turned on
-		performance_update_timer += delta
-		if performance_update_timer >= performance_update_interval:
-			_monitor_performance(delta)
-			performance_update_timer = 0.0
+	_monitor_performance(delta)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -375,13 +346,13 @@ func update_status(message: String) -> void:
 	"""Update status bar message"""
 	status_label.text = message
 
-func toggle_grid(_should_show: bool) -> void:
-	"""Toggle grid floor visibility - removed for performance"""
-	pass
+func toggle_grid(should_show: bool) -> void:
+	"""Toggle grid floor visibility"""
+	grid_floor.visible = should_show
 
-func toggle_axis_indicator(_should_show: bool) -> void:
-	"""Toggle axis indicator visibility - removed for performance"""
-	pass
+func toggle_axis_indicator(should_show: bool) -> void:
+	"""Toggle axis indicator visibility"""
+	axis_indicator.visible = should_show
 
 func adapt_lighting_for_structure(structure_id: String) -> void:
 	"""Adapt lighting based on selected brain structure"""
@@ -565,8 +536,10 @@ func _safe_setup_camera_collision_system() -> void:
 		push_error("[Camera Collision] Failed to initialize collision system")
 
 func _safe_create_axis_indicator() -> void:
-	"""Create axis indicator with error checking - removed for performance"""
-	pass
+	"""Create axis indicator with error checking"""
+	_create_axis_indicator()
+	if not _validate_axis_indicator_setup():
+		push_error("[Axis Indicator] Failed to create axis indicator")
 
 func _safe_connect_signals() -> void:
 	"""Connect signals with error checking"""
@@ -944,8 +917,52 @@ func _update_camera_position() -> void:
 	camera.look_at(camera_pivot.global_position, Vector3.UP)
 
 func _create_axis_indicator() -> void:
-	"""Create 3D axis indicator - removed for performance"""
-	pass
+	"""Create 3D axis indicator"""
+	if not is_instance_valid(axis_indicator):
+		push_warning("[AxisIndicator] axis_indicator node not found")
+		return
+
+	var materials = {
+		"x": preload("res://assets/materials/axis_red.tres") if ResourceLoader.exists("res://assets/materials/axis_red.tres") else null,
+		"y": preload("res://assets/materials/axis_green.tres") if ResourceLoader.exists("res://assets/materials/axis_green.tres") else null,
+		"z": preload("res://assets/materials/axis_blue.tres") if ResourceLoader.exists("res://assets/materials/axis_blue.tres") else null
+	}
+
+	# Create X axis (red)
+	var x_axis = BoxMesh.new()
+	x_axis.size = Vector3(2, 0.1, 0.1)
+	var x_instance = MeshInstance3D.new()
+	x_instance.mesh = x_axis
+	x_instance.position = Vector3(1, 0, 0)
+	if materials.x:
+		x_instance.material_override = materials.x
+	else:
+		x_instance.material_override = _create_axis_material(UnifiedColorSystem.get_color("error"))
+	axis_indicator.add_child(x_instance)
+
+	# Create Y axis (green)
+	var y_axis = BoxMesh.new()
+	y_axis.size = Vector3(0.1, 2, 0.1)
+	var y_instance = MeshInstance3D.new()
+	y_instance.mesh = y_axis
+	y_instance.position = Vector3(0, 1, 0)
+	if materials.y:
+		y_instance.material_override = materials.y
+	else:
+		y_instance.material_override = _create_axis_material(UnifiedColorSystem.get_color("success"))
+	axis_indicator.add_child(y_instance)
+
+	# Create Z axis (blue)
+	var z_axis = BoxMesh.new()
+	z_axis.size = Vector3(0.1, 0.1, 2)
+	var z_instance = MeshInstance3D.new()
+	z_instance.mesh = z_axis
+	z_instance.position = Vector3(0, 0, 1)
+	if materials.z:
+		z_instance.material_override = materials.z
+	else:
+		z_instance.material_override = _create_axis_material(UnifiedColorSystem.get_color("tertiary"))
+	axis_indicator.add_child(z_instance)
 
 func _create_axis_material(color: Color) -> StandardMaterial3D:
 	"""Create material for axis indicator"""
@@ -1207,16 +1224,13 @@ func _on_performance_toggle_pressed() -> void:
 		return
 	"""Handle performance monitoring panel toggle"""
 	performance_panel.visible = not performance_panel.visible
-	performance_monitoring_enabled = performance_panel.visible  # Control real-time monitoring
-	performance_toggle.text = "Hide Metrics" if performance_panel.visible else "Metrics"
+	performance_toggle.text = "Hide Performance" if performance_panel.visible else "Show Performance"
 
 	# Update performance display immediately when shown
 	if performance_panel.visible:
 		_update_performance_display()
-		print("[Performance] Monitoring enabled - expect FPS impact")
 		update_status("Performance monitoring panel enabled")
 	else:
-		print("[Performance] Monitoring disabled - FPS improved")
 		update_status("Performance monitoring panel disabled")
 
 # ... (Include all the existing methods from ExplorationScene.gd)
@@ -1265,10 +1279,6 @@ func _on_structure_selected(structure_name: String, mesh_instance: MeshInstance3
 			if normalized_name == "hipp and others":
 				structure_id = "hippocampus"
 				print("[EnhancedExplorationScene] Applied special case mapping to hippocampus")
-			elif normalized_name in ["hippocampus", "thalamus", "amygdala", "striatum", "corpus_callosum", "ventricles"]:
-				# Direct structure ID passed instead of mesh name
-				structure_id = normalized_name
-				print("[EnhancedExplorationScene] Direct structure ID used: ", structure_id)
 			else:
 				# Fallback: use the mesh name as structure ID
 				structure_id = structure_name
@@ -1335,17 +1345,17 @@ func _load_brain_models() -> void:
 	print("[EnhancedExplorationScene] Loading brain models...")
 	show_loading("Loading brain anatomy model...", 0.0)
 
-	# Placeholder removed for performance
+	# Remove placeholder after a delay
 	await get_tree().create_timer(0.5).timeout
+	var placeholder = $AnatomicalModelContainer/BrainModelHolder/BrainModelPlaceholder
+	if placeholder:
+		placeholder.queue_free()
 
 	show_loading("Initializing brain structures...", 0.3)
 
 	# Load Internal-Structures model
 	if _model_loader:
-		# Connect to the model_loaded signal before loading
-		if not _model_loader.model_loaded.is_connected(_on_internal_structures_loaded):
-			_model_loader.model_loaded.connect(_on_internal_structures_loaded)
-		_model_loader.load_brain_model("Internal-Structures", "low", SafeModelLoader.LoadMode.ASYNC)
+		_model_loader.load_model_async("Internal-Structures", _on_internal_structures_loaded)
 
 func _on_internal_structures_loaded(model_instance: Node3D) -> void:
 	"""Handle Internal-Structures model loaded"""
@@ -1558,7 +1568,7 @@ func _handle_keyboard(event: InputEventKey) -> void:
 		KEY_R:
 			reset_camera_view()
 		KEY_G:
-			toggle_grid(true)  # Removed - no grid to toggle
+			toggle_grid(not grid_floor.visible)
 		KEY_H:
 			_on_help_pressed()
 		KEY_L:
@@ -1724,11 +1734,11 @@ func _frame_model(model: Node3D) -> void:
 
 # Stub methods for systems - implement as needed
 func _setup_model_loader() -> void:
-	var SafeModelLoaderClass = preload("res://src/systems/3d_interaction/SafeModelLoader.gd")
-	_model_loader = SafeModelLoaderClass.new()
+	var ModelLoader = preload("res://src/systems/3d_interaction/ModelLoader.gd")
+	_model_loader = ModelLoader.new()
 	add_child(_model_loader)
-	_model_loader.model_loaded.connect(func(model_instance): print("[Enhanced] Model loaded: ", model_instance.name if model_instance else "unknown"))
-	_model_loader.model_load_failed.connect(func(error_message): update_status("Failed to load: " + error_message))
+	_model_loader.model_loaded.connect(func(loaded_model_name, _instance): print("[Enhanced] Model loaded: ", loaded_model_name))
+	_model_loader.model_load_failed.connect(func(failed_model_name, _error): update_status("Failed to load: " + failed_model_name))
 
 func _setup_camera_presets() -> void:
 	var CameraPresetManager = preload("res://src/systems/3d_interaction/CameraPresetManager.gd")
@@ -2550,14 +2560,72 @@ func _setup_enhanced_annotation_system() -> void:
 	return
 
 func _load_medical_terminology_database() -> void:
-	"""Load medical terminology and pronunciation data - DISABLED"""
-	# Function disabled - medical annotation system removed
-	pass
+	"""Load medical terminology and pronunciation data"""
+	_medical_terminology_database = {
+		"hippocampus": {
+			"english": "Hippocampus",
+			"latin": "Hippocampus",
+			"pronunciation": "/ˌhɪpəˈkæmpəs/",
+			"etymology": "From Greek 'hippos' (horse) + 'kampos' (sea monster)",
+			"clinical_synonyms": ["Cornu ammonis", "Ammon's horn"],
+			"description": "C-shaped structure essential for memory formation"
+		},
+		"thalamus": {
+			"english": "Thalamus",
+			"latin": "Thalamus",
+			"pronunciation": "/ˈθæləməs/",
+			"etymology": "From Greek 'thalamos' (inner chamber)",
+			"clinical_synonyms": ["Diencephalic relay nucleus"],
+			"description": "Relay station for sensory and motor signals"
+		},
+		"cerebellum": {
+			"english": "Cerebellum",
+			"latin": "Cerebellum",
+			"pronunciation": "/ˌsɛrəˈbɛləm/",
+			"etymology": "From Latin 'little brain'",
+			"clinical_synonyms": ["Little brain", "Hindbrain"],
+			"description": "Controls balance, coordination, and motor learning"
+		},
+		"corpus_callosum": {
+			"english": "Corpus Callosum",
+			"latin": "Corpus callosum",
+			"pronunciation": "/ˈkɔrpəs kəˈloʊsəm/",
+			"etymology": "From Latin 'hard body'",
+			"clinical_synonyms": ["Interhemispheric commissure"],
+			"description": "Bridge connecting left and right brain hemispheres"
+		},
+		"striatum": {
+			"english": "Striatum",
+			"latin": "Corpus striatum",
+			"pronunciation": "/straɪˈeɪtəm/",
+			"etymology": "From Latin 'striated body'",
+			"clinical_synonyms": ["Caudate-putamen complex"],
+			"description": "Key component of motor and reward circuits"
+		}
+	}
 
 func _update_annotation_projections() -> void:
-	"""Update 3D-to-2D projection of anatomical labels - DISABLED"""
-	# Function disabled - medical annotation system removed
-	pass
+	"""Update 3D-to-2D projection of anatomical labels"""
+	if not camera or not is_instance_valid(camera):
+		return
+
+	# Update projections for all brain structures
+	for structure_id in _brain_structures.keys():
+		var structure_node = _brain_structures[structure_id]
+		if not is_instance_valid(structure_node):
+			continue
+
+		# Calculate 3D world position to 2D screen projection
+		var structure_center = structure_node.global_position
+		var distance_to_camera = camera.global_position.distance_to(structure_center)
+
+		# Check if structure is within visibility range and camera frustum
+		if distance_to_camera <= _label_visibility_distance and _is_position_visible(structure_center):
+			var screen_pos = camera.unproject_position(structure_center)
+			_3d_to_2d_projections[structure_id] = screen_pos
+			_show_annotation_label(structure_id, screen_pos)
+		else:
+			_hide_annotation_label(structure_id)
 
 func _is_position_visible(world_position: Vector3) -> bool:
 	"""Check if a 3D position is visible within camera frustum"""
@@ -2953,7 +3021,7 @@ func _on_quiz_review_pressed() -> void:
 	# TODO: Implement comprehensive review mode
 	update_status("Quiz review mode coming soon")
 
-func _on_quiz_answer_selected(_pressed: bool, option_index: int) -> void:
+func _on_quiz_answer_selected(option_index: int) -> void:
 	"""Handle answer option selection - manage exclusive selection"""
 	var question_id = str(_current_quiz_question)
 
@@ -3136,8 +3204,8 @@ func _validate_camera_collision_setup() -> bool:
 	return is_instance_valid(_camera_collision_area)
 
 func _validate_axis_indicator_setup() -> bool:
-	"""Validate axis indicator is properly created - removed for performance"""
-	return true
+	"""Validate axis indicator is properly created"""
+	return is_instance_valid(axis_indicator) and axis_indicator.get_child_count() > 0
 
 func _validate_help_text_setup() -> bool:
 	"""Validate help text is properly initialized"""
@@ -3149,12 +3217,13 @@ func _validate_rendering_setup() -> bool:
 
 func _optimize_for_integrated_graphics() -> void:
 	"""Optimize scene for Intel UHD 620 and similar integrated graphics"""
-	# Intel optimization now handled by PerformanceMonitor
-	if PerformanceMonitor and PerformanceMonitor.has_method("is_intel_gpu"):
-		if PerformanceMonitor.is_intel_gpu:
-			print("[Performance] Intel GPU optimizations active")
-		
-		# Apply Intel-specific optimizations
+	var intel_optimizer = get_node_or_null("/root/IntelOptimizer")
+	if not intel_optimizer:
+		push_warning("[Performance] IntelOptimizer not available")
+		return
+
+	# Check if Intel GPU is detected
+	if intel_optimizer.is_intel_gpu_detected():
 		print("[Performance] Integrated graphics detected - applying optimizations")
 
 		# Disable heavy effects in environment
@@ -3196,7 +3265,16 @@ func _remove_unused_nodes() -> void:
 		rim_light.queue_free()
 		rim_light = null
 
-	# Visualization helpers already removed for performance
+	# Remove hidden visualization helpers if not used
+	if grid_floor and not grid_floor.visible:
+		print("[Optimization] Removing unused GridFloor")
+		grid_floor.queue_free()
+		grid_floor = null
+
+	if axis_indicator and not axis_indicator.visible:
+		print("[Optimization] Removing unused AxisIndicator")
+		axis_indicator.queue_free()
+		axis_indicator = null
 
 	# Remove empty MedicalCameraEffects node
 	var camera_effects = camera.get_node_or_null("MedicalCameraEffects")

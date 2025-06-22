@@ -1,6 +1,0 @@
-# UI Atoms Directory
-# Contains the smallest UI building blocks following atomic design:
-# - Buttons (IconButton, TextButton)
-# - Labels (ThemedLabel, AnimatedLabel)
-# - Inputs (TextInput, NumberInput)
-# - Basic visual elements

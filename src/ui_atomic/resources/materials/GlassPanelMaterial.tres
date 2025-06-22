@@ -1,17 +1,8 @@
-[gd_resource type="StyleBoxFlat" format=3 uid="uid://cj8n6rjm3x5k4"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cj8n6rjm3x5k4"]
+
+[ext_resource type="Shader" path="res://src/ui_atomic/effects/shaders/glass_panel.gdshader" id="1_shader"]
 
 [resource]
-bg_color = Color(0.1, 0.1, 0.15, 0.85)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.3, 0.4, 0.6, 0.9)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-content_margin_left = 16.0
-content_margin_top = 12.0
-content_margin_right = 16.0
-content_margin_bottom = 12.0
+shader = ExtResource("1_shader")
+shader_parameter/blur_amount = 12.0
+shader_parameter/tint_color = Color(0.0549, 0.0667, 0.0902, 0.15)

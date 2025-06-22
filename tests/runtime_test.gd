@@ -83,7 +83,7 @@ func _test_resources():
         "res://scenes/3d/EnhancedExplorationScene.tscn",
         "res://src/ui_atomic/organisms/StructureInfoPanel.tscn",
         "res://src/ui_atomic/organisms/QuizPanel.tscn",
-        # "res://src/ui_atomic/effects/shaders/glass_panel.gdshader", # Deprecated - replaced with StyleBoxFlat
+        "res://src/ui_atomic/effects/shaders/glass_panel.gdshader",
         "res://src/ui_atomic/effects/shaders/medical_glass.gdshader",
         "res://assets/3d_models/processed/Internal_Structures_LOD/Internal-Structures_low.glb"
     ]

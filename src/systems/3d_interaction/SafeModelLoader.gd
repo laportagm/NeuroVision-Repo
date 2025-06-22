@@ -97,11 +97,6 @@ func _load_model_blocking(path: String, cache_key: String) -> Node3D:
 	print("[SafeModelLoader] Successfully loaded model: %s" % path)
 	return instance
 
-func _load_model_background(path: String, cache_key: String) -> void:
-	"""Load a model in background thread"""
-	# For now, use async loading as background
-	_load_model_async(path, cache_key)
-
 func _load_model_async(path: String, cache_key: String) -> void:
 	"""Load a model asynchronously"""
 	

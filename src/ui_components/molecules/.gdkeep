@@ -1,6 +1,0 @@
-# UI Molecules Directory
-# Contains combined UI components built from atoms:
-# - SearchBar (Icon + Input)
-# - Card (Container + Shadow + Content)
-# - TabBar (Multiple tab buttons)
-# - NavigationItem (Icon + Label + Badge)
